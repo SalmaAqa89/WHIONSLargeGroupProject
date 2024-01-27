@@ -4,19 +4,21 @@ from django.db import models
 from libgravatar import Gravatar
 
 class User(AbstractUser):
-    """Model used for user authentication, and team member related information."""
+    """Model used for user authentication."""
 
     username = models.CharField(
         max_length=30,
         unique=True,
         validators=[RegexValidator(
-            regex=r'^@\w{3,}$',
-            message='Username must consist of @ followed by at least three alphanumericals'
+            regex=r'\w{3,}$',
+            message='Username must consist of at least three alphanumericals'
         )]
     )
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
+    preferred_time_to_journal = models.TimeField(blank=True, null=True)
+    
 
 
     class Meta:
@@ -40,3 +42,12 @@ class User(AbstractUser):
         """Return a URL to a miniature version of the user's gravatar."""
         
         return self.gravatar(size=60)
+
+class Template(models.Model):
+
+    """Model used for templates. Templates either are made by, and therefore belong to, the users (custom) 
+    or are default templates."""
+    
+    name = models.CharField(max_length=50, blank=False)
+    is_custom = models.BooleanField(default=False) 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
