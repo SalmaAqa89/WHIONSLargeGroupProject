@@ -8,9 +8,11 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
+from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 
+DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 @login_required
 def dashboard(request):
@@ -21,11 +23,11 @@ def dashboard(request):
 
 
 def journal_log(request):
-    return render(request, 'journal_log.html')
+    return render(request, 'journal_log.html', {'journal_entries' : JournalEntry.objects.all()})
 
 
 def templates(request):
-    return render(request, 'templates.html')
+    return render(request, 'templates.html', {"templates": [DEFAULT_TEMPLATE]})
 
 
 def trash(request):
@@ -166,3 +168,28 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+    
+
+class CreateJournalEntryView(LoginRequiredMixin, FormView):
+    """Display the create entry screen and handle entry creation"""
+
+    form_class = JournalEntryForm
+    template_name = "create_entry.html"
+    model = JournalEntryForm
+
+    def get_form_kwargs(self, **kwargs):
+        """Pass the current user to the create entry form."""
+
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
+        return kwargs
+
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+    
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
+        return reverse('journal_log')
