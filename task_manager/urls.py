@@ -32,4 +32,5 @@ urlpatterns = [
     path('templates/',views.templates,name ='templates'),
     path('trash/',views.trash,name ='trash'),
     path('create_entry/', views.CreateJournalEntryView.as_view(), name="create_entry"),
+    path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
 ]

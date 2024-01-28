@@ -21,18 +21,19 @@ def dashboard(request):
     current_user = request.user
     return render(request, 'dashboard.html', {'user': current_user})
 
-
+@login_required
 def journal_log(request):
-    return render(request, 'journal_log.html', {'journal_entries' : JournalEntry.objects.all()})
+    return render(request, 'journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
 
-
+@login_required
 def templates(request):
     return render(request, 'templates.html', {"templates": [DEFAULT_TEMPLATE]})
 
-
+@login_required
 def trash(request):
     return render(request, 'trash.html')
 
+@login_required
 def mood_breakdown(request):
     return render(request, 'mood_breakdown.html')
 
@@ -193,3 +194,13 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
         return reverse('journal_log')
+    
+def delete_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    if entry.user == request.user:
+        entry.delete()
+        messages.add_message(request, messages.SUCCESS, "Entry deleted!")
+        return redirect("journal_log") 
+    else:
+        messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
+        return redirect('journal_log')

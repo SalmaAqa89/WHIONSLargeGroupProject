@@ -7,8 +7,9 @@
       <a href="{% url 'create_entry' %}" class="btn btn-primary">New Journal Entry</a>
       {% for entry in journal_entries %}
       <h1>{{entry.title}}</h1>
-      <h2>By: {{entry.user.first_name}} {{entry.user.last_name}}</h2>
+      <h2>{{entry.created_at}}</h2>
       <p>{{entry.text}}</p>
+      <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger">Delete Entry</a>
       {% endfor %}
 
     </div>
