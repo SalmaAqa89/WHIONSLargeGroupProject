@@ -123,6 +123,13 @@ class PreferenceForm(forms.ModelForm):
         model = User
         fields = ['preferred_time_to_journal', 'preferred_days_to_journal']
         
+        widgets = {
+            'preferred_time_to_journal' : forms.TimeInput(attrs={'type':'time'}),
+            'preferred_days_to_journal' : forms.CheckboxSelectMultiple
+            
+        }
+        preferred_days_to_journal = forms.MultipleChoiceField(choices=User.DAYS_OF_WEEK_CHOICES)
+        
     def save(self, commit=True):
         """Save preferences."""
         user = super().save(commit=False)

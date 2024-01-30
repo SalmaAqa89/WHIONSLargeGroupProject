@@ -7,6 +7,7 @@ class User(AbstractUser):
     """Model used for user authentication."""
 
     DAYS_OF_WEEK_CHOICES = [
+        (None, 'Days:'),
         ('mon', 'Monday'),
         ('tue', 'Tuesday'),
         ('wed', 'Wednesday'),
@@ -15,7 +16,7 @@ class User(AbstractUser):
         ('sat', 'Saturday'),
         ('sun', 'Sunday'),
     ]
-
+    
 
     username = models.CharField(
         max_length=30,
@@ -28,7 +29,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
-    preferred_time_to_journal = models.DateField(blank=True, null=True)
+    preferred_time_to_journal = models.CharField(max_length = 7, blank=True, null=True)
     preferred_days_to_journal = models.CharField(max_length=20, choices=DAYS_OF_WEEK_CHOICES, blank=True, null=True)
     
 
