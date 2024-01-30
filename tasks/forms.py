@@ -108,3 +108,26 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+    
+class PreferenceForm(forms.ModelForm):
+    
+    def __init__(self, user=None, **kwargs):
+        """Construct new form instance with a user instance."""
+        
+        super().__init__(**kwargs)
+        self.user = user
+    
+    class Meta:
+        """Form options."""
+
+        model = User
+        fields = ['preferred_time_to_journal', 'preferred_days_to_journal']
+        
+    def save(self, commit=True):
+        """Save preferences."""
+        user = super().save(commit=False)
+        user.preferred_time_to_journal= self.cleaned_data['preferred_time_to_journal']
+        user.preferred_days_to_journal = self.cleaned_data['preferred_days_to_journal']
+        if commit:
+            user.save()
+        return user

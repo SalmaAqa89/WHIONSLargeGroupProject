@@ -8,8 +8,9 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, PreferenceForm
 from tasks.helpers import login_prohibited
+from tasks.models import User
 
 
 @login_required(login_url='home')
@@ -150,4 +151,19 @@ class SignUpView(LoginProhibitedMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
+        return reverse('preference')
+    
+class PreferenceView(LoginRequiredMixin, UpdateView):
+    model = User
+    template_name = "preference.html"
+    form_class = PreferenceForm
+    
+    def get_object(self):
+        """Return the object (user) to be updated."""
+        user = self.request.user
+        return user
+
+    def get_success_url(self):
+        """Return redirect URL after successful update."""
+        messages.add_message(self.request, messages.SUCCESS, "Preferences updated!")
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
