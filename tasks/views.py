@@ -12,7 +12,7 @@ from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tasks.helpers import login_prohibited
 
 
-@login_required
+@login_required(login_url='home')
 def dashboard(request):
     """Display the current user's dashboard."""
 
