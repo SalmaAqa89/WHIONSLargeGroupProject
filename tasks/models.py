@@ -10,7 +10,7 @@ class User(AbstractUser):
         max_length=30,
         unique=True,
         validators=[RegexValidator(
-            regex=r'\w{3,}$',
+            regex=r'^\w{3,}$',
             message='Username must consist of at least three alphanumericals'
         )]
     )
@@ -18,6 +18,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
     preferred_time_to_journal = models.TimeField(blank=True, null=True)
+    preferred_days_to_journal = models.CharField(max_length=7, blank=True, null=True)
     
 
 
