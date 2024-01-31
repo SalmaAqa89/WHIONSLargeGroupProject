@@ -20,21 +20,6 @@ def dashboard(request):
     return render(request, 'dashboard.html', {'user': current_user})
 
 
-def journal_log(request):
-    return render(request, 'journal_log.html')
-
-
-def templates(request):
-    return render(request, 'templates.html')
-
-
-def trash(request):
-    return render(request, 'trash.html')
-
-def mood_breakdown(request):
-    return render(request, 'mood_breakdown.html')
-
-
 @login_prohibited
 def home(request):
     """Display the application's start/home screen."""
