@@ -28,4 +28,10 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('journal_log/',views.journal_log,name ='journal_log'),
+    path('mood_breakdown/',views.mood_breakdown,name ='mood_breakdown'),
+    path('templates/',views.templates,name ='templates'),
+    path('trash/',views.trash,name ='trash'),
 ]
+
+
