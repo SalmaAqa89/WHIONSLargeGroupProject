@@ -10,6 +10,10 @@
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input type="submit" value="Log in" class="btn btn-primary">
       </form>
+      <!-- Add the password reset link below the form -->
+      <div class="mt-3">
+        <a href="{% url 'password_reset' %}">Forgot your password?</a>
+      </div>
     </div>
   </div>
 </div>
