@@ -3,7 +3,7 @@
 ## Team members
 The members of the team are:
 - *Hannah Ishimwe*
-- *Salma Aquarrout*
+- *Salma Aqarrout*
 - *Onyiyechukwu Dozie*
 - *Ishika Arora*
 - *Najla Shainan*
