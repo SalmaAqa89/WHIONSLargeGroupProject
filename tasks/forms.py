@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User
+from .models import User, JournalEntry
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -108,3 +108,25 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+    
+class JournalEntryForm(forms.ModelForm):
+    """Form allowing user to create a journal entry"""
+    class Meta:
+        model = JournalEntry
+        fields = ['title','text']
+    
+    def __init__(self, user, text, **kwargs):
+        """Construct new form instance with a user instance."""
+        
+        super().__init__(**kwargs)
+        self.user = user
+        self.fields['text'].initial = text
+    
+    def save(self):
+        """Create a new journal entry"""
+
+        new_journal_entry = super().save(commit=False)
+
+        new_journal_entry.user = self.user
+        new_journal_entry.save()
+        return new_journal_entry
