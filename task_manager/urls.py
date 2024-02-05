@@ -36,4 +36,6 @@ urlpatterns = [
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
 ]
 
+#comment to test
+
 
