@@ -8,9 +8,9 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from journals.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
-from journals.models import JournalEntry
-from journals.helpers import login_prohibited
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
+from tasks.models import JournalEntry
+from tasks.helpers import login_prohibited
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
