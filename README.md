@@ -10,7 +10,7 @@ The members of the team are:
 - *Wanzhen Wang*
 
 ## Project structure
-The project is called `Academic Digital Journaling App`.  It currently consists of a single app `tasks`.
+The project is called `Academic Digital Journaling App`.  It currently consists of a single app `journals`.
 
 ## Deployed version of the application
 The deployed version of the application can be found at [*enter url here*](*enter_url_here*).

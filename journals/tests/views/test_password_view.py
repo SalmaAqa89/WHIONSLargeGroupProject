@@ -3,9 +3,9 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
 from django.urls import reverse
-from tasks.forms import PasswordForm
-from tasks.models import User
-from tasks.tests.helpers import reverse_with_next
+from journals.forms import PasswordForm
+from journals.models import User
+from journals.tests.helpers import reverse_with_next
 
 class PasswordViewTest(TestCase):
     """Test suite for the password view."""
