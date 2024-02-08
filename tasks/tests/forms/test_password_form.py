@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
-from journals.models import User
-from journals.forms import PasswordForm
+from tasks.models import User
+from tasks.forms import PasswordForm
 
 class PasswordFormTestCase(TestCase):
 

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from journals.models import JournalEntry,User
+from tasks.models import JournalEntry,User
 
 class JournalEntryModel(TestCase):
     """Unit Tests for the Journal Entry Model"""
