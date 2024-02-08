@@ -31,7 +31,7 @@ def templates(request):
 
 @login_required
 def trash(request):
-    return render(request, 'trash.html')
+    return render(request, 'trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user)})
 
 @login_required
 def mood_breakdown(request):
@@ -194,8 +194,29 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
         return reverse('journal_log')
-    
+
 def delete_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    if entry.user == request.user:
+        entry.delete_entry()
+        messages.add_message(request, messages.SUCCESS, "Entry moved to trash!")
+        return redirect('trash')
+    else:
+        messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
+        return redirect('journal_log')
+    
+def recover_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    if entry.user == request.user:
+        entry.recover_entry()
+        messages.add_message(request,messages.SUCCESS,"Entry has been recovered!")
+        return redirect('journal_log')
+    else:
+        messages.add_message(request, messages.ERROR, "entry cannot be recovered")
+        return redirect('journal_log')
+
+
+def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
         entry.delete()

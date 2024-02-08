@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from django.contrib import messages
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -47,3 +48,13 @@ class JournalEntry(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted = models.BooleanField(default = False)
+
+    def delete_entry(self):
+        self.deleted = True
+        self.save()
+
+    def recover_entry(self):
+        self.deleted = False
+        self.save()
+
