@@ -1,8 +1,8 @@
 """Unit tests of the user form."""
 from django import forms
 from django.test import TestCase
-from tasks.forms import UserForm
-from tasks.models import User
+from journals.forms import UserForm
+from journals.models import User
 
 class UserFormTestCase(TestCase):
     """Unit tests of the user form."""

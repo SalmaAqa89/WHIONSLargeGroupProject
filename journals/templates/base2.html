@@ -11,13 +11,14 @@
   </head>
   <body>
     <div class = "sidenav">
+        {% include 'partials/profile_pic.html' with user=user %}
         <a href = "/dashboard">Home</a>
-        <a href = "/profile">Profile</a>
         <a href = "/journal_log">Journal Log</a>
         <a href = "/templates">Templates</a>
         <a href = "/mood_breakdown">Mood Breakdown</a>
         <a href = "/trash">Trash</a>
     </div>
+    
     <div id = "content", name = "content", class = "main">
         {% block body %}
         {% endblock %}
