@@ -225,3 +225,9 @@ def delete_journal_entry_permanent(request,entry_id):
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
+    
+def log_out(request):
+    """Log out the current user"""
+
+    logout(request)
+    return redirect('home')

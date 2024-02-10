@@ -8,7 +8,7 @@
   z-index:1;
   top:0;
   left:0;
-  background-color:black;
+  background-color:#042f0c !important;
   overflow-x:hidden;
   padding-top:20px;
 }
@@ -16,13 +16,13 @@
 .sidenav a {
   padding:6px 8px 6px 16px;
   text-decoration: none;
-  color: #818181;
+  color: #fffdfd;
   font-size: 25px;
   display:block;
 }
 
 .sidenav a:hover{
-  color:#f1f1f1;
+  color:#b3cb15;
 }
 .main{
   margin-left: 160px;
@@ -30,11 +30,14 @@
 }
 
 
+
 .alert {
   border-radius: 0px;
 }
 
-
+.sidebar{
+  background-color: #025912 !important;
+}
 /*
  * Cover page
  */

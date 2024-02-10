@@ -29,3 +29,5 @@ class JournalEntryModel(TestCase):
         self.entry.recover_entry()
         updated_entry = JournalEntry.objects.get(pk=self.entry.pk)
         self.assertFalse(updated_entry.deleted)
+    
+    
