@@ -113,7 +113,10 @@ class JournalEntryForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
     class Meta:
         model = JournalEntry
-        fields = ['title','text']
+        fields = ['title','text','mood']
+        widgets = {
+            'mood': forms.RadioSelect  
+        }
     
     def __init__(self, user, text, **kwargs):
         """Construct new form instance with a user instance."""
