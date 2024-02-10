@@ -50,6 +50,15 @@ class JournalEntry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default = False)
 
+    MOOD_CHOICES = [
+        (1, '😔'),  
+        (2, '🙁'),  
+        (3, '😐'),  
+        (4, '🙂'),  
+        (5, '😄'),  
+    ]
+    mood = models.IntegerField(choices=MOOD_CHOICES, default=3)  
+
     def delete_entry(self):
         self.deleted = True
         self.save()
