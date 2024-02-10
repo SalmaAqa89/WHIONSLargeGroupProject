@@ -11,6 +11,9 @@ from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
+from django.db.models import Count
+from django.utils import timezone
+from datetime import timedelta
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
@@ -225,3 +228,38 @@ def delete_journal_entry_permanent(request,entry_id):
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
+
+@login_required
+def mood_breakdown(request):
+    today = timezone.now()
+    start_of_week = today - timedelta(days=today.weekday())
+    start_of_month = today.replace(day=1)
+
+    # Filter entries by the current user for privacy/security
+    user_entries = JournalEntry.objects.filter(user=request.user, deleted=False)
+
+    # Aggregating mood data
+    mood_today = user_entries.filter(created_at__date=today.date()).values('mood').annotate(count=Count('mood')).order_by('-count').first()
+    mood_week = user_entries.filter(created_at__gte=start_of_week).values('mood').annotate(count=Count('mood')).order_by('-count').first()
+    mood_month = user_entries.filter(created_at__gte=start_of_month).values('mood').annotate(count=Count('mood')).order_by('-count').first()
+
+    # Function to translate mood number to emoji
+    def mood_to_emoji(mood):
+        mood_dict = dict(JournalEntry.MOOD_CHOICES)
+        return mood_dict.get(mood, '')
+
+    # Translate mood numbers to emojis for display
+    if mood_today:
+        mood_today['mood'] = mood_to_emoji(mood_today['mood'])
+    if mood_week:
+        mood_week['mood'] = mood_to_emoji(mood_week['mood'])
+    if mood_month:
+        mood_month['mood'] = mood_to_emoji(mood_month['mood'])
+
+    context = {
+        'mood_today': mood_today['mood'] if mood_today else 'No entries today',
+        'mood_week': mood_week['mood'] if mood_week else 'No entries this week',
+        'mood_month': mood_month['mood'] if mood_month else 'No entries this month',
+    }
+
+    return render(request, 'mood_breakdown.html', context)
