@@ -18,11 +18,11 @@ class MoodBreakdownViewTest(TestCase):
 
     def setUp(self):
         """Set up conditions before running each test."""
-        self.user = User.objects.get(username='@johndoe')  # Now correctly using the custom User model
-        self.client.force_login(self.user)  # Log in the user for the session
+        self.user = User.objects.get(username='@johndoe')  
+        self.client.force_login(self.user)  
         self.url = reverse('mood_breakdown')
         
-        # Create JournalEntry instances for today, this week, and this month
+   
         today = timezone.now()
         this_week = today - timedelta(days=3)
         this_month = today - timedelta(days=20)
@@ -33,7 +33,7 @@ class MoodBreakdownViewTest(TestCase):
 
     def test_mood_breakdown_url(self):
         """Test the URL of the mood_breakdown view."""
-        self.assertEqual(self.url, '/mood_breakdown/')  # Ensure this matches your actual URL path
+        self.assertEqual(self.url, '/mood_breakdown/')  
 
     def test_mood_breakdown_access(self):
         """Test access to the mood_breakdown view."""
@@ -52,7 +52,7 @@ class MoodBreakdownViewTest(TestCase):
     def test_mood_breakdown_redirects_when_not_logged_in(self):
         """Test redirection for unauthenticated access to mood_breakdown view."""
         self.client.logout()
-        redirect_url = reverse('log_in')  # Assuming 'login' is the name of your login URL
+        redirect_url = reverse('log_in') 
         response = self.client.get(self.url)
         self.assertRedirects(response, f'{redirect_url}?next={self.url}', status_code=302, target_status_code=200)
 
