@@ -1,3 +1,4 @@
+from venv import logger
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -21,6 +22,9 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+import os
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+from django.contrib.staticfiles import finders
 
 
 
@@ -238,8 +242,12 @@ def delete_journal_entry_permanent(request,entry_id):
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
 
-def mood_to_emoji(mood):
-    mood_dict = {1: '😔', 2: '🙁', 3: '😐', 4: '🙂', 5: '😄'}
+def mood_to_description(mood):
+    mood_dict = {1: 'Very Sad', 2: 'Sad', 3: 'Neutral', 4: 'Happy', 5: 'Very Happy'}
+    return mood_dict.get(mood, '')
+
+def mood_to_emoji_with_desription(mood):
+    mood_dict = {1: 'Very Sad 😔', 2: 'Sad 🙁', 3: 'Neutral 😐', 4: 'Happy 🙂', 5: 'Very Happy😄'}
     return mood_dict.get(mood, '')
 
 def generate_mood_chart(user):
@@ -248,7 +256,7 @@ def generate_mood_chart(user):
     moods = entries.values_list('mood', flat=True)
     mood_counts = Counter(moods)
 
-    mood_labels = [mood_to_emoji(mood) for mood in mood_counts.keys()]
+    mood_labels = [mood_to_description(mood) for mood in mood_counts.keys()]
     counts = list(mood_counts.values())
 
     fig, ax = plt.subplots()
@@ -282,9 +290,9 @@ def mood_breakdown(request):
     mood_month = user_entries.filter(created_at__gte=start_of_month).values('mood').annotate(count=Count('mood')).order_by('-count').first()
 
     # Convert mood numbers to emojis for display
-    mood_today_emoji = mood_to_emoji(mood_today['mood']) if mood_today else 'No entries today'
-    mood_week_emoji = mood_to_emoji(mood_week['mood']) if mood_week else 'No entries this week'
-    mood_month_emoji = mood_to_emoji(mood_month['mood']) if mood_month else 'No entries this month'
+    mood_today_emoji = mood_to_emoji_with_desription(mood_today['mood']) if mood_today else 'No entries today'
+    mood_week_emoji = mood_to_emoji_with_desription(mood_week['mood']) if mood_week else 'No entries this week'
+    mood_month_emoji = mood_to_emoji_with_desription(mood_month['mood']) if mood_month else 'No entries this month'
 
     # Generate mood chart for the past month
     mood_chart = generate_mood_chart(request.user)
