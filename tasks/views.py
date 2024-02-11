@@ -8,12 +8,21 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
+from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
+from collections import Counter
+import matplotlib
+matplotlib.use('Agg')  
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+
+
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
@@ -229,37 +238,62 @@ def delete_journal_entry_permanent(request,entry_id):
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
 
+def mood_to_emoji(mood):
+    mood_dict = {1: '😔', 2: '🙁', 3: '😐', 4: '🙂', 5: '😄'}
+    return mood_dict.get(mood, '')
+
+def generate_mood_chart(user):
+    one_month_ago = timezone.now() - timedelta(days=30)
+    entries = JournalEntry.objects.filter(user=user, created_at__gte=one_month_ago, deleted=False)
+    moods = entries.values_list('mood', flat=True)
+    mood_counts = Counter(moods)
+
+    mood_labels = [mood_to_emoji(mood) for mood in mood_counts.keys()]
+    counts = list(mood_counts.values())
+
+    fig, ax = plt.subplots()
+    ax.bar(mood_labels, counts)
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+    for i, count in enumerate(counts):
+        ax.text(i, count + 0.1, str(count), ha='center')
+
+    flike = BytesIO()
+    plt.savefig(flike, format='png', bbox_inches='tight')
+    plt.close(fig)
+    b64 = base64.b64encode(flike.getvalue()).decode()
+
+    return b64
+
 @login_required
 def mood_breakdown(request):
     today = timezone.now()
     start_of_week = today - timedelta(days=today.weekday())
     start_of_month = today.replace(day=1)
-
-    # Filter entries by the current user for privacy/security
     user_entries = JournalEntry.objects.filter(user=request.user, deleted=False)
 
-    # Aggregating mood data
+    # Aggregating mood data for today, this week, and this month
     mood_today = user_entries.filter(created_at__date=today.date()).values('mood').annotate(count=Count('mood')).order_by('-count').first()
     mood_week = user_entries.filter(created_at__gte=start_of_week).values('mood').annotate(count=Count('mood')).order_by('-count').first()
     mood_month = user_entries.filter(created_at__gte=start_of_month).values('mood').annotate(count=Count('mood')).order_by('-count').first()
 
-    # Function to translate mood number to emoji
-    def mood_to_emoji(mood):
-        mood_dict = dict(JournalEntry.MOOD_CHOICES)
-        return mood_dict.get(mood, '')
+    # Convert mood numbers to emojis for display
+    mood_today_emoji = mood_to_emoji(mood_today['mood']) if mood_today else 'No entries today'
+    mood_week_emoji = mood_to_emoji(mood_week['mood']) if mood_week else 'No entries this week'
+    mood_month_emoji = mood_to_emoji(mood_month['mood']) if mood_month else 'No entries this month'
 
-    # Translate mood numbers to emojis for display
-    if mood_today:
-        mood_today['mood'] = mood_to_emoji(mood_today['mood'])
-    if mood_week:
-        mood_week['mood'] = mood_to_emoji(mood_week['mood'])
-    if mood_month:
-        mood_month['mood'] = mood_to_emoji(mood_month['mood'])
+    # Generate mood chart for the past month
+    mood_chart = generate_mood_chart(request.user)
 
     context = {
-        'mood_today': mood_today['mood'] if mood_today else 'No entries today',
-        'mood_week': mood_week['mood'] if mood_week else 'No entries this week',
-        'mood_month': mood_month['mood'] if mood_month else 'No entries this month',
+        'mood_today': mood_today_emoji,
+        'mood_week': mood_week_emoji,
+        'mood_month': mood_month_emoji,
+        'mood_chart': mood_chart,
     }
 
     return render(request, 'mood_breakdown.html', context)
