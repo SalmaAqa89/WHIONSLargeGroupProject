@@ -22,9 +22,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
-import os
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-from django.contrib.staticfiles import finders
 
 
 
@@ -231,7 +228,6 @@ def recover_journal_entry(request,entry_id):
         messages.add_message(request, messages.ERROR, "entry cannot be recovered")
         return redirect('journal_log')
 
-
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
@@ -290,17 +286,17 @@ def mood_breakdown(request):
     mood_month = user_entries.filter(created_at__gte=start_of_month).values('mood').annotate(count=Count('mood')).order_by('-count').first()
 
     # Convert mood numbers to emojis for display
-    mood_today_emoji = mood_to_emoji_with_desription(mood_today['mood']) if mood_today else 'No entries today'
-    mood_week_emoji = mood_to_emoji_with_desription(mood_week['mood']) if mood_week else 'No entries this week'
-    mood_month_emoji = mood_to_emoji_with_desription(mood_month['mood']) if mood_month else 'No entries this month'
+    mood_today_average = mood_to_emoji_with_desription(mood_today['mood']) if mood_today else 'No entries today'
+    mood_week_average = mood_to_emoji_with_desription(mood_week['mood']) if mood_week else 'No entries this week'
+    mood_month_average = mood_to_emoji_with_desription(mood_month['mood']) if mood_month else 'No entries this month'
 
     # Generate mood chart for the past month
     mood_chart = generate_mood_chart(request.user)
 
     context = {
-        'mood_today': mood_today_emoji,
-        'mood_week': mood_week_emoji,
-        'mood_month': mood_month_emoji,
+        'mood_today': mood_today_average,
+        'mood_week':  mood_week_average,
+        'mood_month': mood_month_average,
         'mood_chart': mood_chart,
     }
 

@@ -9,8 +9,8 @@
       <p><strong>Mood of the Day:</strong> {{ mood_today }}</p>
       <p><strong>Mood of the Week:</strong> {{ mood_week }}</p>
       <p><strong>Mood of the Month:</strong> {{ mood_month }}</p>
-      <h2>Variations in your Mood</h2>
-      <p><i>This chart shows how often you have felt each mood over the past month...</i></p>
+      <h2>Your Monthly Mood Variation</h2>
+      <p><i>This chart shows how often you have felt each mood over the <strong>past month</strong>...</i></p>
       {% if mood_chart %}
         <img src="data:image/png;base64,{{ mood_chart }}" alt="Mood Chart">
         {% else %}
