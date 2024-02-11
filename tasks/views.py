@@ -238,13 +238,17 @@ def delete_journal_entry_permanent(request,entry_id):
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
 
-def mood_to_description(mood):
-    mood_dict = {1: 'Very Sad', 2: 'Sad', 3: 'Neutral', 4: 'Happy', 5: 'Very Happy'}
-    return mood_dict.get(mood, '')
+def get_mood_representation(mood, use_emoji=False):
+    mood_dict = {
+        1: ('Very Sad', '😔'),
+        2: ('Sad', '🙁'),
+        3: ('Neutral', '😐'),
+        4: ('Happy', '🙂'),
+        5: ('Very Happy', '😄')
+    }
+    description, emoji = mood_dict.get(mood, ('', ''))
+    return f"{description} {emoji}" if use_emoji else description
 
-def mood_to_emoji_with_desription(mood):
-    mood_dict = {1: 'Very Sad 😔', 2: 'Sad 🙁', 3: 'Neutral 😐', 4: 'Happy 🙂', 5: 'Very Happy😄'}
-    return mood_dict.get(mood, '')
 
 def generate_mood_chart(user):
     one_month_ago = timezone.now() - timedelta(days=30)
@@ -252,7 +256,7 @@ def generate_mood_chart(user):
     moods = entries.values_list('mood', flat=True)
     mood_counts = Counter(moods)
 
-    mood_labels = [mood_to_description(mood) for mood in mood_counts.keys()]
+    mood_labels = [get_mood_representation(mood) for mood in mood_counts.keys()]
     counts = list(mood_counts.values())
 
     fig, ax = plt.subplots()
@@ -286,9 +290,10 @@ def mood_breakdown(request):
     mood_month = user_entries.filter(created_at__gte=start_of_month).values('mood').annotate(count=Count('mood')).order_by('-count').first()
 
     # Convert mood numbers to emojis for display
-    mood_today_average = mood_to_emoji_with_desription(mood_today['mood']) if mood_today else 'No entries today'
-    mood_week_average = mood_to_emoji_with_desription(mood_week['mood']) if mood_week else 'No entries this week'
-    mood_month_average = mood_to_emoji_with_desription(mood_month['mood']) if mood_month else 'No entries this month'
+    # Convert mood numbers to emojis for display
+    mood_today_average = get_mood_representation(mood_today['mood'], use_emoji=True) if mood_today else 'No entries today'
+    mood_week_average = get_mood_representation(mood_week['mood'], use_emoji=True) if mood_week else 'No entries this week'
+    mood_month_average = get_mood_representation(mood_month['mood'], use_emoji=True) if mood_month else 'No entries this month'
 
     # Generate mood chart for the past month
     mood_chart = generate_mood_chart(request.user)
