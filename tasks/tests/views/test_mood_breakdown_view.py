@@ -22,7 +22,6 @@ class MoodBreakdownViewTest(TestCase):
         self.client.force_login(self.user)  
         self.url = reverse('mood_breakdown')
         
-   
         today = timezone.now()
         this_week = today - timedelta(days=3)
         this_month = today - timedelta(days=20)
