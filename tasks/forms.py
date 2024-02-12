@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, JournalEntry
+from .models import User, JournalEntry, Calendar
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -130,3 +130,12 @@ class JournalEntryForm(forms.ModelForm):
         new_journal_entry.user = self.user
         new_journal_entry.save()
         return new_journal_entry
+
+class CalendarForm(forms.ModelForm):
+    """Form allowing user to create a journal entry"""
+    class Meta:
+        model = Calendar
+        fields = ['title','text']
+    
+
+  

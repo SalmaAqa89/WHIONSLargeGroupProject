@@ -35,6 +35,7 @@
 }
 
 
+
 /*
  * Cover page
  */
@@ -140,4 +141,74 @@ h3.profile-title {
 .content a:hover {
   text-decoration: underline;
   color: #0d6efd;
+}
+
+/* Calendar Table */
+.calendar-table {
+  width: 100%; 
+  border-collapse: collapse;
+}
+
+/* Calendar Header Cells */
+.calendar-header {
+  padding: 15px; 
+  border: 1px solid #ddd; 
+  background-color: #f2f2f2; 
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Calendar Data Cells */
+.calendar-cell {
+  padding: 15px; 
+  border: 1px solid #ddd; 
+  font-size: 16px; 
+  text-align: center;
+}
+
+/* Calendar Day Buttons */
+.calendar-day-btn {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  padding: 15px;
+  font-size: 16px;
+}
+
+.calendar-day-btn:hover {
+  background-color: #e8e8e8;
+  cursor: pointer;
+}
+
+/* Current Day Highlight */
+.current-day .calendar-day-btn {
+  font-weight: bold;
+  color: #e50909;
+}
+
+/* Navigation Links */
+.nav-link {
+  font-size: 18px;
+  margin: 0 15px;
+  text-decoration: none;
+  color: #0d6efd;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.header-text {
+  text-align: left;
+}
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.navigation {
+  text-align: center;
+  margin-top: 20px;
 }
