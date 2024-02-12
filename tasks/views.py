@@ -1,3 +1,4 @@
+from venv import logger
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -8,11 +9,25 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
+from matplotlib.ticker import MaxNLocator
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
+from tasks.models import JournalEntry
+from tasks.helpers import login_prohibited
+from django.db.models import Count
+from django.utils import timezone
+from datetime import timedelta
+from collections import Counter
+import matplotlib
+matplotlib.use('Agg')  
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from calendar import HTMLCalendar
 from datetime import datetime, timedelta
+
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
@@ -257,7 +272,6 @@ def recover_journal_entry(request,entry_id):
         messages.add_message(request, messages.ERROR, "entry cannot be recovered")
         return redirect('journal_log')
 
-
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
@@ -267,10 +281,76 @@ def delete_journal_entry_permanent(request,entry_id):
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
-    
-class CalendarView(LoginRequiredMixin, FormView):
-    """Display the create entry screen and handle entry creation"""
 
-    form_class = CalendarForm
-    template_name = "view_calendar.html"
-    model = CalendarForm
+
+def get_mood_representation(mood, use_emoji=False):
+    mood_dict = {
+        1: ('Very Sad', '😔'),
+        2: ('Sad', '🙁'),
+        3: ('Neutral', '😐'),
+        4: ('Happy', '🙂'),
+        5: ('Very Happy', '😄')
+    }
+    description, emoji = mood_dict.get(mood, ('', ''))
+    return f"{description} {emoji}" if use_emoji else description
+
+
+def generate_mood_chart(user):
+    one_month_ago = timezone.now() - timedelta(days=30)
+    entries = JournalEntry.objects.filter(user=user, created_at__gte=one_month_ago, deleted=False)
+    moods = entries.values_list('mood', flat=True)
+    mood_counts = Counter(moods)
+
+    mood_labels = [get_mood_representation(mood) for mood in mood_counts.keys()]
+    counts = list(mood_counts.values())
+
+    fig, ax = plt.subplots()
+    ax.bar(mood_labels, counts)
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+    for i, count in enumerate(counts):
+        ax.text(i, count + 0.1, str(count), ha='center')
+
+    flike = BytesIO()
+    plt.savefig(flike, format='png', bbox_inches='tight')
+    plt.close(fig)
+    b64 = base64.b64encode(flike.getvalue()).decode()
+
+    return b64
+
+@login_required
+def mood_breakdown(request):
+    today = timezone.now()
+    start_of_week = today - timedelta(days=today.weekday())
+    start_of_month = today.replace(day=1)
+    user_entries = JournalEntry.objects.filter(user=request.user, deleted=False)
+
+    # Aggregating mood data for today, this week, and this month
+    mood_today = user_entries.filter(created_at__date=today.date()).values('mood').annotate(count=Count('mood')).order_by('-count').first()
+    mood_week = user_entries.filter(created_at__gte=start_of_week).values('mood').annotate(count=Count('mood')).order_by('-count').first()
+    mood_month = user_entries.filter(created_at__gte=start_of_month).values('mood').annotate(count=Count('mood')).order_by('-count').first()
+
+    # Convert mood numbers to emojis for display
+    # Convert mood numbers to emojis for display
+    mood_today_average = get_mood_representation(mood_today['mood'], use_emoji=True) if mood_today else 'No entries today'
+    mood_week_average = get_mood_representation(mood_week['mood'], use_emoji=True) if mood_week else 'No entries this week'
+    mood_month_average = get_mood_representation(mood_month['mood'], use_emoji=True) if mood_month else 'No entries this month'
+
+    # Generate mood chart for the past month
+    mood_chart = generate_mood_chart(request.user)
+
+    context = {
+        'mood_today': mood_today_average,
+        'mood_week':  mood_week_average,
+        'mood_month': mood_month_average,
+        'mood_chart': mood_chart,
+    }
+
+    return render(request, 'mood_breakdown.html', context)
+
+    
+
