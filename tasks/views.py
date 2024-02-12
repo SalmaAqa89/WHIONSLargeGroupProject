@@ -22,17 +22,42 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
-
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
+from tasks.models import JournalEntry
+from tasks.helpers import login_prohibited
+from calendar import HTMLCalendar
+from datetime import datetime, timedelta
 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 @login_required
 def dashboard(request):
-    """Display the current user's dashboard."""
+    year = request.GET.get('year', datetime.now().year)
+    month = request.GET.get('month', datetime.now().month)
+    year, month = int(year), int(month)  
 
-    current_user = request.user
-    return render(request, 'dashboard.html', {'user': current_user})
+   
+    cal = CustomHTMLCalendar(year, month).formatmonth()
+
+    
+    current_date = datetime(year, month, 1)
+    next_month = current_date + timedelta(days=31)
+    prev_month = current_date - timedelta(days=1)
+
+    return render(request, 'dashboard.html', {
+        'user': request.user,
+        'calendar': cal,
+        'year': year,
+        'month': month,
+        'next_month': next_month.month,
+        'next_month_year': next_month.year,
+        'prev_month': prev_month.month,
+        'prev_month_year': prev_month.year,
+        'month_name': current_date.strftime('%B'),
+    })
+
+
 
 @login_required
 def journal_log(request):
@@ -57,6 +82,25 @@ def home(request):
 
     return render(request, 'home.html')
 
+class CustomHTMLCalendar(HTMLCalendar):
+    def __init__(self, year=None, month=None):
+        super(CustomHTMLCalendar, self).__init__()
+        self.year = year
+        self.month = month
+        self.now = datetime.now()
+        self.today = self.now.day if self.now.year == year and self.now.month == month else None
+
+    def formatday(self, day, weekday):
+        if day == 0:
+            return '<td class="calendar-cell noday">&nbsp;</td>'  
+        elif day == self.today:
+            return f'<td class="calendar-cell current-day"><button class="calendar-day-btn">{day}</button></td>'
+        else:
+            return f'<td class="calendar-cell"><button class="calendar-day-btn">{day}</button></td>'
+
+
+    def formatmonth(self, withyear=True):
+        return super().formatmonth(self.year, self.month, withyear)
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
@@ -238,6 +282,7 @@ def delete_journal_entry_permanent(request,entry_id):
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
 
+
 def get_mood_representation(mood, use_emoji=False):
     mood_dict = {
         1: ('Very Sad', '😔'),
@@ -306,3 +351,6 @@ def mood_breakdown(request):
     }
 
     return render(request, 'mood_breakdown.html', context)
+
+    
+

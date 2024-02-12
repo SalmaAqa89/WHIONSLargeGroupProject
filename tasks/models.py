@@ -66,3 +66,8 @@ class JournalEntry(models.Model):
         self.deleted = False
         self.save()
 
+
+class Calendar(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=50)
+    text = models.TextField()
