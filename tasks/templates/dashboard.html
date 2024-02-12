@@ -1,9 +1,23 @@
 {% extends 'base_content2.html' %}
 {% block content %}
 <div class="container">
+  <div class="row header-text">
+    <div class="col-12">
+      <h1>Welcome to your Journal, {{ user.username }}</h1>
+      <h2>Calendar:</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 calendar-container">
+      <div>{{ calendar|safe }}</div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12">
-      <h1>Welcome to your Journal {{ user.username }}</h1>
+      <div class="navigation">
+        <a class="nav-link" href="?year={{ prev_month_year }}&month={{ prev_month }}">&lt; Previous</a>
+        <a class="nav-link" href="?year={{ next_month_year }}&month={{ next_month }}">Next &gt;</a>
+      </div>
     </div>
   </div>
 </div>
