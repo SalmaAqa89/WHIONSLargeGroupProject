@@ -1,7 +1,7 @@
 """Unit tests for the Journal Entry model."""
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from tasks.models import JournalEntry
+from tasks.models import JournalEntry, User
 
 class JournalEntryModelTestCase(TestCase):
     """Unit tests for the Journal Entry model."""
@@ -14,6 +14,7 @@ class JournalEntryModelTestCase(TestCase):
     ]
 
     def setUp(self):
+        self.user = User.objects.get(username='@johndoe')
         self.entry = self.entry = JournalEntry.objects.create(
             user=self.user,
             title='Test Entry',
