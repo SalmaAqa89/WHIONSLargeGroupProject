@@ -1,0 +1,71 @@
+{% extends 'base_content2.html' %}
+
+{% block content %}
+<style>
+  /* Custom styles for the calendar */
+  .container table {
+    width: 100%; 
+    border-collapse: collapse;
+  }
+  .container th, .container td {
+    padding: 15px; 
+    border: 1px solid #ddd; 
+    text-align: center;
+  }
+  .container th {
+    background-color: #f2f2f2; 
+    font-size: 18px;
+  }
+  .container td {
+    font-size: 16px; 
+  }
+  
+  .day-btn {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent; 
+    color: inherit; 
+    padding: 15px; 
+    font-size: 16px; 
+    }
+
+   
+    .day-btn:hover {
+        background-color: #e8e8e8;
+        cursor: pointer;
+    }
+
+    
+    .current-day .day-btn {
+        font-weight: bold; 
+        color: #e50909; 
+    }
+
+    
+    .navigation a {
+        font-size: 18px;
+        margin: 0 15px;
+        text-decoration: none;
+        color: #0d6efd;
+    }
+    .navigation a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-6 offset-md-3">
+      <h1>Calendar for {{ month_name }} {{ year }}</h1>
+      <div>{{ calendar|safe }}</div>
+      <!-- Navigation links for previous and next month -->
+      <div class="navigation">
+        <a href="{% url 'view_calendar' prev_month_year prev_month %}">&lt; <</a>
+        |
+        <a href="{% url 'view_calendar' next_month_year next_month %}">> &gt;</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
