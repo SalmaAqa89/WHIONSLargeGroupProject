@@ -22,9 +22,8 @@ class DeleteJournalntryViewTestCase(TestCase):
         # Perform the entry deletion
         response = self.client.get(self.url)
 
-        # Check that the entry no longer exists
-        with self.assertRaises(JournalEntry.DoesNotExist):
-            JournalEntry.objects.get(pk=self.entry.id)
-
-        self.assertRedirects(response, reverse('journal_log'))
+        entry = JournalEntry.objects.get(pk=self.entry.id)
+        
+        self.assertTrue(entry.deleted)
+        self.assertRedirects(response, reverse('trash'))
     

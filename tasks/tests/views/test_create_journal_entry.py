@@ -13,7 +13,8 @@ class CreateJounalEntryViewTestCase(TestCase):
         self.user = User.objects.get(username='@johndoe')
         self.form_input = {
             "title": "New entry", 
-            "text": "This is a new journal entry"
+            "text": "This is a new journal entry",
+            "mood": 2
         }
 
     def test_create_entry_url(self):
