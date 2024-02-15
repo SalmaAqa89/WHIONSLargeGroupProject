@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 from django.contrib import messages
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -53,7 +54,7 @@ class UserPreferences(models.Model):
     saturday = models.BooleanField(default=False)
     sunday = models.BooleanField(default=False)
     journal_time = models.TimeField()
-    number_of_times_to_journal = models.IntegerField()
+    number_of_times_to_journal = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=1)
 
 
 class JournalEntry(models.Model):
