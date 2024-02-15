@@ -1,14 +1,14 @@
 
 {% extends 'base_content2.html' %}
-<!-- extends base_content2 if comes clicked on profile, extends other if just signed in -->
 {% block content %}
 <div class="container">
     <div class="row">
       <div class="col-sm-12 col-md-6 offset-md-3">
+        <br>
         <h1>Edit Preferences</h1>
         <form action="{% url 'edit_preferences' %}" method="post">
           {% csrf_token %}
-          {% include 'partials/bootstrap_form_pref.html' with form=form %}
+          {% include 'partials/bootstrap_form_pref2.html' with form=form %}
           <input type="submit" value="Save Changes" class="btn btn-primary">
         </form>
       </div>

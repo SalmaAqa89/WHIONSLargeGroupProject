@@ -414,3 +414,9 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Preferences updated!")
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"{field}: {error}")
+        return super().form_invalid(form)

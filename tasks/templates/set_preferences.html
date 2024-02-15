@@ -10,7 +10,7 @@
       <form action="{% url 'set_preferences' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
-        {% include 'partials/bootstrap_form_pref.html' with form=form %}
+        {% include 'partials/bootstrap_form_pref2.html' with form=form %}
         <button type="submit" class="btn btn-primary circle-button" style="border-radius: 50%; background-color: #025912; color: rgb(255, 255, 255); padding: 10px; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; border: none;">
           <i class="bi bi-lock-fill"></i>
         </button>
