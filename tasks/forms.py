@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, JournalEntry, Calendar
+from .models import User, JournalEntry, Calendar, UserPreferences
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -136,6 +136,26 @@ class CalendarForm(forms.ModelForm):
     class Meta:
         model = Calendar
         fields = ['title','text']
+
+class UserPreferenceForm(forms.ModelForm):
+    class Meta:
+        model = UserPreferences
+        fields = ['journal_time', 'number_of_times_to_journal', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        widgets = {
+            'journal_time': forms.TimeInput(attrs={'type': 'time'}),
+            'monday': forms.CheckboxInput(),
+            'tuesday': forms.CheckboxInput(),
+            'wednesday': forms.CheckboxInput(),
+            'thursday': forms.CheckboxInput(),
+            'friday': forms.CheckboxInput(),
+            'saturday': forms.CheckboxInput(),
+            'sunday': forms.CheckboxInput(),
+        }
+
+
+
+
+
     
 
   

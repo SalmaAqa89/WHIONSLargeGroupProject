@@ -5,13 +5,13 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
-from tasks.models import JournalEntry
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
+from tasks.models import JournalEntry, UserPreferences, User
 from tasks.helpers import login_prohibited
 from django.db.models import Count
 from django.utils import timezone
@@ -217,7 +217,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     form_class = SignUpForm
     template_name = "sign_up.html"
-    redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN
+    
 
     def form_valid(self, form):
         self.object = form.save()
@@ -225,7 +225,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+        return reverse("set_preferences")
     
 
 class CreateJournalEntryView(LoginRequiredMixin, FormView):
@@ -352,5 +352,65 @@ def mood_breakdown(request):
 
     return render(request, 'mood_breakdown.html', context)
 
-    
+# def preference_view(request):
 
+#     if request.method == 'POST':
+#         form = UserPreferenceForm(request.POST)
+#         if form.is_valid():
+#             print("is valid in pref view")
+#             form.save()
+#             messages.add_message(request, messages.SUCCESS, "Preferences Saved!")
+#             return redirect(reverse('dashboard'))
+#     else:
+#         form = UserPreferenceForm(initial={'user': request.user})
+#     return render(request, 'edit_preferences.html', {'form': form})
+
+# def edit_preferences(request):
+#     try:
+#         preference = UserPreferences.objects.get(user=request.user)
+#         print("exists")
+#     except UserPreferences.DoesNotExist:
+#         print("Does not exist" )
+#         form = UserPreferenceForm(initial={'user': request.user})
+#         return render(request, 'edit_preferences.html', {'form': form})
+#     form = UserPreferenceForm(request.POST, instance=preference)
+#     if form.is_valid():
+#         print("is valid")
+#         form.save()
+#         return redirect(reverse('dashboard'))
+#     return render(request, 'edit_preferences.html', {'form': form})
+
+class SetPreferences(LoginRequiredMixin, FormView):
+    """Display the create entry screen and handle entry creation"""
+
+    form_class = UserPreferenceForm
+    template_name = "set_preferences.html"
+
+    def form_valid(self, form):
+        user_preference = form.save(commit=False)
+        user_preference.user = self.request.user
+        user_preference.save()
+        messages.success(self.request, "Preferences Saved!")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('dashboard')
+    
+class EditPreferences(LoginRequiredMixin, UpdateView):
+    """Display user profile editing screen, and handle profile modifications."""
+
+    model = UserPreferences
+    template_name = "edit_preferences.html"
+    form_class = UserPreferenceForm
+
+     
+    def get_success_url(self):
+        return reverse('dashboard')
+
+    def get_object(self, queryset=None):
+        """Return the object (user preferences) to be updated."""
+        return get_object_or_404(UserPreferences, user=self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Preferences updated!")
+        return super().form_valid(form)

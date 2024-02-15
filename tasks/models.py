@@ -42,6 +42,20 @@ class User(AbstractUser):
         
         return self.gravatar(size=60)
     
+class UserPreferences(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    monday = models.BooleanField(default=False)
+    tuesday = models.BooleanField(default=False)
+    wednesday = models.BooleanField(default=False)
+    thursday = models.BooleanField(default=False)
+    friday = models.BooleanField(default=False)
+    saturday = models.BooleanField(default=False)
+    sunday = models.BooleanField(default=False)
+    journal_time = models.TimeField()
+    number_of_times_to_journal = models.IntegerField()
+
+
 class JournalEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
