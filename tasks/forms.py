@@ -140,7 +140,7 @@ class CalendarForm(forms.ModelForm):
 class UserPreferenceForm(forms.ModelForm):
     class Meta:
         model = UserPreferences
-        fields = ['journal_time', 'number_of_times_to_journal', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        fields = ['journal_time','monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
         widgets = {
             'journal_time': forms.TimeInput(attrs={'type': 'time'}),
             'monday': forms.CheckboxInput(),

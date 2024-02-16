@@ -1,18 +1,13 @@
 {% load widget_tweaks %}    
     <div class="form-group">
         <br>
+        <p><strong>It's important to set daily goals...</strong></p>
         <label for="{{ form.journal_time.id_for_label }}">What time would you like to be reminded to journal?</label>
         {% render_field form.journal_time class="form-control" %}
     </div>
-    <br>
-    <p><strong>It's important to set daily goals...</strong></p>
-    <div class="form-group">
-        <label for="{{ form.number_of_times_to_journal.id_for_label }}">How many times a day would you like to journal?</label>
-        <input type="range" class="form-range" id="{{ form.number_of_times_to_journal.id_for_label }}" name="{{ form.number_of_times_to_journal.name }}" min="1" max="5" step="1" value="{{ form.number_of_times_to_journal.value }}">
-    </div>
 
     <br>
-    <p>Which days of the week would you like to journal?</p>
+    <p>What's your minimum weekly journaling goal?</p>
     <div class="form-group">
         {% for day_field in form.visible_fields %}
         {% if day_field.name == 'monday' or day_field.name == 'tuesday' or day_field.name == 'wednesday' or day_field.name == 'thursday' or day_field.name == 'friday' or day_field.name == 'saturday' or day_field.name == 'sunday' %}

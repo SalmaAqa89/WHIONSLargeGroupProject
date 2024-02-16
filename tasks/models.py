@@ -46,15 +46,15 @@ class User(AbstractUser):
 class UserPreferences(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    monday = models.BooleanField(default=False)
-    tuesday = models.BooleanField(default=False)
-    wednesday = models.BooleanField(default=False)
-    thursday = models.BooleanField(default=False)
-    friday = models.BooleanField(default=False)
-    saturday = models.BooleanField(default=False)
-    sunday = models.BooleanField(default=False)
+    monday = models.BooleanField(default=True)
+    tuesday = models.BooleanField(default=True)
+    wednesday = models.BooleanField(default=True)
+    thursday = models.BooleanField(default=True)
+    friday = models.BooleanField(default=True)
+    saturday = models.BooleanField(default=True)
+    sunday = models.BooleanField(default=True)
     journal_time = models.TimeField()
-    number_of_times_to_journal = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=1)
+    
 
 
 class JournalEntry(models.Model):
