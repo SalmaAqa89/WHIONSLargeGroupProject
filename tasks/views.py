@@ -352,39 +352,24 @@ def mood_breakdown(request):
 
     return render(request, 'mood_breakdown.html', context)
 
-# def preference_view(request):
-
-#     if request.method == 'POST':
-#         form = UserPreferenceForm(request.POST)
-#         if form.is_valid():
-#             print("is valid in pref view")
-#             form.save()
-#             messages.add_message(request, messages.SUCCESS, "Preferences Saved!")
-#             return redirect(reverse('dashboard'))
-#     else:
-#         form = UserPreferenceForm(initial={'user': request.user})
-#     return render(request, 'edit_preferences.html', {'form': form})
-
-# def edit_preferences(request):
-#     try:
-#         preference = UserPreferences.objects.get(user=request.user)
-#         print("exists")
-#     except UserPreferences.DoesNotExist:
-#         print("Does not exist" )
-#         form = UserPreferenceForm(initial={'user': request.user})
-#         return render(request, 'edit_preferences.html', {'form': form})
-#     form = UserPreferenceForm(request.POST, instance=preference)
-#     if form.is_valid():
-#         print("is valid")
-#         form.save()
-#         return redirect(reverse('dashboard'))
-#     return render(request, 'edit_preferences.html', {'form': form})
 
 class SetPreferences(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
     form_class = UserPreferenceForm
     template_name = "set_preferences.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        """ If a preference form has already been made for the user they do not 
+        need to access this page therefore it redirects"""
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        
+        if UserPreferences.objects.filter(user=request.user).exists():
+            messages.warning(request, "Preferences already exist.")
+            return redirect('dashboard')  
+
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         user_preference = form.save(commit=False)

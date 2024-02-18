@@ -35,3 +35,19 @@ class MenuTesterMixin(AssertHTMLMixin):
         
         for url in self.menu_urls:
             self.assertNotHTML(response, f'a[href="{url}"]')
+
+class FormTesterMixin:
+    """Class to extend tests with tools to check the presents of form fields."""
+
+    def assert_form_fields(self, response, fields):
+        """Check that form fields are present."""
+
+        for field in fields:
+            with self.assertHTML(response, f'input[name="{field}"]'):
+                pass
+
+    def assert_no_form_fields(self, response, fields):
+        """Check that form fields are not present."""
+
+        for field in fields:
+            self.assertNotHTML(response, f'input[name="{field}"]')

@@ -1,13 +1,12 @@
 """Unit tests of the preference form."""
-from django.contrib.auth.hashers import check_password
 from django import forms
 from django.test import TestCase
 from tasks.forms import UserPreferenceForm
 from tasks.models import User, UserPreferences
 import datetime
 
-class SignUpFormTestCase(TestCase):
-    """Unit tests of the sign up form."""
+class UserPreferenceFormTestCase(TestCase):
+    """Unit tests of the User Preference form."""
     
     fixtures = [
         'tasks/tests/fixtures/default_user.json'
@@ -61,3 +60,25 @@ class SignUpFormTestCase(TestCase):
             self.assertTrue(getattr(pref, day))
         for day in ['wednesday', 'friday', 'saturday', 'sunday']:
             self.assertFalse(getattr(pref, day))
+    
+    def test_form_must_update_correctly(self):
+        form = UserPreferenceForm(data=self.form_input)
+        form.instance.user = self.user
+        form.save()
+        before_count = UserPreferences.objects.count()
+        pref = UserPreferences.objects.get(user=1)
+        self.form_input['journal_time'] = '18:30:00'
+        self.form_input['monday'] = 'False'
+        form = UserPreferenceForm(data=self.form_input, instance=pref)
+        form.save()
+        after_count = UserPreferences.objects.count()
+        self.assertEqual(after_count, before_count)
+        pref = UserPreferences.objects.get(user=1)
+        self.assertEqual(pref.journal_time, datetime.time(18, 30))
+        for day in ['tuesday', 'thursday']:
+            self.assertTrue(getattr(pref, day))
+        for day in ['monday', 'wednesday', 'friday', 'saturday', 'sunday']:
+            self.assertFalse(getattr(pref, day))
+    
+
+  
