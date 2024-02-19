@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from tasks.models import User
+from tasks.models import User,Template
 
 import pytz
 from faker import Faker
@@ -12,12 +12,19 @@ user_fixtures = [
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
 
+template_fixtures = [
+    {'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness, reading ... ? ,What are you planning to do today ?', 'icon': 'static/images/morning.jpeg', 'deleted': False},
+    {'name': 'Evening Reflection', 'questions': 'How was your day ? ,How well do you think you accomplished your goals for the day ?,What were your highlights of the day ?', 'icon': 'static/images/night.jpeg', 'deleted': False},
+    # Add more template fixtures as needed
+]
+
 
 class Command(BaseCommand):
     """Build automation command to seed the database."""
 
     USER_COUNT = 300
     DEFAULT_PASSWORD = 'Password123'
+    TEMPLATE_COUNT = 2
     help = 'Seeds the database with sample data'
 
     def __init__(self):
@@ -25,11 +32,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.create_users()
+        self.create_templates()
         self.users = User.objects.all()
+
 
     def create_users(self):
         self.generate_user_fixtures()
         self.generate_random_users()
+    
+    def create_templates(self):
+        for data in template_fixtures:
+            self.try_create_template(data)
 
     def generate_user_fixtures(self):
         for data in user_fixtures:
@@ -63,6 +76,20 @@ class Command(BaseCommand):
             password=Command.DEFAULT_PASSWORD,
             first_name=data['first_name'],
             last_name=data['last_name'],
+        )
+    
+    def try_create_template(self, data):
+        try:
+            self.create_template(data)
+        except Exception as e:
+            print(f"Error creating template: {e}")
+
+    def create_template(self, data):
+        Template.objects.create(
+            name=data['name'],
+            questions=data['questions'],
+            icon=data['icon'],
+            deleted=data['deleted'],
         )
 
 def create_username(first_name, last_name):

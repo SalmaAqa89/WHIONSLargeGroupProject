@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm,TemplateForm
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from django.db.models import Count
@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
-from tasks.models import JournalEntry
+from tasks.models import JournalEntry,Template
 from tasks.helpers import login_prohibited
 from calendar import HTMLCalendar
 from datetime import datetime, timedelta
@@ -65,7 +65,7 @@ def journal_log(request):
 
 @login_required
 def templates(request):
-    return render(request, 'templates.html', {"templates": [DEFAULT_TEMPLATE]})
+    return render(request, 'templates.html', {"templates": Template.objects.all()})
 
 @login_required
 def trash(request):
@@ -81,6 +81,9 @@ def home(request):
     """Display the application's start/home screen."""
 
     return render(request, 'home.html')
+
+def template_choices(request):
+    return render(request,'template_choices.html', {"templates": Template.objects.all()})
 
 class CustomHTMLCalendar(HTMLCalendar):
     def __init__(self, year=None, month=None):
@@ -226,6 +229,30 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+    
+
+
+def CreateJournalEntryFromTemplate(request,template_name):
+    
+    template_instance, created = Template.objects.get_or_create(name=template_name)
+
+     # Pass the instance to the form
+    form = TemplateForm(instance=template_instance)
+
+    if 'combined_answers' in form.fields:
+        form.fields.pop('combined_answers')
+
+    if request.method == 'POST':
+        form = TemplateForm(request.POST, instance=template_instance)
+        if form.is_valid():
+            # Save the form
+            form.save()
+
+        else:
+            print(form.errors)
+
+    return render(request, 'create_entry.html', {'form': form})
+    
     
 
 class CreateJournalEntryView(LoginRequiredMixin, FormView):

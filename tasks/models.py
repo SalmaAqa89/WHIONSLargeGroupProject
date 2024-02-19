@@ -58,6 +58,13 @@ class JournalEntry(models.Model):
     ]
     mood = models.IntegerField(choices=MOOD_CHOICES, default=3)  
 
+    combined_answers = models.TextField(blank=True, null=True)
+
+    def save_combined_answers(self, answers):
+        self.combined_answers = ', '.join(answers)
+        self.save()
+
+
     def delete_entry(self):
         self.deleted = True
         self.save()
@@ -65,6 +72,28 @@ class JournalEntry(models.Model):
     def recover_entry(self):
         self.deleted = False
         self.save()
+
+class Template(models.Model):
+
+    name = models.CharField(max_length = 50, blank = False)
+    questions = models.CharField(max_length =255)
+    icon = models.ImageField(upload_to='static/images/', null=True, blank=True)
+    user_entry = models.BooleanField(default = True)
+    deleted = models.BooleanField(default = False)
+    MOOD_CHOICES = [
+        (1, 'Very Sad 😔'),  
+        (2, 'Sad 🙁'),  
+        (3, 'Neutral 😐'),  
+        (4, 'Happy 🙂'),  
+        (5, 'Very Happy😄'),  
+    ]
+    mood = models.IntegerField(choices=MOOD_CHOICES, default=3)  
+
+    def get_questions_array(self):
+        return self.questions.split(',')
+
+    def set_questions_array(self, values):
+        self.questions = ','.join(values)
 
 
 class Calendar(models.Model):

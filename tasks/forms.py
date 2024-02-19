@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, JournalEntry, Calendar
+from .models import User, JournalEntry, Calendar, Template
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -131,6 +131,41 @@ class JournalEntryForm(forms.ModelForm):
         new_journal_entry.save()
         return new_journal_entry
 
+class TemplateForm(forms.ModelForm):
+    class Meta:
+        model = JournalEntry
+        fields = ['title', 'text', 'mood', 'combined_answers']
+        
+
+    def __init__(self, *args, **kwargs,):
+        super(TemplateForm, self).__init__(*args, **kwargs)
+    
+        # Get questions array from the instance (if it exists)
+        self.questions_array = getattr(kwargs['instance'], 'get_questions_array', lambda: [])()
+
+        # Dynamically add text fields for each question
+        for index, question in enumerate(self.questions_array):
+            field_name = f'question_{index + 1}'
+            self.fields[field_name] = forms.CharField(label=question, max_length=255, required=False)
+    
+    
+        
+    def save(self, commit=True):
+        instance = super(TemplateForm, self).save(commit=False)
+
+        # Combine user inputs from dynamically generated fields
+        combined_answers = ''
+        for field_name in self.cleaned_data:
+            if field_name.startswith('question_'):
+                answer = self.cleaned_data[field_name]
+                if answer:
+                    combined_answers += f'{answer}\n'  # You can adjust the formatting as per your needs
+        
+        instance.combined_answers = combined_answers.strip()  # Remove trailing newline
+        if commit:
+            instance.save()
+        return instance
+    
 class CalendarForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
     class Meta:

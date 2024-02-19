@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from tasks import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +35,8 @@ urlpatterns = [
     path('templates/',views.templates,name ='templates'),
     path('trash/',views.trash,name ='trash'),
     path('create_entry/', views.CreateJournalEntryView.as_view(), name="create_entry"),
+    path('template_choices/',views.template_choices,name = 'template_choices'),
+    path('create_template_entry/<str:template_name>',views.CreateJournalEntryFromTemplate,name = "create_template_entry"),
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
     path('delete_entry_permanent/<int:entry_id>',views.delete_journal_entry_permanent,name = "delete_entry_permanent"),
     path('recover_entry/<int:entry_id>',views.recover_journal_entry,name = "recover_entry"),

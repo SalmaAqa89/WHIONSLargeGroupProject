@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-12">
       <h1>Welcome to your Journal Log</h1>
-      <a href="{% url 'create_entry' %}" class="btn btn-primary">New Journal Entry</a>
+      <a href="{% url 'template_choices' %}" class="btn btn-primary">New Journal Entry</a>
       <div class = "card-deck">
         {% for entry in journal_entries %}
         {% if not entry.deleted %}
@@ -14,6 +14,7 @@
               <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
               <p class="card-text">{{ entry.text }}</p>
               <p>Mood: {{ entry.get_mood_display }}</p>
+              <p>{{entry.combined_answers}}</p>
               <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger">Delete Entry</a>
             </div>
           </div>

@@ -3,17 +3,14 @@
 <div class="container">
   <div class="row">
     <div class = "col-12">
-      <h1>These are all your templates</h1>
+      <h1>Please Pick a Template Choice</h1>
     </div>
     <div class = "row">
       <div class="col-12 d-flex">
         {% for template in templates %}
         <div class = "card">
-          <div class = "poster">
-            <img src="{{template.icon.url}}">
-          </div>
           <div class = "details">
-            <h1>{{template.name}}</h2>
+            <a href = "{% url 'create_template_entry' template_name=template.name %}">{{template.name}}</a>
           </div>
         </div>
         {% endfor %}
