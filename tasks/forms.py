@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User, JournalEntry, Calendar, UserPreferences
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -115,6 +116,10 @@ class JournalEntryForm(forms.ModelForm):
     class Meta:
         model = JournalEntry
         fields = ['title', 'text', 'mood']
+        widgets = {
+            'text': CKEditorUploadingWidget(),  
+        }
+
         
     def __init__(self, user, text, **kwargs):
         """Construct new form instance with a user instance."""

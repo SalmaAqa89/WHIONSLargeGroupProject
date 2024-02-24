@@ -236,7 +236,7 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
 
     form_class = JournalEntryForm
     template_name = "create_entry.html"
-    model = JournalEntryForm
+
 
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""

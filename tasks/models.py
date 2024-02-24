@@ -4,6 +4,7 @@ from django.db import models
 from libgravatar import Gravatar
 from django.contrib import messages
 from django.core.validators import MinValueValidator, MaxValueValidator
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -60,7 +61,8 @@ class UserPreferences(models.Model):
 class JournalEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    text = models.TextField()
+    # text = models.TextField()
+    text = RichTextUploadingField(config_name='special')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default = False)
