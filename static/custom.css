@@ -213,3 +213,143 @@ h3.profile-title {
   text-align: center;
   margin-top: 20px;
 }
+
+/* record button */
+#toggle-record-btn {
+  font-size: 15px; 
+  background-color: white; 
+  color: black;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px; 
+}
+
+#toggle-record-btn i {
+  color: black; 
+}
+
+
+.recording {
+  background-color: rgb(255, 0, 0); 
+}
+
+/* log in page */
+.container-custom {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #025912;
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.title-custom {
+  font-family: 'Big Shoulders Display', cursive;
+  font-size: 50px;
+  white-space: nowrap;
+}
+
+.form-custom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.circle-button {
+  border-radius: 50%;
+  background-color: #025912;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+/* sign up page */
+.container-signup {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #025912;
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.signup-title {
+  font-family: 'Big Shoulders Display', cursive;
+  font-size: 50px;
+  white-space: nowrap;
+}
+
+.circle-button {
+  border-radius: 50%;
+  background-color: #025912;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+/* home page */
+.container-custom {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center-custom {
+  text-align: center;
+}
+
+.title-custom, .cover-text, .btn-lg {
+  font-family: 'Big Shoulders Display', cursive;
+  white-space: nowrap;
+}
+
+.title-custom {
+  font-size: 50px;
+}
+
+.cover-text {
+  font-size: 20px;
+}
+
+.btn-lg {
+  font-size: 30px;
+  background-color: #025912;
+  color: white;
+}

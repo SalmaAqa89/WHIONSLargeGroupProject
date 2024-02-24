@@ -1,20 +1,19 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="container" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <div style="text-align: center;">
-            <h1 style="font-family: 'Big Shoulders Display', cursive; font-size: 50px; white-space: nowrap;">Task Manager</h1>
-            <p class="cover-text" style="font-family: 'Big Shoulders Display', cursive; font-size: 20px; white-space: nowrap;">A task manager application by Team <i>Insert team name here (or revise this home screen as you see fit)</i></p>
-            <p>
-                <a href='{% url 'sign_up' %}' class="btn btn-lg btn-secondary" style="font-family: 'Big Shoulders Display', cursive; font-size: 30px;background-color: #025912; color: rgb(255, 255, 255); white-space: nowrap;">
-                    Sign up
-                </a>
-            </p>
-            <p>
-                <a href='{% url 'log_in' %}' class="btn btn-lg btn-secondary" style="font-family: 'Big Shoulders Display', cursive; font-size: 30px; background-color: #025912; color: rgb(255, 255, 255); white-space: nowrap;">
-                    Log in
-                </a>
-            </p>
-        </div>
+<div class="container container-custom">
+    <div class="text-center-custom">
+        <h1 class="title-custom">Task Manager</h1>
+        <p class="cover-text">A task manager application by Team <i>Insert team name here (or revise this home screen as you see fit)</i></p>
+        <p>
+            <a href='{% url 'sign_up' %}' class="btn btn-lg btn-secondary btn-custom">
+                Sign up
+            </a>
+        </p>
+        <p>
+            <a href='{% url 'log_in' %}' class="btn btn-lg btn-secondary btn-custom">
+                Log in
+            </a>
+        </p>
     </div>
 </div>
 {% endblock %}
