@@ -29,7 +29,7 @@ from calendar import HTMLCalendar
 from datetime import datetime, timedelta
 
 
-DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
+DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "<strong>This is the default template</strong>"}
 
 @login_required
 def dashboard(request):

@@ -151,12 +151,23 @@ EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this direct
 
 # This is to configure what the user can use with the ckeditor
 CKEDITOR_CONFIGS = {
-    'special': {
+    'default': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline', 'Image', 'Link'],
-            ['NumberedList', 'BulletedList', 'Outdent', 'Indent', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'],
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
+            ['NumberedList', 'BulletedList', 'Outdent', 'Indent'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['Image', 'Table', 'SpecialChar'],
+            ['Format', 'Font', 'FontSize'],
+            ['TextColor', 'BGColor'],
+            ['Maximize', 'Source'],
         ],
         'height': 300,
-    },
+        'width': 800,
+        'filebrowserWindowWidth': 940,
+        'filebrowserWindowHeight': 725,
+        'filebrowserUploadUrl': '/upload/'  # Example upload URL, adjust as needed
+    }
 } 
+CKEDITOR_UPLOAD_PATH = 'uploads/'

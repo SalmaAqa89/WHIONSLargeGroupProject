@@ -113,12 +113,14 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
 class JournalEntryForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
     
+    widgets = {
+            'text': CKEditorUploadingWidget(),  
+        }
+    
     class Meta:
         model = JournalEntry
         fields = ['title', 'text', 'mood']
-        widgets = {
-            'text': CKEditorUploadingWidget(),  
-        }
+
 
         
     def __init__(self, user, text, **kwargs):
