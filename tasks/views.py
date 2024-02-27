@@ -44,6 +44,18 @@ def dashboard(request):
     current_date = datetime(year, month, 1)
     next_month = current_date + timedelta(days=31)
     prev_month = current_date - timedelta(days=1)
+    now = timezone.now()
+    all_entries = JournalEntry.objects.filter(user=request.user)
+    dates_journaled = {entry.created_at.date() for entry in all_entries}
+    streak = 0
+    date = now.date()
+    while True:
+        if date in dates_journaled:
+            streak += 1
+        elif date != now.date():
+            break
+        date -= timedelta(days=1)
+
 
     return render(request, 'dashboard.html', {
         'user': request.user,
@@ -55,6 +67,9 @@ def dashboard(request):
         'prev_month': prev_month.month,
         'prev_month_year': prev_month.year,
         'month_name': current_date.strftime('%B'),
+        'days_since_account_creation': (now - request.user.created_at).days,
+        'days_journaled': len(dates_journaled),
+        'journal_streak': streak,
     })
 
 
