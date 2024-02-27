@@ -45,7 +45,7 @@ def dashboard(request):
     next_month = current_date + timedelta(days=31)
     prev_month = current_date - timedelta(days=1)
     now = timezone.now()
-    all_entries = JournalEntry.objects.filter(user=request.user, deleted=False)
+    all_entries = JournalEntry.objects.filter(user=request.user)
     dates_journaled = {entry.created_at.date() for entry in all_entries}
     streak = 0
     date = now.date()

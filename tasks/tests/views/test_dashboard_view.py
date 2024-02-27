@@ -44,9 +44,10 @@ class DashboardViewTestCase(TestCase):
     def test_journal_streak_broken(self):
         self.client.login(username=self.user.username, password='Password123')
         for i in range(5):
-            entry = JournalEntry.objects.create(title="New Entry", text="Text", user=self.user, deleted=i==2)
-            entry.created_at -= timedelta(days=i)
-            entry.save()
+            if i != 2:
+                entry = JournalEntry.objects.create(title="New Entry", text="Text", user=self.user)
+                entry.created_at -= timedelta(days=i)
+                entry.save()
         response = self.client.get(self.url)
         self.assertContains(response, "Number of days Journaled: 4", html=True)
         self.assertContains(response, "Journal Streak Days: 2", html=True)
