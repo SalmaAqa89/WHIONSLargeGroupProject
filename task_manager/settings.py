@@ -166,7 +166,7 @@ CKEDITOR_CONFIGS = {
         'toolbar': [
     { 'name': 'styles', 'items': ['Format', 'Font', 'FontSize'] },
     { 'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
-    { 'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', 'Outdent', 'Indent'] },
+    { 'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', 'Outdent', 'Indent', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { 'name': 'links', 'items': ['Link', 'Unlink'] },
     { 'name': 'insert', 'items': ['Image'] },
     { 'name': 'tools', 'items': ['Maximize'] }
