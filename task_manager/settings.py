@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from django.contrib.messages import constants as messages
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -125,6 +126,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -149,25 +155,22 @@ MESSAGE_TAGS = {
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
 
+
+CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
 # This is to configure what the user can use with the ckeditor
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'Custom',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
-            ['NumberedList', 'BulletedList', 'Outdent', 'Indent'],
-            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['Image', 'Table', 'SpecialChar'],
-            ['Format', 'Font', 'FontSize'],
-            ['TextColor', 'BGColor'],
-            ['Maximize', 'Source'],
-        ],
-        'height': 300,
-        'width': 800,
-        'filebrowserWindowWidth': 940,
-        'filebrowserWindowHeight': 725,
-        'filebrowserUploadUrl': '/upload/'  # Example upload URL, adjust as needed
+        'toolbar': [
+    { 'name': 'styles', 'items': ['Format', 'Font', 'FontSize'] },
+    { 'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+    { 'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', 'Outdent', 'Indent'] },
+    { 'name': 'links', 'items': ['Link', 'Unlink'] },
+    { 'name': 'insert', 'items': ['Image'] },
+    { 'name': 'tools', 'items': ['Maximize'] }
+]
     }
 } 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+

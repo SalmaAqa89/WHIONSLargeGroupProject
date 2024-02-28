@@ -27,9 +27,13 @@ from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from calendar import HTMLCalendar
 from datetime import datetime, timedelta
+from django.http import JsonResponse
+from task_manager.settings import os
 
 
-DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "<strong>This is the default template</strong>"}
+
+
+DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 @login_required
 def dashboard(request):
@@ -408,3 +412,4 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
             for error in errors:
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
+
