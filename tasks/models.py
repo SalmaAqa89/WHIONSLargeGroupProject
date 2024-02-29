@@ -88,3 +88,20 @@ class Calendar(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     text = models.TextField()
+
+class FlowerGrowth(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    stage = models.IntegerField(default=0)
+    last_entry_date = models.DateField(null=True, blank=True)
+
+    def reset_to_stage_zero(self):
+        self.stage = 0
+        self.save()
+
+    def increment_stage(self):
+        self.stage += 1
+        self.save()
+
+    def update_last_entry_date(self, date):
+        self.last_entry_date = date
+        self.save()
