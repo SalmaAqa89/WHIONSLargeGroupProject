@@ -6,16 +6,18 @@
       <h1>Please Pick a Template Choice</h1>
     </div>
     <div class = "row">
-      <div class="col-12 d-flex">
+      <form method="post">
+        {% csrf_token %}
         {% for template in templates %}
-        <div class = "card">
-          <div class = "details">
-            <a href = "{% url 'create_template_entry' template_name=template.name %}">{{template.name}}</a>
-          </div>
-        </div>
+            <div class="card">
+                <div class="details">
+                    <button type="submit" name="selected_template_name" value="{{ template.name }}">
+                        {{ template.name }}
+                    </button>
+                </div>
+            </div>
         {% endfor %}
-      </div>
-    </div>
+    </form>
   </div>
 </div>
 {% endblock %}

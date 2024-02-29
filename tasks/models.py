@@ -76,7 +76,7 @@ class JournalEntry(models.Model):
 class Template(models.Model):
 
     name = models.CharField(max_length = 50, blank = False)
-    questions = models.CharField(max_length =255)
+    questions = models.CharField(max_length =255,blank = True)
     icon = models.ImageField(upload_to='static/images/', null=True, blank=True)
     user_entry = models.BooleanField(default = True)
     deleted = models.BooleanField(default = False)
@@ -88,6 +88,9 @@ class Template(models.Model):
         (5, 'Very Happy😄'),  
     ]
     mood = models.IntegerField(choices=MOOD_CHOICES, default=3)  
+
+    def get_questions(self):
+        return self.questions
 
     def get_questions_array(self):
         return self.questions.split(',')

@@ -146,3 +146,17 @@ MESSAGE_TAGS = {
 # This is for development purposes where emails will be saved as files instead of being sent.
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',  # Set the desired logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    },
+}
