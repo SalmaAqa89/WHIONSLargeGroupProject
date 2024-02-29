@@ -4,6 +4,11 @@
   <div class="row header-text">
     <div class="col-12">
       <h1>Welcome to your Journal, {{ user.username }}</h1>
+      <div class="flower-container">
+        {% with request.user.flowergrowth.stage as stage %}
+            <img src="{{ STATIC_URL }}images/flower_stage_{{ stage }}.png" alt="Flower at stage {{ stage }}">
+        {% endwith %}
+    </div>
       <div>Number of days since Account is created: {{days_since_account_creation}}</div>
       <div>Number of days Journaled: {{days_journaled}}</div>
       <div>Journal Streak Days: {{journal_streak}}</div>
