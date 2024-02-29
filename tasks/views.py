@@ -11,7 +11,7 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
-from tasks.models import JournalEntry, UserPreferences, User
+from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
 from tasks.helpers import login_prohibited
 from django.db.models import Count
 from django.utils import timezone
@@ -244,14 +244,12 @@ class SignUpView(LoginProhibitedMixin, FormView):
         return reverse("set_preferences")
     
    
-
-
 class CreateJournalEntryView(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
     form_class = JournalEntryForm
     template_name = "create_entry.html"
-    model = JournalEntryForm
+    model = JournalEntry
 
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
@@ -260,15 +258,29 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
         kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
         return kwargs
 
-
     def form_valid(self, form):
-        form.save()
+        journal_entry = form.save(commit=False)
+        journal_entry.user = self.request.user
+        journal_entry.save()
+
+        flower_growth, created = FlowerGrowth.objects.get_or_create(user=self.request.user)
+
+        today = timezone.localdate()
+
+        if flower_growth.last_entry_date != today:
+            if today.isoweekday() == 1 or flower_growth.stage >= 7:
+                flower_growth.reset_to_stage_zero()
+            else:
+                flower_growth.increment_stage()
+
+            flower_growth.update_last_entry_date(today)
+
         return super().form_valid(form)
-    
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
         return reverse('journal_log')
+    
 
 def delete_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
