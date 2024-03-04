@@ -1,0 +1,85 @@
+{% extends 'base_content2.html' %}
+{% block content %}
+<div class="container">
+
+  <div class="row">
+    <div class="col-12">
+      <h1>Welcome to your Journal Log</h1>
+      <a href="{% url 'create_entry' %}" class="btn btn-primary">New Journal Entry</a>
+
+     
+       <!-- Search Form -->
+<form method="get" action="{% url 'search_journal' %}" autocomplete="off" id="search-form">
+  {% csrf_token %}
+  <input type="text" name="title" placeholder="Search Journals..." id="search-box" oninput="showSuggestions(this.value)">
+  <button type="submit">Search</button>
+</form>
+
+
+
+
+    <div id="suggestionsContainer" class="suggestions-container"></div>
+
+     <!-- Add this link below your search form -->
+     <a href="{% url 'journal_log' %}" class="btn btn-secondary">View All Entries</a>
+  <div class="card-deck">
+    {% for entry in journal_entries %}
+      {% if not entry.deleted %}
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">{{ entry.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
+            <!-- Short preview of the entry text -->
+            <p class="card-text" id="preview-{{ entry.id }}">{{ entry.text|truncatewords:50 }}</p>
+            <!-- Full entry text, hidden by default -->
+            <p class="card-text d-none" id="full-text-{{ entry.id }}">{{ entry.text }}</p>
+            <!-- See More button -->
+            <button class="btn btn-primary see-more" onclick="toggleText({{ entry.id }})">See More</button>
+            <p>Mood: {{ entry.get_mood_display }}</p>
+            <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger">Delete Entry</a>
+          </div>
+        </div>
+      {% endif %}
+    {% empty %}
+      <p>No journal entries found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- JavaScript to toggle the full text -->
+<script>
+  function toggleText(entryId) {
+    var preview = document.getElementById('preview-' + entryId);
+    var fullText = document.getElementById('full-text-' + entryId);
+    preview.classList.toggle('d-none');
+    fullText.classList.toggle('d-none');
+  }
+</script>
+<script>
+  function showSuggestions(query) {
+      if (query.length >= 1) {
+          fetch(`/search-suggestions/?q=${encodeURIComponent(query)}`)
+              .then(response => response.json())
+              .then(data => {
+                  var suggestions = data.suggestions;
+                  var suggestionsHTML = suggestions.map(title =>
+                      `<div onclick="selectSuggestion('${title}')">${title}</div>`
+                  ).join('');
+                  document.getElementById('suggestionsContainer').innerHTML = suggestionsHTML;
+                  document.getElementById('suggestionsContainer').style.display = 'block';
+              });
+      } else {
+          document.getElementById('suggestionsContainer').innerHTML = '';
+          document.getElementById('suggestionsContainer').style.display = 'none';
+      }
+  }
+  
+  function selectSuggestion(value) {
+      document.getElementById('search-box').value = value;
+      document.getElementById('suggestionsContainer').innerHTML = '';
+      document.getElementById('suggestionsContainer').style.display = 'none';
+      document.getElementById('search-form').submit(); // Optional: Submit the form automatically when a suggestion is selected
+  }
+  </script>
+
+{% endblock %}

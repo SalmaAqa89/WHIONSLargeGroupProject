@@ -1,0 +1,25 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container container-custom">
+  <a href="{% url 'home' %}" class="home-button">
+    <i class="bi-arrow-left"></i> 
+  </a>
+  <div class="row">
+    <div class="col-sm-12 col-md-6 offset-md-3">
+      <h1 class="title-custom">Log in</h1>
+      <form action="{% url 'log_in' %}" method="post" class="form-custom">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <button type="submit" class="btn btn-primary circle-button">
+          <i class="bi bi-lock-fill"></i>
+        </button>
+      </form>
+      <!-- Add the password reset link below the form -->
+      <div class="mt-3">
+        <a href="{% url 'password_reset' %}">Forgot your password?</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
