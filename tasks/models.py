@@ -4,7 +4,7 @@ from django.db import models
 from libgravatar import Gravatar
 from django.contrib import messages
 from django.core.validators import MinValueValidator, MaxValueValidator
-#comment
+
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
 
