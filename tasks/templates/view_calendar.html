@@ -59,7 +59,6 @@
     <div class="col-sm-12 col-md-6 offset-md-3">
       <h1>Calendar for {{ month_name }} {{ year }}</h1>
       <div>{{ calendar|safe }}</div>
-      <!-- Navigation links for previous and next month -->
       <div class="navigation">
         <a href="{% url 'view_calendar' prev_month_year prev_month %}">&lt; <</a>
         |

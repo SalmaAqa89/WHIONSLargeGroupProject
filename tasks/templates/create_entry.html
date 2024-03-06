@@ -12,13 +12,15 @@
           {% csrf_token %}
           {% include 'partials/bootstrap_form.html' with form=form %}
           {{ form.media }}
+          <button type="button" id="toggle-record-btn" class="btn">
+            <i class="fas fa-microphone"></i> 
+          </button>
           <input type="submit" value="Create Entry" class="btn btn-primary">
         </form>
       </div>
     </div>
   </div>
 {% endblock %}
-
 {% block scripts %}
   {{ block.super }}
   <script src="{% static 'ckeditor/ckeditor.js' %}"></script>  
