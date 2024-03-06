@@ -268,12 +268,9 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
         today = timezone.localdate()
 
         if flower_growth.last_entry_date != today:
-            if today.isoweekday() == 1 or flower_growth.stage >= 7:
-                flower_growth.reset_to_stage_zero()
-            else:
+                
                 flower_growth.increment_stage()
-
-            flower_growth.update_last_entry_date(today)
+                flower_growth.update_last_entry_date(today)
 
         return super().form_valid(form)
 
