@@ -79,6 +79,10 @@ def journal_log(request):
     return render(request, 'journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
 
 @login_required
+def favourites(request):
+    return render(request, 'favourites.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user, favourited=True)})
+
+@login_required
 def templates(request):
     return render(request, 'templates.html', {"templates": [DEFAULT_TEMPLATE]})
 
@@ -300,6 +304,29 @@ def delete_journal_entry_permanent(request,entry_id):
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
 
+
+def favourite_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    if entry.user == request.user:
+        entry.favourited = True
+        entry.save()
+        messages.add_message(request,messages.SUCCESS,"Entry has been added to favourites!")
+        return redirect('journal_log')
+    else:
+        messages.add_message(request, messages.ERROR, "Entry is not yours!")
+        return redirect('journal_log')
+    
+def unfavourite_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    next_page = request.GET.get('next', "journal_log")
+    if entry.user == request.user:
+        entry.favourited = False
+        entry.save()
+        messages.add_message(request,messages.SUCCESS,"Entry has been removed from favourites!")
+        return redirect(next_page)
+    else:
+        messages.add_message(request, messages.ERROR, "Entry is not yours!")
+        return redirect(next_page)
 
 def get_mood_representation(mood, use_emoji=False):
     mood_dict = {
