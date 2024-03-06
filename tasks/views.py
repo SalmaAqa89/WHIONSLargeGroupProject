@@ -311,21 +311,22 @@ def favourite_journal_entry(request,entry_id):
         entry.favourited = True
         entry.save()
         messages.add_message(request,messages.SUCCESS,"Entry has been added to favourites!")
-        return redirect('favourites')
+        return redirect('journal_log')
     else:
         messages.add_message(request, messages.ERROR, "Entry is not yours!")
         return redirect('journal_log')
     
 def unfavourite_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
+    next_page = request.GET.get('next', "journal_log")
     if entry.user == request.user:
         entry.favourited = False
         entry.save()
         messages.add_message(request,messages.SUCCESS,"Entry has been removed from favourites!")
-        return redirect('favourites')
+        return redirect(next_page)
     else:
         messages.add_message(request, messages.ERROR, "Entry is not yours!")
-        return redirect('favourites')
+        return redirect(next_page)
 
 def get_mood_representation(mood, use_emoji=False):
     mood_dict = {

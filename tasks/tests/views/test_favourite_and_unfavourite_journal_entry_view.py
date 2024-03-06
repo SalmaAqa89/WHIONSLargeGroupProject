@@ -29,7 +29,7 @@ class FavouriteAndUnfavouriteJournalntryViewTestCase(TestCase):
         entry = JournalEntry.objects.get(pk=self.not_favourite_entry.id)
         
         self.assertTrue(entry.favourited)
-        self.assertRedirects(response, reverse('favourites'))
+        self.assertRedirects(response, reverse('journal_log'))
 
     def test_unfavourite_entry(self):
         # Check that the entry is in favourites
@@ -41,5 +41,5 @@ class FavouriteAndUnfavouriteJournalntryViewTestCase(TestCase):
         entry = JournalEntry.objects.get(pk=self.favourite_entry.id)
         
         self.assertFalse(entry.favourited)
-        self.assertRedirects(response, reverse('favourites'))
+        self.assertRedirects(response, reverse('journal_log'))
     
