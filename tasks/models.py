@@ -58,7 +58,6 @@ class UserPreferences(models.Model):
     journal_time = models.TimeField()
     
 
-
 class JournalEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
@@ -66,6 +65,7 @@ class JournalEntry(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default = False)
+    permanently_deleted = models.BooleanField(default = False)
     favourited = models.BooleanField(default = False)
     MOOD_CHOICES = [
         (1, 'Very Sad 😔'),  
@@ -78,6 +78,14 @@ class JournalEntry(models.Model):
 
     def delete_entry(self):
         self.deleted = True
+        self.save()
+
+    def permanently_delete(self):
+        self.deleted = True
+        self.permanently_deleted = True
+        self.title = ""
+        self.text = ""
+        self.mood = 3
         self.save()
 
     def recover_entry(self):
