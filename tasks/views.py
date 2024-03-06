@@ -88,7 +88,7 @@ def templates(request):
 
 @login_required
 def trash(request):
-    return render(request, 'trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user)})
+    return render(request, 'trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user, deleted=True, permanently_deleted=False)})
 
 @login_required
 def mood_breakdown(request):
@@ -297,7 +297,7 @@ def recover_journal_entry(request,entry_id):
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
-        entry.delete()
+        entry.permanently_delete()
         messages.add_message(request, messages.SUCCESS, "Entry deleted!")
         return redirect("journal_log") 
     else:
