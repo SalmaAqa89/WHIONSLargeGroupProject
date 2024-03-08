@@ -27,6 +27,10 @@ from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from calendar import HTMLCalendar
 from datetime import datetime, timedelta
+from tasks.forms import JournalSearchForm
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.db.models import Q
 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
@@ -44,18 +48,6 @@ def dashboard(request):
     current_date = datetime(year, month, 1)
     next_month = current_date + timedelta(days=31)
     prev_month = current_date - timedelta(days=1)
-    now = timezone.now()
-    all_entries = JournalEntry.objects.filter(user=request.user)
-    dates_journaled = {entry.created_at.date() for entry in all_entries}
-    streak = 0
-    date = now.date()
-    while True:
-        if date in dates_journaled:
-            streak += 1
-        elif date != now.date():
-            break
-        date -= timedelta(days=1)
-
 
     return render(request, 'dashboard.html', {
         'user': request.user,
@@ -67,9 +59,6 @@ def dashboard(request):
         'prev_month': prev_month.month,
         'prev_month_year': prev_month.year,
         'month_name': current_date.strftime('%B'),
-        'days_since_account_creation': (now - request.user.created_at).days,
-        'days_journaled': len(dates_journaled),
-        'journal_streak': streak,
     })
 
 
@@ -371,6 +360,7 @@ def mood_breakdown(request):
     return render(request, 'mood_breakdown.html', context)
 
 
+
 class SetPreferences(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
@@ -423,3 +413,78 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
             for error in errors:
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
+
+
+
+@login_required
+def search_journal(request):
+    form = JournalSearchForm(request.GET or None)
+    journals = JournalEntry.objects.filter(user=request.user, deleted=False)
+
+    if form.is_valid():
+        title = form.cleaned_data.get('title')
+        if title:
+            journals = journals.filter(title__icontains=title)
+
+    
+    return render(request, 'journal_log.html', {'form': form, 'journal_entries': journals})
+
+
+@login_required
+def journal_entries(request):
+    form = JournalSearchForm(request.GET or None)
+    entries = JournalEntry.objects.all()
+    return render(request, 'journal_log.html', {'form':form,'journal_entries': entries})
+
+
+@login_required
+def journal_detail(request, entry_id):
+    journals = JournalEntry.objects
+    entry = get_object_or_404(JournalEntry, id=entry_id)
+    return render(request, 'journal_log.html', {'entry': entry})
+
+
+"""@login_required
+def search_suggestions(request):
+    query = request.GET.get('q', '')
+    if query:
+        suggestions = JournalEntry.objects.filter(title__icontains=query,deleted=False).values_list('title', flat=False)[:]
+    else:
+        suggestions = []
+    return JsonResponse({'suggestions': list(suggestions)})"""
+@login_required
+def search_suggestions(request):
+    query = request.GET.get('q', '')
+    if query:
+        # Return suggestions based on the query
+        suggestions = JournalEntry.objects.filter(
+            title__icontains=query,
+            deleted=False
+        ).values_list('title', flat=True)[:5]
+    else:
+        # Return top 5 suggestions when there's no query
+        # Adjust the ordering and filtering according to your needs
+        suggestions = JournalEntry.objects.filter(
+            deleted=False
+        ).order_by('-created_at').values_list('title', flat=True)[:5]
+    return JsonResponse({'suggestions': list(suggestions)})
+
+@login_required
+def search_trash(request):
+    query = request.GET.get('title', '')
+    journal_entries = JournalEntry.objects.filter(
+        title__icontains=query, 
+        deleted=True, 
+        user=request.user
+    )
+    return render(request, 'trash.html', {'journal_entries': journal_entries})
+
+
+@login_required
+def search_suggestions1(request):
+    query = request.GET.get('q', '')
+    if query:
+        suggestions = JournalEntry.objects.filter(title__icontains=query,deleted=True).values_list('title', flat=False)[:5]
+    else:
+        suggestions = []
+    return JsonResponse({'suggestions': list(suggestions)})

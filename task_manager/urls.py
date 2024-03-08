@@ -38,7 +38,9 @@ urlpatterns = [
     path('recover_entry/<int:entry_id>',views.recover_journal_entry,name = "recover_entry"),
     path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
+    path('search/', views.search_journal, name='search_journal'),
+    path('journal/<int:entry_id>/', views.journal_detail, name='journal_detail'),
+    path('search-suggestions/', views.search_suggestions, name='search-suggestions'),
+    path('search-trash/', views.search_trash, name='search_trash'),
+    path('search-suggestions1/', views.search_suggestions1, name='search-suggestions1'),
     ]
-
-
-

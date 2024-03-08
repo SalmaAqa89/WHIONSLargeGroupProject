@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User, JournalEntry, Calendar, UserPreferences
 
+
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
 
@@ -87,6 +88,9 @@ class PasswordForm(NewPasswordMixin):
         return self.user
 
 
+
+
+
 class SignUpForm(NewPasswordMixin, forms.ModelForm):
     """Form enabling unregistered users to sign up."""
 
@@ -130,6 +134,9 @@ class JournalEntryForm(forms.ModelForm):
         new_journal_entry.user = self.user
         new_journal_entry.save()
         return new_journal_entry
+
+class JournalSearchForm(forms.Form):
+    title = forms.CharField(required=False)
 
 class CalendarForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
