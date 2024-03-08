@@ -7,7 +7,6 @@ recognition.lang = 'en-US';
 
 var toggleButton = document.getElementById('toggle-record-btn');
 var isRecording = false; 
-// var journalEntryField = document.getElementById('id_text');
 var ongoingTranscript = '';
 
 toggleButton.addEventListener('click', () => {
@@ -31,7 +30,7 @@ recognition.onresult = function(event) {
       interimTranscript += event.results[i][0].transcript;
     }
   }
-  // journalEntryField.value = ongoingTranscript + interimTranscript;
+
   CKEDITOR.instances['id_text'].setData(ongoingTranscript + interimTranscript);
 };
 
