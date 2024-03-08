@@ -352,4 +352,6 @@ h3.profile-title {
   margin-top: 20px;
 }
 
-
+.favourite{
+  float: right;
+}
