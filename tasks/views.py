@@ -27,7 +27,7 @@ from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from calendar import HTMLCalendar
 from datetime import datetime, timedelta
-
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
@@ -394,6 +394,7 @@ class SetPreferences(LoginRequiredMixin, FormView):
         user_preference.user = self.request.user
         user_preference.save()
         messages.success(self.request, "Preferences Saved!")
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -423,3 +424,10 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
             for error in errors:
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
+
+# from django.http import HttpResponse
+# from tasks.tasks import check_and_trigger_reminder_emails
+
+# def trigger_task_view(request):
+#     result = check_and_trigger_reminder_emails.delay()
+#     return HttpResponse("Task triggered successfully!" + result.id)

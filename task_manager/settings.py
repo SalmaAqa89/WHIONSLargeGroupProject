@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from django.contrib.messages import constants as messages
+import os
+import celery
+from celery import Celery
+from datetime import datetime, time, timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'celery',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +152,20 @@ MESSAGE_TAGS = {
 # This is for development purposes where emails will be saved as files instead of being sent.
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
+
+# Celery settings
+from celery.schedules import crontab
+CELERY_TIMEZONE = "Europe/London"
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_BEAT_SCHEDULE = {
+    'trigger_reminder_emails_daily': {
+        'task': 'task_manager.tasks.check_and_trigger_reminder_emails',
+        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
+    },
+}

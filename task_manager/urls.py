@@ -38,6 +38,7 @@ urlpatterns = [
     path('recover_entry/<int:entry_id>',views.recover_journal_entry,name = "recover_entry"),
     path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
+    # path('task/',views.trigger_task_view,name = "task"),
     ]
 
 
