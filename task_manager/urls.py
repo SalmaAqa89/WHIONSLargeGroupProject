@@ -36,11 +36,14 @@ urlpatterns = [
     path('trash/',views.trash,name ='trash'),
     path('create_entry/', views.CreateJournalEntryView.as_view(), name="create_entry"),
     path('template_choices/',views.template_choices,name = 'template_choices'),
+    path('new_template/',views.CreateTemplateEntryView.as_view(),name = "new_template"),
     path('create_template_form/<str:templatename>',views.template_entry,name = "create_template_form"),
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
     path('delete_entry_permanent/<int:entry_id>',views.delete_journal_entry_permanent,name = "delete_entry_permanent"),
     path('recover_entry/<int:entry_id>',views.recover_journal_entry,name = "recover_entry"),
     ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

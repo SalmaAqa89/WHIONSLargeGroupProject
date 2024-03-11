@@ -298,6 +298,39 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
         return reverse('journal_log')
+    
+
+
+
+
+class CreateTemplateEntryView(LoginRequiredMixin, FormView):
+    """Display the create entry screen and handle entry creation"""
+
+    form_class = TemplateForm
+    template_name = "template_entry.html"
+    model = TemplateForm
+
+    
+    def get_form_kwargs(self, **kwargs):
+        """Pass the current user to the create entry form."""
+
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs['user'] = self.request.user 
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+    
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, "Created new template!")
+        return reverse('templates')
+    
+
+
+
+
 
 def delete_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)

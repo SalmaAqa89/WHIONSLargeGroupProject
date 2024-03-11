@@ -77,7 +77,7 @@ class Template(models.Model):
 
     name = models.CharField(max_length = 50, blank = False)
     questions = models.CharField(max_length =255,blank = True)
-    icon = models.ImageField(upload_to='static/images/', null=True, blank=True)
+    icon = models.ImageField(upload_to='template_icons/', null=True, blank=True)
     user_entry = models.BooleanField(default = True)
     deleted = models.BooleanField(default = False)
     MOOD_CHOICES = [

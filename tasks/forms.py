@@ -133,38 +133,22 @@ class JournalEntryForm(forms.ModelForm):
 
 class TemplateForm(forms.ModelForm):
     class Meta:
-        model = JournalEntry
-        fields = ['title', 'text', 'mood', 'combined_answers']
+        model = Template
+        fields = ['name', 'questions', 'icon']
         
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
 
-    def __init__(self, *args, **kwargs,):
-        super(TemplateForm, self).__init__(*args, **kwargs)
     
-        # Get questions array from the instance (if it exists)
-        self.questions_array = getattr(kwargs['instance'], 'get_questions_array', lambda: [])()
+    def save(self):
+        """Create a new journal entry"""
+        new_template_entry = super().save(commit=False)
 
-        # Dynamically add text fields for each question
-        for index, question in enumerate(self.questions_array):
-            field_name = f'question_{index + 1}'
-            self.fields[field_name] = forms.CharField(label=question, max_length=255, required=False)
+        new_template_entry.user = self.user
+        new_template_entry.save()
+        return new_template_entry
     
-    
-        
-    def save(self, commit=True):
-        instance = super(TemplateForm, self).save(commit=False)
-
-        # Combine user inputs from dynamically generated fields
-        combined_answers = ''
-        for field_name in self.cleaned_data:
-            if field_name.startswith('question_'):
-                answer = self.cleaned_data[field_name]
-                if answer:
-                    combined_answers += f'{answer}\n'  # You can adjust the formatting as per your needs
-        
-        instance.combined_answers = combined_answers.strip()  # Remove trailing newline
-        if commit:
-            instance.save()
-        return instance
     
 class CalendarForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
