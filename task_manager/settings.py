@@ -176,12 +176,9 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
-        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
+        'schedule': crontab(minute=32, hour=15),  # Run daily at midnight
     },
-    'print-hello-every-10-seconds': {
-        'task': 'tasks.tasks.print_hello',
-        'schedule': 10.0,  # Every 10 seconds
-    },
+
 }
 
 
