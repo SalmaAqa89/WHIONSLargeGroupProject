@@ -149,9 +149,18 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-# This is for development purposes where emails will be saved as files instead of being sent.
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# SMTP server settings
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_PORT = 587  
+EMAIL_USE_TLS = True 
+
+# Email account credentials
+EMAIL_HOST_USER = 'WHIONS@outlook.com'
+EMAIL_HOST_PASSWORD = 'LGSEGproject2024!'
+EMAIL_FROM = 'WHIONS@outlook.com'  
+
 
 # Celery settings
 from celery.schedules import crontab
@@ -163,9 +172,17 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
-        'task': 'task_manager.tasks.check_and_trigger_reminder_emails',
+        'task': 'tasks.tasks.check_and_trigger_reminder_emails',
         'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
     },
+    'print-hello-every-10-seconds': {
+        'task': 'tasks.tasks.print_hello',
+        'schedule': 10.0,  # Every 10 seconds
+    },
 }
+
+
+
