@@ -32,6 +32,9 @@ urlpatterns = [
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('journal_log/',views.journal_log,name ='journal_log'),
+    path('journal/entry/<int:entry_id>/pdf/', views.export_journal_entry_to_pdf, name='export_journal_entry_to_pdf'),
+    path('journal/entry/<int:entry_id>/rtf/', views.export_journal_entry_to_rtf, name='export_journal_entry_to_rtf'),
+    path('export_entries/', views.export_entries, name='export_entries'),
     path('favourites/',views.favourites,name ='favourites'),
     path('mood_breakdown/',views.mood_breakdown,name ='mood_breakdown'),
     path('templates/',views.templates,name ='templates'),
@@ -50,5 +53,4 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
