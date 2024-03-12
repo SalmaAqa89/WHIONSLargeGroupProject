@@ -17,6 +17,15 @@ from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
 from collections import Counter
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from tasks.models import JournalEntry
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from tasks.helpers import login_prohibited
+from reportlab.lib.pagesizes import letter
+from django.http import HttpResponse
+from datetime import timedelta
+from reportlab.lib.enums import TA_CENTER
 import matplotlib
 matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
@@ -28,17 +37,43 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse
 from reportlab.lib.enums import TA_CENTER
+from datetime import timedelta
+
+
+
 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html', {'user': request.user})
+    now = timezone.now()
+    all_entries = JournalEntry.objects.filter(user=request.user)
+    dates_journaled = {entry.created_at.date() for entry in all_entries}
+    streak = 0
+    date = now.date()
+    while True:
+        if date in dates_journaled:
+            streak += 1
+        elif date != now.date():
+            break
+        date -= timedelta(days=1)
+
+
+    return render(request, 'dashboard.html', {
+        'user': request.user,
+        'days_since_account_creation': (now - request.user.created_at).days,
+        'days_journaled': len(dates_journaled),
+        'journal_streak': streak,
+    })
 
 @login_required
 def journal_log(request):
     return render(request, 'journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
+
+@login_required
+def favourites(request):
+    return render(request, 'favourites.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user, favourited=True)})
 
 @login_required
 def templates(request):
@@ -46,7 +81,7 @@ def templates(request):
 
 @login_required
 def trash(request):
-    return render(request, 'trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user)})
+    return render(request, 'trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user, deleted=True, permanently_deleted=False)})
 
 @login_required
 def mood_breakdown(request):
@@ -286,7 +321,6 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
 
     form_class = JournalEntryForm
     template_name = "create_entry.html"
-    model = JournalEntryForm
 
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
@@ -328,12 +362,35 @@ def recover_journal_entry(request,entry_id):
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
-        entry.delete()
+        entry.permanently_delete()
         messages.add_message(request, messages.SUCCESS, "Entry deleted!")
         return redirect("journal_log") 
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
+    
+def favourite_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    if entry.user == request.user:
+        entry.favourited = True
+        entry.save()
+        messages.add_message(request,messages.SUCCESS,"Entry has been added to favourites!")
+        return redirect('journal_log')
+    else:
+        messages.add_message(request, messages.ERROR, "Entry is not yours!")
+        return redirect('journal_log')
+    
+def unfavourite_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    next_page = request.GET.get('next', "journal_log")
+    if entry.user == request.user:
+        entry.favourited = False
+        entry.save()
+        messages.add_message(request,messages.SUCCESS,"Entry has been removed from favourites!")
+        return redirect(next_page)
+    else:
+        messages.add_message(request, messages.ERROR, "Entry is not yours!")
+        return redirect(next_page)
 
 
 def get_mood_representation(mood, use_emoji=False):

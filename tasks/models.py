@@ -4,6 +4,7 @@ from django.db import models
 from libgravatar import Gravatar
 from django.contrib import messages
 from django.core.validators import MinValueValidator, MaxValueValidator
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -19,6 +20,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
     class Meta:
@@ -56,14 +59,15 @@ class UserPreferences(models.Model):
     journal_time = models.TimeField()
     
 
-
 class JournalEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    text = models.TextField()
+    text = RichTextUploadingField(config_name='default')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default = False)
+    permanently_deleted = models.BooleanField(default = False)
+    favourited = models.BooleanField(default = False)
     MOOD_CHOICES = [
         (1, 'Very Sad 😔'),  
         (2, 'Sad 🙁'),  
@@ -75,6 +79,14 @@ class JournalEntry(models.Model):
 
     def delete_entry(self):
         self.deleted = True
+        self.save()
+
+    def permanently_delete(self):
+        self.deleted = True
+        self.permanently_deleted = True
+        self.title = ""
+        self.text = ""
+        self.mood = 3
         self.save()
 
     def recover_entry(self):
