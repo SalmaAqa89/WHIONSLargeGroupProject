@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from tasks import views
 from django.conf import settings
 from django.conf.urls.static import static
+from tasks import views
+
+from ckeditor_uploader import views as ckeditor_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +33,10 @@ urlpatterns = [
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('journal_log/',views.journal_log,name ='journal_log'),
+    path('journal/entry/<int:entry_id>/pdf/', views.export_journal_entry_to_pdf, name='export_journal_entry_to_pdf'),
+    path('journal/entry/<int:entry_id>/rtf/', views.export_journal_entry_to_rtf, name='export_journal_entry_to_rtf'),
+    path('export_entries/', views.export_entries, name='export_entries'),
+    path('favourites/',views.favourites,name ='favourites'),
     path('mood_breakdown/',views.mood_breakdown,name ='mood_breakdown'),
     path('templates/',views.templates,name ='templates'),
     path('trash/',views.trash,name ='trash'),
@@ -39,11 +45,15 @@ urlpatterns = [
     path('new_template/',views.CreateTemplateEntryView.as_view(),name = "new_template"),
     path('create_template_form/<str:templatename>',views.template_entry,name = "create_template_form"),
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
+    path('favourite_entry/<int:entry_id>', views.favourite_journal_entry, name="favourite_entry"),
+    path('unfavourite_entry/<int:entry_id>', views.unfavourite_journal_entry, name="unfavourite_entry"),
     path('delete_entry_permanent/<int:entry_id>',views.delete_journal_entry_permanent,name = "delete_entry_permanent"),
     path('recover_entry/<int:entry_id>',views.recover_journal_entry,name = "recover_entry"),
+    path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
+    path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
+    path('ckeditor/', include('ckeditor_uploader.urls')), 
     ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
 

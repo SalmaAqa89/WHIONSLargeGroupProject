@@ -2,7 +2,9 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, JournalEntry, Calendar, Template
+from .models import User, JournalEntry, Calendar, UserPreferences,Template
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -112,9 +114,15 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
 class JournalEntryForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
     
+    widgets = {
+            'text': CKEditorUploadingWidget(),  
+        }
+    
     class Meta:
         model = JournalEntry
         fields = ['title', 'text', 'mood']
+
+
         
     def __init__(self, user, text, **kwargs):
         """Construct new form instance with a user instance."""
@@ -155,6 +163,26 @@ class CalendarForm(forms.ModelForm):
     class Meta:
         model = Calendar
         fields = ['title','text']
+
+class UserPreferenceForm(forms.ModelForm):
+    class Meta:
+        model = UserPreferences
+        fields = ['journal_time','monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        widgets = {
+            'journal_time': forms.TimeInput(attrs={'type': 'time'}),
+            'monday': forms.CheckboxInput(),
+            'tuesday': forms.CheckboxInput(),
+            'wednesday': forms.CheckboxInput(),
+            'thursday': forms.CheckboxInput(),
+            'friday': forms.CheckboxInput(),
+            'saturday': forms.CheckboxInput(),
+            'sunday': forms.CheckboxInput(),
+        }
+
+
+
+
+
     
 
   

@@ -19,17 +19,15 @@
             <div class = "tab-pane fade show active" id = "nav-entries" role = "tabpanel" aria-labelledby="nav-entries-tab" >
               <div class="card-deck">
                 {% for entry in journal_entries %}
-                  {% if entry.deleted %}
-                    <div class="card mb-3">
-                      <div class="card-body">
-                        <h5 class="card-title">{{ entry.title }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
-                        <p class="card-text">{{ entry.text }}</p>
-                        <a href="{% url 'delete_entry_permanent' entry_id=entry.id %}" class="btn btn-danger">Permanently Delete Entry</a>
-                        <a href="{% url 'recover_entry' entry_id=entry.id %}" class="btn btn-success">Recover Entry</a>
-                      </div>
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ entry.title }}</h5>
+                      <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
+                      <p class="card-text">{{ entry.text }}</p>
+                      <a href="{% url 'delete_entry_permanent' entry_id=entry.id %}" class="btn btn-danger">Permanently Delete Entry</a>
+                      <a href="{% url 'recover_entry' entry_id=entry.id %}" class="btn btn-success">Recover Entry</a>
                     </div>
-                  {% endif %}
+                  </div>
                 {% endfor %}
               </div>
             </div>

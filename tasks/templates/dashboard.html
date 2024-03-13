@@ -4,21 +4,33 @@
   <div class="row header-text">
     <div class="col-12">
       <h1>Welcome to your Journal, {{ user.username }}</h1>
-      <h2>Calendar:</h2>
+      <div>Number of days since Account is created: {{days_since_account_creation}}</div>
+      <div>Number of days Journaled: {{days_journaled}}</div>
+      <div>Journal Streak Days: {{journal_streak}}</div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-12 calendar-container">
-      <div>{{ calendar|safe }}</div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <div class="navigation">
-        <a class="nav-link" href="?year={{ prev_month_year }}&month={{ prev_month }}">&lt; Previous</a>
-        <a class="nav-link" href="?year={{ next_month_year }}&month={{ next_month }}">Next &gt;</a>
+    <div id="calendarApp">
+      <div class="calendar-controls">
+          <select id="monthSelect"></select>
+          <select id="yearSelect"></select>
+          <button id="goToDate">Go</button>
+      </div>
+      <table id="calendar">
+          <thead>
+              <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+      <div class="calendar-navigation">
+          <button id="prevMonth">Prev</button>
+          <button id="nextMonth">Next</button>
       </div>
     </div>
-  </div>
+    
+    <div id="modal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <p id="modalText">Day selected</p>
+      </div>
+    </div>
 </div>
 {% endblock %}

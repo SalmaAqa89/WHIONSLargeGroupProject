@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -124,6 +126,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
 
 # settings.py
 
@@ -154,6 +161,7 @@ MESSAGE_TAGS = {
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
 
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -167,3 +175,24 @@ LOGGING = {
         'level': 'DEBUG',  # Set the desired logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     },
 }
+
+
+CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+# This is to configure what the user can use with the ckeditor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+    { 'name': 'styles', 'items': ['Format', 'Font', 'FontSize'] },
+    { 'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+    { 'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', 'Outdent', 'Indent', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+    { 'name': 'links', 'items': ['Link', 'Unlink'] },
+    { 'name': 'insert', 'items': ['Image'] },
+    { 'name': 'tools', 'items': ['Maximize'] }
+]
+    }
+} 
+
+
