@@ -238,6 +238,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def form_valid(self, form):
         self.object = form.save()
         login(self.request, self.object)
+        FlowerGrowth.objects.create(user=self.object, stage=0)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -258,11 +259,23 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
         kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
         return kwargs
 
-
     def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-    
+        journal_entry = form.save(commit=False)
+        journal_entry.user = self.request.user
+        journal_entry.save()
+
+        today = timezone.now().date()
+        try:
+            flower_growth = FlowerGrowth.objects.get(user=self.request.user)
+        except FlowerGrowth.DoesNotExist:
+            flower_growth = FlowerGrowth.objects.create(user=self.request.user)
+
+        if flower_growth.last_entry_date is None or flower_growth.last_entry_date != today:
+            if flower_growth.stage < 7:
+                flower_growth.increment_stage()
+            flower_growth.update_last_entry_date(today)
+
+        return super(CreateJournalEntryView, self).form_valid(form)
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
