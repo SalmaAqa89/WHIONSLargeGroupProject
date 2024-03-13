@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'celery',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +148,16 @@ MESSAGE_TAGS = {
 # This is for development purposes where emails will be saved as files instead of being sent.
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
+
+# Celery settings
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'reset_flower_growth_every_monday': {
+        'task': 'your_app_name.tasks.reset_flower_growth_weekly',
+        'schedule': crontab(hour=0, minute=0, day_of_week='monday'),
+    },
+    'check_and_reset_growth_daily': {
+        'task': 'your_app_name.tasks.check_and_reset_growth_daily',
+        'schedule': crontab(hour=0, minute=1),  # 1 minute past midnight to ensure the day has changed
+    },
+}
