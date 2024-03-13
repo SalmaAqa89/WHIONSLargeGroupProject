@@ -19,7 +19,6 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from tasks import views
-
 from ckeditor_uploader import views as ckeditor_views
 
 urlpatterns = [
@@ -41,9 +40,6 @@ urlpatterns = [
     path('templates/',views.templates,name ='templates'),
     path('trash/',views.trash,name ='trash'),
     path('create_entry/', views.CreateJournalEntryView.as_view(), name="create_entry"),
-    path('template_choices/',views.template_choices,name = 'template_choices'),
-    path('new_template/',views.CreateTemplateEntryView.as_view(),name = "new_template"),
-    path('create_template_form/<str:templatename>',views.template_entry,name = "create_template_form"),
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
     path('favourite_entry/<int:entry_id>', views.favourite_journal_entry, name="favourite_entry"),
     path('unfavourite_entry/<int:entry_id>', views.unfavourite_journal_entry, name="unfavourite_entry"),
@@ -52,6 +48,7 @@ urlpatterns = [
     path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
+
     ]
 
 if settings.DEBUG:

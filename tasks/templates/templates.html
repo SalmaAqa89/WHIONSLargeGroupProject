@@ -2,24 +2,12 @@
 {% block content %}
 <div class="container">
   <div class="row">
-    <div class = "col-12">
+    <div class="col-12">
       <h1>These are all your templates</h1>
-    </div>
-    <div class = "row">
-      <div class="col-12 d-flex">
-        <a href="{% url 'new_template' %}" class="btn btn-primary">New Template</a>
-        <div class = "card-deck">
-        {% for template in templates %}
-        <div class = "card">
-          <div class = "poster">
-            <img src="{{template.icon.url}}">
-          </div>
-          <div class = "details">
-            <h1>{{template.name}}</h2>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
+      {% for template in templates %}
+      <h2>{{template.name}}</h2>
+      <p>{{template.text}}</p>
+      {% endfor %}
     </div>
   </div>
 </div>

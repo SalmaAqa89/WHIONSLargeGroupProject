@@ -31,14 +31,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
-
-import os
-import logging 
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
-from tasks.models import JournalEntry,Template
-from tasks.helpers import login_prohibited
-from calendar import HTMLCalendar
-from datetime import datetime, timedelta
 from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -49,8 +41,9 @@ from datetime import timedelta
 
 
 
+
+
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
-logger = logging.getLogger(__name__)
 
 @login_required
 def dashboard(request):
@@ -74,14 +67,9 @@ def dashboard(request):
         'journal_streak': streak,
     })
 
-
 @login_required
 def journal_log(request):
     return render(request, 'journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
-  
-@login_required
-def template_entry(request,templatename):
-    return render(request,'create_template_entry.html',{'template_name':templatename})
 
 @login_required
 def favourites(request):
@@ -89,7 +77,7 @@ def favourites(request):
 
 @login_required
 def templates(request):
-    return render(request, 'templates.html', {"templates": Template.objects.all()})
+    return render(request, 'templates.html', {"templates": [DEFAULT_TEMPLATE]})
 
 @login_required
 def trash(request):
@@ -105,35 +93,6 @@ def home(request):
     """Display the application's start/home screen."""
 
     return render(request, 'home.html')
-
-
-def template_choices(request):
-    if request.method == 'POST':
-        selected_template_name = request.POST.get('selected_template_name')
-        request.session['template_name'] = selected_template_name
-        logger.info(f"template_name set in session: {selected_template_name}")
-        return redirect('create_entry')
-
-    templates = Template.objects.all()  
-    context = {'templates': templates}
-    
-    return render(request, 'template_choices.html', context)
-
-class CustomHTMLCalendar(HTMLCalendar):
-    def __init__(self, year=None, month=None):
-        super(CustomHTMLCalendar, self).__init__()
-        self.year = year
-        self.month = month
-        self.now = datetime.now()
-        self.today = self.now.day if self.now.year == year and self.now.month == month else None
-
-    def formatday(self, day, weekday):
-        if day == 0:
-            return '<td class="calendar-cell noday">&nbsp;</td>'  
-        elif day == self.today:
-            return f'<td class="calendar-cell current-day"><button class="calendar-day-btn">{day}</button></td>'
-        else:
-            return f'<td class="calendar-cell"><button class="calendar-day-btn">{day}</button></td>'
 
 def export_journal_entry_to_pdf(request, entry_id):
     journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
@@ -357,48 +316,19 @@ class SignUpView(LoginProhibitedMixin, FormView):
    
 
 
-
-    
-class CreateTemplateView(LoginRequiredMixin, FormView):
-    """Display the create template screen and handle template creation"""
-
-    model = Template
-    form_class = TemplateForm
-    template_name = "create_template_entry.html"
-
-    def form_valid(self, form):
-        form.save()
-        messages.add_message(self.request, messages.SUCCESS, "Created new template!")
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
-        return reverse('template_list')  # Adjust the URL name as per your project
-    
-
 class CreateJournalEntryView(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
     form_class = JournalEntryForm
     template_name = "create_entry.html"
 
-    
-    template_instance, created = Template.objects.get_or_create(name=template_name)
-    text = template_instance.get_questions
-        
-    def get_template_name(self):
-        # Get the dynamic template_name from the session
-        return self.request.session.get('template_name', 'default_template')
-
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
-        template_name = self.get_template_name()
-        template_instance, created = Template.objects.get_or_create(name=template_name)
-        text = template_instance.get_questions()
+
         kwargs = super().get_form_kwargs(**kwargs)
-        kwargs.update({'user': self.request.user, 'text': text})
+        kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
         return kwargs
-    
+
 
     def form_valid(self, form):
         form.save()
@@ -408,39 +338,6 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
         return reverse('journal_log')
-    
-
-
-
-
-class CreateTemplateEntryView(LoginRequiredMixin, FormView):
-    """Display the create entry screen and handle entry creation"""
-
-    form_class = TemplateForm
-    template_name = "template_entry.html"
-    model = TemplateForm
-
-    
-    def get_form_kwargs(self, **kwargs):
-        """Pass the current user to the create entry form."""
-
-        kwargs = super().get_form_kwargs(**kwargs)
-        kwargs['user'] = self.request.user 
-        return kwargs
-
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-    
-
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, "Created new template!")
-        return reverse('templates')
-    
-
-
-
-
 
 def delete_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
