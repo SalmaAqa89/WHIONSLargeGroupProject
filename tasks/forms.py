@@ -2,8 +2,9 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, JournalEntry, Calendar, UserPreferences
+from .models import User, JournalEntry, Calendar, UserPreferences,Template
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -138,6 +139,25 @@ class JournalEntryForm(forms.ModelForm):
         new_journal_entry.save()
         return new_journal_entry
 
+class TemplateForm(forms.ModelForm):
+    class Meta:
+        model = Template
+        fields = ['name', 'questions', 'icon']
+        
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    
+    def save(self):
+        """Create a new journal entry"""
+        new_template_entry = super().save(commit=False)
+
+        new_template_entry.user = self.user
+        new_template_entry.save()
+        return new_template_entry
+    
+    
 class CalendarForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
     class Meta:

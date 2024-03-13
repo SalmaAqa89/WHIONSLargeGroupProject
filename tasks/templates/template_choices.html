@@ -1,0 +1,23 @@
+{% extends 'base_content2.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class = "col-12">
+      <h1>Please Pick a Template Choice</h1>
+    </div>
+    <div class = "row">
+      <form method="post">
+        {% csrf_token %}
+        {% for template in templates %}
+            <div class="card">
+                <div class="details">
+                    <button type="submit" name="selected_template_name" value="{{ template.name }}">
+                        {{ template.name }}
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </form>
+  </div>
+</div>
+{% endblock %}
