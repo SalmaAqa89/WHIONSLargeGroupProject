@@ -20,6 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from tasks import views
 from ckeditor_uploader import views as ckeditor_views
+from django.contrib.auth.decorators import login_required
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -48,6 +50,7 @@ urlpatterns = [
     path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
+    path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
 
 
     ]
