@@ -1,8 +1,9 @@
 from django.contrib import admin
-from tasks.models import UserPreferences, User
+from .models import User, UserPreferences, JournalEntry
+# user: @admin password: 123Admin
 
+# Register your models here.
 
 admin.site.register(User)
 admin.site.register(UserPreferences)
-
-# Register your models here.
+admin.site.register(JournalEntry)
