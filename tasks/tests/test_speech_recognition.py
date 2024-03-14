@@ -36,10 +36,12 @@ class SpeechRecognitionTest(StaticLiveServerTestCase):
 
   
         toggle_button = WebDriverWait(self.selenium, 10).until(
-            EC.element_to_be_clickable((By.ID, "toggle-record-btn"))
-        )
-        toggle_button.click()
+                        EC.element_to_be_clickable((By.ID, "toggle-record-btn"))
+                        )
 
+        self.selenium.execute_script("arguments[0].scrollIntoView(true);", toggle_button)
+
+        self.selenium.execute_script("arguments[0].click();", toggle_button)
         
         try:
             WebDriverWait(self.selenium, 3).until(EC.alert_is_present())

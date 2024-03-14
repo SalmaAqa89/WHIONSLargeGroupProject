@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from django.contrib.messages import constants as messages
+import os
+
+import celery
+from celery import Celery
+from datetime import datetime, time, timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +48,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'celery',
     'django_celery_beat',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +133,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -144,6 +157,41 @@ REDIRECT_URL_WHEN_LOGGED_IN = 'dashboard'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# SMTP server settings
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_PORT = 587  
+EMAIL_USE_TLS = True 
+
+# Email account credentials
+EMAIL_HOST_USER = 'WHIONS@outlook.com'
+EMAIL_HOST_PASSWORD = 'LGSEGproject2024!'
+EMAIL_FROM = 'WHIONS@outlook.com'  
+
+
+# Celery settings
+from celery.schedules import crontab
+CELERY_TIMEZONE = "Europe/London"
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_IMPORTS = ("tasks", )
+CELERY_BEAT_SCHEDULE = {
+    'trigger_reminder_emails_daily': {
+        'task': 'tasks.tasks.check_and_trigger_reminder_emails',
+        'schedule': crontab(minute=32, hour=15),  # Run daily at midnight
+    },
+
+}
+
+
 
 # This is for development purposes where emails will be saved as files instead of being sent.
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
@@ -167,3 +215,22 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour=0, minute=1),  # 1 minute past midnight to ensure the day has changed
     },
 }
+
+CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+# This is to configure what the user can use with the ckeditor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+    { 'name': 'styles', 'items': ['Format', 'Font', 'FontSize'] },
+    { 'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+    { 'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', 'Outdent', 'Indent', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+    { 'name': 'links', 'items': ['Link', 'Unlink'] },
+    { 'name': 'insert', 'items': ['Image'] },
+    { 'name': 'tools', 'items': ['Maximize'] }
+]
+    }
+} 
+
