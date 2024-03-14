@@ -4,25 +4,6 @@ import unittest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
 
-# Initialize Django settings
-import django
-from django.conf import settings
-settings.configure(
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-        }
-    },
-    INSTALLED_APPS=[
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'tasks',
-    ],
-)
-
-django.setup()
-
 # Import the tasks
 from tasks.tasks import send_reminder_emails, check_and_trigger_reminder_emails
 import task_manager.settings as settings
