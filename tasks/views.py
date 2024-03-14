@@ -31,6 +31,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
+from tasks.models import JournalEntry
+from tasks.helpers import login_prohibited
+from datetime import datetime, timedelta
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -38,8 +43,6 @@ from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse
 from reportlab.lib.enums import TA_CENTER
 from datetime import timedelta
-
-
 
 
 
@@ -486,6 +489,7 @@ class SetPreferences(LoginRequiredMixin, FormView):
         user_preference.user = self.request.user
         user_preference.save()
         messages.success(self.request, "Preferences Saved!")
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -515,3 +519,4 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
             for error in errors:
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
+

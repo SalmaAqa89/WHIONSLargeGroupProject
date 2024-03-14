@@ -3,6 +3,7 @@
 
 import ckeditor_uploader.fields
 
+
 from django.conf import settings
 import django.contrib.auth.models
 import django.core.validators
@@ -66,16 +67,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=50)),
-
                 ('text', ckeditor_uploader.fields.RichTextUploadingField()),
-
-
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('deleted', models.BooleanField(default=False)),
                 ('permanently_deleted', models.BooleanField(default=False)),
                 ('favourited', models.BooleanField(default=False)),
-
                 ('mood', models.IntegerField(choices=[(1, 'Very Sad 😔'), (2, 'Sad 🙁'), (3, 'Neutral 😐'), (4, 'Happy 🙂'), (5, 'Very Happy😄')], default=3)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],

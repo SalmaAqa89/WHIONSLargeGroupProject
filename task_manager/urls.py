@@ -49,6 +49,7 @@ urlpatterns = [
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
 
+
     ]
 
 if settings.DEBUG:
