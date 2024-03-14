@@ -444,14 +444,7 @@ def journal_detail(request, entry_id):
     return render(request, 'journal_log.html', {'entry': entry})
 
 
-"""@login_required
-def search_suggestions(request):
-    query = request.GET.get('q', '')
-    if query:
-        suggestions = JournalEntry.objects.filter(title__icontains=query,deleted=False).values_list('title', flat=False)[:]
-    else:
-        suggestions = []
-    return JsonResponse({'suggestions': list(suggestions)})"""
+
 @login_required
 def search_suggestions(request):
     query = request.GET.get('q', '')
