@@ -38,7 +38,10 @@ from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse
 from reportlab.lib.enums import TA_CENTER
 from datetime import timedelta
-
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from io import BytesIO
+import re
 
 
 
@@ -94,37 +97,51 @@ def home(request):
 
     return render(request, 'home.html')
 
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those resources
+    """
+    import os
+    from django.conf import settings
+
+    if uri.startswith(settings.MEDIA_URL):
+        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    elif uri.startswith(settings.STATIC_URL):
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
+    else:
+        return uri  # handle absolute URIs 
+
+    if not os.path.isfile(path):
+        raise Exception(f'Media URI must start with {settings.MEDIA_URL} or {settings.STATIC_URL}')
+
+    return path
+
 def export_journal_entry_to_pdf(request, entry_id):
     journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.pdf"'
-
-    p = canvas.Canvas(response)
-    p.setFont("Helvetica-Bold", 14)
-    p.drawString(72, 800, journal_entry.title) 
-
-    p.setFont("Helvetica", 12)
-    text_object = p.beginText(72, 780)  
-    text_object.setLeading(15)  
-
-    for line in journal_entry.text.split('\n'):  
-        text_object.textLine(line)
-   
-    p.drawText(text_object)
-
-    p.showPage()
-    p.save()
+    pisa_status = pisa.CreatePDF(
+        BytesIO(journal_entry.text.encode("UTF-8")), dest=response,
+        link_callback=link_callback  
+    )
+    if pisa_status.err:
+        return HttpResponse('Failed to generate PDF. Please try again later.')
     return response
+
+def strip_tags(html):
+    clean_text = re.sub('<[^<]+?>', '', html)
+    return clean_text
 
 def export_journal_entry_to_rtf(request, entry_id):
     journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
+    clean_text = strip_tags(journal_entry.text)
+
     response = HttpResponse(content_type='application/rtf')
     response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.rtf"'
+
     rtf_content = "{\\rtf1\\ansi\\deff0 "
-    rtf_content += "{\\b " + journal_entry.title + "}"
-    rtf_content += "\\line "
-    rtf_content += journal_entry.text.replace('\n', '\\line ')
+    rtf_content += clean_text.replace('\n', '\\line ')
     rtf_content += " }"
 
     response.write(rtf_content)
@@ -144,6 +161,7 @@ def get_pdf_elements_for_entry(entry, styles):
     elements.append(PageBreak())  
 
     return elements
+
 def get_rtf_content_for_entry(entry):
     rtf_content = []
     rtf_content.append(r"{\pard\qc\b " + entry.title + r"\b0\par}")  

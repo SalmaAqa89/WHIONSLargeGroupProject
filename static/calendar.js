@@ -7,13 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const yearSelect = document.getElementById("yearSelect");
     const calendarBody = document.getElementById("calendar").getElementsByTagName("tbody")[0];
     
-    // Populate month dropdown
+
     months.forEach((month, index) => {
         let option = new Option(month, index);
         monthSelect.add(option);
     });
 
-    // Populate year dropdown (10 years back and 10 years forward)
     for (let year = currentYear - 10; year <= currentYear + 10; year++) {
         let option = new Option(year, year);
         yearSelect.add(option);
@@ -25,12 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateCalendar(month, year) {
         currentMonth = month;
         currentYear = year;
-        calendarBody.innerHTML = ''; // Clear the calendar
+        calendarBody.innerHTML = ''; 
 
         let firstDay = new Date(year, month).getDay();
         let daysInMonth = 32 - new Date(year, month, 32).getDate();
 
-        // Generating the days for the calendar
         let date = 1;
         for (let i = 0; i < 6; i++) {
             let row = document.createElement('tr');
@@ -55,27 +53,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             calendarBody.appendChild(row);
             if (date > daysInMonth) {
-                break; // Stop making rows if we've finished the days in the month
+                break; 
             }
         }
         document.querySelectorAll('#calendar td').forEach(dayCell => {
             dayCell.addEventListener('click', function() {
-                const selectedDay = this.textContent; // Get the day number
-                // Check if the dayCell contains a day number to avoid empty cells
+                const selectedDay = this.textContent; 
+                
                 if (selectedDay) {
                     const dateString = `${selectedDay} ${months[month]} ${year}`;
                     document.getElementById('modalText').textContent = `You selected: ${dateString}`;
-                    document.getElementById('modal').style.display = 'block'; // Show the modal
+                    document.getElementById('modal').style.display = 'block'; 
                 }
             });
         });
     
-        // Close the modal logic
+    
         document.querySelector('.close').addEventListener('click', function() {
             document.getElementById('modal').style.display = 'none';
         });
     
-        // Clicking outside the modal closes it
+       
         window.addEventListener('click', function(event) {
             if (event.target == document.getElementById('modal')) {
                 document.getElementById('modal').style.display = 'none';
@@ -114,5 +112,5 @@ document.addEventListener('DOMContentLoaded', function() {
         generateCalendar(currentMonth, currentYear);
     });
 
-    generateCalendar(currentMonth, currentYear); // Generate the current month calendar
+    generateCalendar(currentMonth, currentYear); 
 });

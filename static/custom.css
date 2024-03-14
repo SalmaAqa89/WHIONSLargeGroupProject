@@ -269,6 +269,9 @@ h3.profile-title {
   background-color: #025912;
   color: white;
 }
+.favourite{
+  float: right;
+}
 /*Calendar 
 */
 body, html {

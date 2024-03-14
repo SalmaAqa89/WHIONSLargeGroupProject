@@ -32,9 +32,7 @@
               <p>Mood: {{ entry.get_mood_display }}</p>
               <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger">Delete Entry</a>
               <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="individualExportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Export
-                </button>
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="individualExportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Export</button>
                 <div class="dropdown-menu" aria-labelledby="individualExportDropdown">
                   <a class="dropdown-item" href="{% url 'export_journal_entry_to_pdf' entry_id=entry.id %}">Export to PDF</a>
                   <a class="dropdown-item" href="{% url 'export_journal_entry_to_rtf' entry_id=entry.id %}">Export to RTF</a>
