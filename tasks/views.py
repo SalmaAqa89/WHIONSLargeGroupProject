@@ -62,8 +62,6 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', {
         'user': request.user,
-        'days_since_account_creation': (now - request.user.created_at).days,
-        'days_journaled': len(dates_journaled),
         'journal_streak': streak,
     })
 

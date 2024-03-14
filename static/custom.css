@@ -251,7 +251,7 @@ h3.profile-title {
   text-align: center;
 }
 
-.title-custom, .cover-text, .btn-lg {
+.title-custom, .cover-text, .btn-lg, .btn-md {
   font-family: 'Big Shoulders Display', cursive;
   white-space: nowrap;
 }
@@ -264,8 +264,24 @@ h3.profile-title {
   font-size: 20px;
 }
 
+.subtitle-custom {
+  font-family: 'Big Shoulders Display', cursive;
+  font-size: 30px;
+}
+
+.sub-text {
+  font-family: 'Big Shoulders Display', cursive;
+  font-size: 15px;
+}
+
 .btn-lg {
   font-size: 30px;
+  background-color: #025912;
+  color: white;
+}
+
+.btn-md {
+  font-size: 20px;
   background-color: #025912;
   color: white;
 }
@@ -367,4 +383,20 @@ body, html {
   color: #333;
   text-decoration: none;
   cursor: pointer;
+}
+
+.navbar-custom {
+  padding: 10px;
+}
+
+.landing_section {
+  text-align: center;
+}
+.landing_section * {
+  padding: 10px
+}
+
+.landing_section div{
+  width: 20%;
+  display: inline-block;
 }
