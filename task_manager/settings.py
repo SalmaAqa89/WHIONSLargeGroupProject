@@ -188,6 +188,14 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
         'schedule': crontab(minute=32, hour=15),  # Run daily at midnight
     },
+    'reset_flower_growth_if_no_entry': {
+        'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
+        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
+    },
+    'reset_flower_growth_weekly': {
+        'task': 'tasks.tasks.reset_flower_growth_weekly',
+        'schedule': crontab(minute=0, hour=0, day_of_week='sun'),  # Run at the start of each week
+    },
 
 }
 
