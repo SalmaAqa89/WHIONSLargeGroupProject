@@ -191,30 +191,9 @@ CELERY_BEAT_SCHEDULE = {
 
 }
 
-
-
 # This is for development purposes where emails will be saved as files instead of being sent.
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
-
-# Celery Configuration
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = None
-
-# Celery settings
-from celery.schedules import crontab
-CELERY_BEAT_SCHEDULE = {
-    'reset_flower_growth_every_monday': {
-        'task': 'your_app_name.tasks.reset_flower_growth_weekly',
-        'schedule': crontab(hour=0, minute=0, day_of_week='monday'),
-    },
-    'check_and_reset_growth_daily': {
-        'task': 'your_app_name.tasks.check_and_reset_growth_daily',
-        'schedule': crontab(hour=0, minute=1),  # 1 minute past midnight to ensure the day has changed
-    },
-}
 
 CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = 'uploads/'
