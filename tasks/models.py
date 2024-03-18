@@ -98,3 +98,20 @@ class Calendar(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     text = models.TextField()
+
+class Template(models.Model):
+
+    name = models.CharField(max_length = 50, blank = False)
+    questions = models.CharField(max_length =255,blank = True)
+    user_entry = models.BooleanField(default = True)
+    deleted = models.BooleanField(default = False)
+     
+
+    def get_questions(self):
+        return self.questions
+
+    def get_questions_array(self):
+        return self.questions.split(',')
+
+    def set_questions_array(self, values):
+        self.questions = ','.join(values)
