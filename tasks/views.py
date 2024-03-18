@@ -43,6 +43,7 @@ from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse
 from reportlab.lib.enums import TA_CENTER
 from datetime import timedelta
+from django.http import JsonResponse
 
 
 
@@ -520,3 +521,28 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
 
+@login_required
+
+def search_favourite (request):
+    query = request.GET.get('title', '')
+    journal_entries = JournalEntry.objects.filter(
+        title__icontains=query, 
+        deleted=False, 
+        user=request.user,
+        favourited = True
+    )
+    return render(request, 'favourites.html', {'journal_entries': journal_entries})
+
+
+@login_required
+def search_favouriteSuggestion(request):
+    query = request.GET.get('q', '')
+    if query:
+        suggestions = JournalEntry.objects.filter(
+            title__icontains=query, 
+            favourited=True,
+            user=request.user  
+        ).values_list('title', flat=True)[:5]  
+    else:
+        suggestions = []
+    return JsonResponse({'suggestions': list(suggestions)})   

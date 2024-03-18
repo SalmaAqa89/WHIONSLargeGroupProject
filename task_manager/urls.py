@@ -51,6 +51,8 @@ urlpatterns = [
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+    path('search/favourite/', views.search_favourite, name='search_favourite'),
+    path('search/favouritesuggestion/', views.search_favouriteSuggestion, name='search_favouriteSuggestion'),
 
 
     ]

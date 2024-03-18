@@ -1,0 +1,39 @@
+
+#search-form {
+    max-width: 600px; /* Adjust the search form width */
+    margin: auto; /* Center the form in its parent container */
+  }
+  
+  #search-box {
+    height: 40px; /* Adjust the height of the search input */
+  }
+  
+  /* Styles for the suggestion container */
+  .suggestions-container {
+    border: 1px solid #ccc; /* Light grey border around suggestions */
+    border-top: none; /* Remove the top border to blend with the search box */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    position: absolute; /* Ensure the suggestions box aligns with the search box */
+    width: calc(100% - 2px); /* Match the width of the search box, accounting for border */
+    background-color: white; /* Background color for the suggestions box */
+    z-index: 1000; /* Ensure the suggestions box is above other content */
+    max-height: 300px; /* Limit the height of the suggestions box */
+    overflow-y: auto; /* Add scroll to the suggestions box if content exceeds max height */
+  }
+  
+
+  .suggestions-container div {
+    padding: 10px; 
+    cursor: pointer; 
+    border-bottom: 1px solid #eee; 
+  }
+  
+  .suggestions-container div:hover {
+    background-color: #f9f9f9; 
+  }
+  
+  
+  #suggestionsContainer {
+    display: none;
+  }
+  
