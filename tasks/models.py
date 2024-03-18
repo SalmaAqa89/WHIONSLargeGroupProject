@@ -99,6 +99,23 @@ class Calendar(models.Model):
     title = models.CharField(max_length=50)
     text = models.TextField()
 
+
+class Template(models.Model):
+    name = models.CharField(max_length = 50, blank = False)
+    questions = models.CharField(max_length =255,blank = True)
+    user_entry = models.BooleanField(default = True)
+    deleted = models.BooleanField(default = False)
+     
+
+    def get_questions(self):
+        return self.questions
+
+    def get_questions_array(self):
+        return self.questions.split(',')
+
+    def set_questions_array(self, values):
+        self.questions = ','.join(values)
+
 class FlowerGrowth(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     stage = models.IntegerField(default=0)
@@ -115,4 +132,5 @@ class FlowerGrowth(models.Model):
     def update_last_entry_date(self, date):
         self.last_entry_date = date
         self.save()
+
 
