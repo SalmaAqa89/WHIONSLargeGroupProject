@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm,TemplateForm
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
 from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
 from tasks.helpers import login_prohibited
 from django.db.models import Count
@@ -19,7 +19,7 @@ from datetime import timedelta
 from collections import Counter
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from tasks.models import JournalEntry,Template
+from tasks.models import JournalEntry
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from tasks.helpers import login_prohibited
 from reportlab.lib.pagesizes import letter
@@ -46,7 +46,7 @@ from datetime import timedelta
 
 
 
-DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template","placeholder":"replace this text with your own questions"}
+DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 @login_required
 def dashboard(request):
@@ -80,7 +80,7 @@ def favourites(request):
 
 @login_required
 def templates(request):
-    return render(request, 'templates.html', {"templates": Template.objects.all()})
+    return render(request, 'templates.html', {"templates": [DEFAULT_TEMPLATE]})
 
 @login_required
 def trash(request):
@@ -96,18 +96,6 @@ def home(request):
     """Display the application's start/home screen."""
 
     return render(request, 'home.html')
-
-def template_choices(request):
-    if request.method == 'POST':
-        selected_template_name = request.POST.get('selected_template_name')
-        request.session['template_name'] = selected_template_name
-        logger.info(f"template_name set in session: {selected_template_name}")
-        return redirect('create_entry')
-
-    templates = Template.objects.all()  
-    context = {'templates': templates}
-    
-    return render(request, 'template_choices.html', context)
 
 def export_journal_entry_to_pdf(request, entry_id):
     journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
@@ -330,56 +318,18 @@ class SignUpView(LoginProhibitedMixin, FormView):
         return reverse("set_preferences")
     
    
-
-
-class CreateTemplateView(LoginRequiredMixin, FormView):
-    """Display the create template screen and handle entry creation"""
-
-    form_class = TemplateForm
-    template_name = "create_template.html"
-
-    def get_form_kwargs(self, **kwargs):
-        """Pass the current user to the create entry form."""
-
-        kwargs = super().get_form_kwargs(**kwargs)
-        kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["placeholder"]})
-        return kwargs
-
-
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-    
-
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, "Created new template!")
-        return reverse('templates')
-
-
-
 class CreateJournalEntryView(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
     form_class = JournalEntryForm
     template_name = "create_entry.html"
 
-    
-    template_instance, created = Template.objects.get_or_create(name=template_name)
-    text = template_instance.get_questions
-        
-    def get_template_name(self):
-        # Get the dynamic template_name from the session
-        return self.request.session.get('template_name', 'default_template')
-
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
-        template_name = self.get_template_name()
-        template_instance, created = Template.objects.get_or_create(name=template_name)
-        text = template_instance.get_questions()
-        kwargs = super().get_form_kwargs(**kwargs)
-        kwargs.update({'user': self.request.user, 'text': text})
-        return kwargs
 
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
+        return kwargs
 
     def form_valid(self, form):
         journal_entry = form.save(commit=False)
@@ -402,7 +352,6 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
         return reverse('journal_log')
-    
 
 def delete_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
