@@ -28,7 +28,7 @@ class SetPreferenceViewTestCase(TestCase, LogInTester):
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'set_preferences.html')
+        self.assertTemplateUsed(response, 'registration/set_preferences.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, UserPreferenceForm))
         self.assertFalse(form.is_bound)
@@ -55,5 +55,5 @@ class SetPreferenceViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, form_data, follow=True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'pages/dashboard.html')
         self.assertTrue(UserPreferences.objects.filter(user=self.user).exists())

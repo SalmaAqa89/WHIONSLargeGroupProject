@@ -25,4 +25,4 @@ class TestFavouritesTestCase(TestCase):
         self.client.login(username="@peterpickles", password="Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'favourites.html')
+        self.assertTemplateUsed(response, 'pages/favourites.html')

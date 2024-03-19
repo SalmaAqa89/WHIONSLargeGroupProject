@@ -130,12 +130,13 @@ class JournalEntryForm(forms.ModelForm):
         self.user = user
         self.fields['text'].initial = text
     
-    def save(self):
+    def save(self, commit=True):
         """Create a new journal entry"""
         new_journal_entry = super().save(commit=False)
-
-        new_journal_entry.user = self.user
-        new_journal_entry.save()
+        if self.user:
+            new_journal_entry.user = self.user
+        if commit:
+            new_journal_entry.save()
         return new_journal_entry
     
 class JournalEntryForm(forms.ModelForm):

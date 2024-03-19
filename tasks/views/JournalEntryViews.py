@@ -42,6 +42,7 @@ from django.http import HttpResponse
 from reportlab.lib.enums import TA_CENTER
 from datetime import timedelta
 
+
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 

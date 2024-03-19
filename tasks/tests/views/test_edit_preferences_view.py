@@ -27,7 +27,7 @@ class EditPreferencesViewTestCase(TestCase, LogInTester):
         UserPreferences.objects.create(user=self.user, journal_time='17:30:00')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'edit_preferences.html')
+        self.assertTemplateUsed(response, 'registration/edit_preferences.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, UserPreferenceForm))
         self.assertFalse(form.is_bound)
@@ -48,7 +48,7 @@ class EditPreferencesViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, form_data, follow=True)
         redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'dashboard.html')
+        self.assertTemplateUsed(response, 'pages/dashboard.html')
         self.assertTrue(UserPreferences.objects.filter(user=self.user, journal_time='18:00:00').exists())
 
     def test_edit_preferences_form_invalid(self):
@@ -59,5 +59,5 @@ class EditPreferencesViewTestCase(TestCase, LogInTester):
         }
         response = self.client.post(self.url, form_data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'edit_preferences.html')
+        self.assertTemplateUsed(response, 'registration/edit_preferences.html')
         self.assertTrue(response.context['form'].errors)
