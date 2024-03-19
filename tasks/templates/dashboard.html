@@ -5,8 +5,10 @@
   <div class="row header-text">
     <div class="col-12">
       <h1>Welcome to your Journal, {{ user.username }}</h1>
-      <h2>This is your weekly journal flower</h2>
-      <p>Each day you log an entry, your flower grows, symbolising your progress. Miss a day, and the flower returns to a seed, reminding you to stay consistent. There are seven stages of growth, reflecting a full week of journaling. Regardless of your flower's growth stage, it resets every Monday, offering a fresh start.</p>
+      <p>Nurture your progress with daily entries. Each day, your flower grows, reflecting your dedication. Miss a day, and it resets, reminding you to stay consistent.</p>
+        <p>Witness your journey over seven stages of growth. Every Monday, it resets, offering a fresh start.</p>
+        <p>Journal today and let your flower flourish. Happy journaling! </p>
+        <div>Journal Streak Days: {{journal_streak}}</div> 
       <div class="flower-container">
         {% with request.user.flowergrowth.stage as stage %}
             {% if stage == 0 %}
@@ -28,10 +30,9 @@
             {% endif %}
         {% endwith %}
     </div>
-      <div>Number of days since Account is created: {{days_since_account_creation}}</div>
-      <div>Number of days Journaled: {{days_journaled}}</div>
-      <div>Journal Streak Days: {{journal_streak}}</div>
+
       <h2>Calendar</h2>
+      <p>Click on any day to view your journal entries from that date.</p>
     </div>
     <div id="calendarApp">
       <div class="calendar-controls">
