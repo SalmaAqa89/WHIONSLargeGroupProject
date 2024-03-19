@@ -1,51 +1,107 @@
 {% extends 'base_content2.html' %}
+
 {% block content %}
 <div class="container">
   <div class="row">
     <div class="col-12">
       <h1>Welcome to your Journal Log</h1>
       <a href="{% url 'create_entry' %}" class="btn btn-primary">New Journal Entry</a>
-      <button id="toggleSelect" class="btn btn-info">Select</button>
-      <div class="dropdown" style="display:none;" id="exportOptions">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Export
-        </button>
-        <div class="dropdown-menu" aria-labelledby="exportDropdown">
-          <a class="dropdown-item" href="#" onclick="exportSelected('pdf')">Export to PDF</a>
-          <a class="dropdown-item" href="#" onclick="exportSelected('rtf')">Export to RTF</a>
-        </div>
-      </div>
+
+      <!-- Search Form -->
+      <form method="get" action="{% url 'search_journal' %}" id="search-form" class="form-inline">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Search Journals..." class="form-control" id="journal-search-box" oninput="showJournalSuggestions(this.value)">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+
+      <!-- Styling for search form and suggestions container -->
+      <style>
+        #search-form .form-control {
+          width: auto;
+        }
+        #search-form .btn {
+          width: auto;
+        }
+        #journal-suggestions-container {
+          position: absolute;
+          width: auto;
+          background: lightblue;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          border-radius: 0 0 5px 5px;
+          overflow: hidden;
+          z-index: 1000;
+        }
+        #journal-suggestions-container > div {
+          padding: 10px;
+          border-bottom: 1px solid #eee;
+          cursor: pointer;
+        }
+        #journal-suggestions-container > div:hover {
+          background-color: #f9f9f9;
+        }
+      </style>
+
+      <div id="journal-suggestions-container" class="suggestions-container"></div>
+      <a href="{% url 'journal_log' %}" class="btn btn-secondary">View All Entries</a>
+
+      <!-- Cards for Journal Entries -->
       <div class="card-deck">
         {% for entry in journal_entries %}
-        {% if not entry.deleted %}
-          <div class="card mb-3" id="entry{{ entry.id }}">
-            <div class="card-body">
-              <input type="checkbox" class="selectCheckbox" style="display:none;" data-entry-id="{{ entry.id }}">
-              {% if entry.favourited %}
-              <a href="{% url 'unfavourite_entry' entry_id=entry.id %}" class="favourite"><img src="http://www.clker.com/cliparts/g/R/o/O/K/1/simple-star-md.png" height="20" width="20"></a>
-              {% else %}
-              <a href="{% url 'favourite_entry' entry_id=entry.id %}" class="favourite"><img src="http://www.clker.com/cliparts/2/4/T/f/0/4/star-grey-md.png" height="20" width="20"></a>
-              {% endif %}
-              <h5 class="card-title">{{ entry.title }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
-              <p class="card-text">{{ entry.text|safe }}</p>
-              <p>Mood: {{ entry.get_mood_display }}</p>
-              <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger">Delete Entry</a>
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="individualExportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Export
-                </button>
-                <div class="dropdown-menu" aria-labelledby="individualExportDropdown">
-                  <a class="dropdown-item" href="{% url 'export_journal_entry_to_pdf' entry_id=entry.id %}">Export to PDF</a>
-                  <a class="dropdown-item" href="{% url 'export_journal_entry_to_rtf' entry_id=entry.id %}">Export to RTF</a>
+          {% if not entry.deleted %}
+            <div class="card mb-3" id="entry{{ entry.id }}">
+              <div class="card-body">
+                <input type="checkbox" class="selectCheckbox" style="display:none;" data-entry-id="{{ entry.id }}">
+                {% if entry.favourited %}
+                  <a href="{% url 'unfavourite_entry' entry_id=entry.id %}" class="favourite">
+                    <img src="http://www.clker.com/cliparts/g/R/o/O/K/1/simple-star-md.png" height="20" width="20">
+                  </a>
+                {% else %}
+                  <a href="{% url 'favourite_entry' entry_id=entry.id %}" class="favourite">
+                    <img src="http://www.clker.com/cliparts/2/4/T/f/0/4/star-grey-md.png" height="20" width="20">
+                  </a>
+                {% endif %}
+                <h5 class="card-title">{{ entry.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
+                <p class="card-text" id="preview-{{ entry.id }}">{{ entry.text|truncatewords:50 }}</p>
+                <p class="card-text d-none" id="full-text-{{ entry.id }}">{{ entry.text|safe}}</p>
+           <button class="btn btn-primary see-more" onclick="openJournalEntryInNewWindow('{{ entry.id }}')">See More</button>
+    
+
+               
+                <p>Mood: {{ entry.get_mood_display }}</p>
+                <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger">Delete Entry</a>
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="individualExportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Export
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="individualExportDropdown">
+                    <a class="dropdown-item" href="{% url 'export_journal_entry_to_pdf' entry_id=entry.id %}">Export to PDF</a>
+                    <a class="dropdown-item" href="{% url 'export_journal_entry_to_rtf' entry_id=entry.id %}">Export to RTF</a
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            {% endif %}
+          {% empty %}
+            <p>No journal entries found.</p>
+          {% endfor %}
+        </div>
+      
+        <!-- Select and Export Buttons -->
+        <button id="toggleSelect" class="btn btn-info" onclick="toggleSelectVisibility()">Select</button>
+        <div class="dropdown" style="display:none;" id="exportOptions">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Export
+          </button>
+          <div class="dropdown-menu" aria-labelledby="exportDropdown">
+            <a class="dropdown-item" href="#" onclick="exportSelected('pdf')">Export to PDF</a>
+            <a class="dropdown-item" href="#" onclick="exportSelected('rtf')">Export to RTF</a>
           </div>
-        {% endif %}
-        {% endfor %}
+        </div>
+      
       </div>
     </div>
   </div>
-</div>
-{% endblock %}
+  
+    
+  {% endblock %}      

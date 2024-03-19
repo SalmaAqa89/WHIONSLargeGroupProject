@@ -137,7 +137,9 @@ class JournalEntryForm(forms.ModelForm):
         new_journal_entry.user = self.user
         new_journal_entry.save()
         return new_journal_entry
-    
+class JournalSearchForm(forms.Form):
+    title = forms.CharField(required=False)
+  
 class JournalEntryForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""
     
@@ -181,7 +183,6 @@ class UserPreferenceForm(forms.ModelForm):
             'saturday': forms.CheckboxInput(),
             'sunday': forms.CheckboxInput(),
         }
-
 
 
 
