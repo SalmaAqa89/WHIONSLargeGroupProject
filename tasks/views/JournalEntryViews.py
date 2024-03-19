@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
@@ -12,7 +11,6 @@ from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
 from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
-from tasks.helpers import login_prohibited
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
@@ -51,7 +49,7 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
     form_class = JournalEntryForm
-    template_name = "create_entry.html"
+    template_name = "components/create_entry.html"
 
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
@@ -203,7 +201,7 @@ def mood_breakdown(request):
         'mood_chart': mood_chart,
     }
 
-    return render(request, 'mood_breakdown.html', context)
+    return render(request, 'pages/mood_breakdown.html', context)
 
 def export_journal_entry_to_pdf(request, entry_id):
     journal_entry = get_object_or_404(JournalEntry, pk=entry_id)

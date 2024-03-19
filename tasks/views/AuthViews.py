@@ -2,47 +2,16 @@ from venv import logger
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
 from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
-from tasks.helpers import login_prohibited
-from django.db.models import Count
-from django.utils import timezone
-from datetime import timedelta
-from collections import Counter
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from tasks.models import JournalEntry
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from tasks.helpers import login_prohibited
-from reportlab.lib.pagesizes import letter
-from django.http import HttpResponse
-from datetime import timedelta
-from reportlab.lib.enums import TA_CENTER
-import matplotlib
-matplotlib.use('Agg')  
-import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
-from tasks.models import JournalEntry
-from tasks.helpers import login_prohibited
-from datetime import datetime, timedelta
-from django_celery_beat.models import PeriodicTask, IntervalSchedule
-from reportlab.pdfgen import canvas
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.pagesizes import letter
-from django.http import HttpResponse
-from reportlab.lib.enums import TA_CENTER
-from datetime import timedelta
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
@@ -99,7 +68,7 @@ class LogInView(LoginProhibitedMixin, View):
         """Render log in template with blank log in form."""
 
         form = LogInForm()
-        return render(self.request, 'log_in.html', {'form': form, 'next': self.next})
+        return render(self.request, 'registration/log_in.html', {'form': form, 'next': self.next})
 
 
 def log_out(request):
@@ -112,7 +81,7 @@ def log_out(request):
 class PasswordView(LoginRequiredMixin, FormView):
     """Display password change screen and handle password change requests."""
 
-    template_name = 'password.html'
+    template_name = 'registration/password.html'
     form_class = PasswordForm
 
     def get_form_kwargs(self, **kwargs):
@@ -140,7 +109,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
     model = UserForm
-    template_name = "profile.html"
+    template_name = "components/profile.html"
     form_class = UserForm
 
     def get_object(self):
@@ -158,7 +127,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
     """Display the sign up screen and handle sign ups."""
 
     form_class = SignUpForm
-    template_name = "sign_up.html"
+    template_name = "registration/sign_up.html"
     redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN
     
 
@@ -176,7 +145,7 @@ class SetPreferences(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
     form_class = UserPreferenceForm
-    template_name = "set_preferences.html"
+    template_name = "registration/set_preferences.html"
 
     def dispatch(self, request, *args, **kwargs):
         """ If a preference form has already been made for the user they do not 
@@ -205,7 +174,7 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
     model = UserPreferences
-    template_name = "edit_preferences.html"
+    template_name = "registration/edit_preferences.html"
     form_class = UserPreferenceForm
 
      
