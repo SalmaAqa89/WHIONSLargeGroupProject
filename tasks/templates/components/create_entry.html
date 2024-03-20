@@ -7,19 +7,22 @@
 <div class="container">
     <div class="row">
       <div class="col-sm-12 col-md-6 offset-md-3">
-        <h1>Create Journal Entry</h1>
-        <p>Choose to type or speak your thoughts. Express yourself in anyway you desire!</p>
-        <form action="{% url 'create_entry' %}" method="post" enctype="multipart/form-data">
+        <h2 class="mt-3">What's On Your Mind?</h2>
+        <div class="copy-div mt-3">
+          <p>Choose to type or speak your thoughts. Express yourself in anyway you desire!</p>
+        </div>
+        <form action="{% url 'create_entry' %}" method="post" enctype="multipart/form-data" class="mt-4">
           {% csrf_token %}
           {% include 'partials/bootstrap_form.html' with form=form %}
           {{ form.media }}
           <button type="button" id="toggle-record-btn" class="btn">
             <i class="fas fa-microphone"></i> 
           </button>
-          <input type="submit" value="Create Entry" class="btn btn-primary">
+          <input type="submit" value="Create Entry" class="btn btn-secondary">
         </form>
-        <p>To upload images, click on the image icon, then go to "Upload", upload your image, click "Send it to the Server", then "Ok".</p>
-          <p>You'll be able to effortlessly reuse images if you desire, by viewing previously uploaded images by going to "Image Info", then "Browse Server"!</p>
+        <div class="copy-div mt-3 info-copy">
+          <p class="text-center">To upload images, click on the image icon, then go to "Upload", upload your image, click "Send it to the Server", then "Ok"!</p>
+        </div>
       </div>
     </div>
   </div>
