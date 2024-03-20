@@ -156,8 +156,9 @@ def generate_mood_chart(user):
     mood_labels = [get_mood_representation(mood) for mood in mood_counts.keys()]
     counts = list(mood_counts.values())
 
+
     fig, ax = plt.subplots()
-    ax.bar(mood_labels, counts)
+    ax.bar(mood_labels, counts, color='#B6E2B8')
 
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -166,6 +167,9 @@ def generate_mood_chart(user):
 
     for i, count in enumerate(counts):
         ax.text(i, count + 0.1, str(count), ha='center')
+
+    ax.set_xlabel('Mood')
+    ax.set_ylabel('Average Count')
 
     flike = BytesIO()
     plt.savefig(flike, format='png', bbox_inches='tight')

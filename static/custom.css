@@ -141,6 +141,12 @@ p.cover-text {
 
 .entry-card{
   border-radius: 20px !important;
+  border: none !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.075);
+}
+
+.entry-card:hover{
+  box-shadow: 0 10px 20px rgba(178, 213, 200, 0.502);
 }
 
 
@@ -465,7 +471,7 @@ h3.profile-title {
 
 
 .copy-div{
-  padding: 10px;
+  padding: 5px;
   background-color: #FEFEFE; 
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
@@ -480,7 +486,7 @@ h3.profile-title {
   
 }
 
-.favourite{
+.card-icons{
   position: absolute;
   right: 20px;
 }
@@ -496,4 +502,33 @@ h3.profile-title {
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
   font-style: normal;
+}
+
+.trash-div{
+  border-radius: 10px !important;
+}
+
+.nav{
+  margin-top: 10px;
+  justify-content: center !important; 
+}
+
+.card-header{
+  background-color: #fefefe !important;
+  box-shadow:rgb(2, 48, 32, 0.05) 0px 0px 10px 0px;
+  border-radius: 10px !important;
+}
+
+.card{
+  border: none !important;
+  
+}
+
+.nav-link.active{
+  background-color: #2E7D32!important;
+  color: white !important;
+}
+
+.nav-link{
+  color: #2E7D32 !important;
 }
