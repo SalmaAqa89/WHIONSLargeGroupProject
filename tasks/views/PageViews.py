@@ -17,6 +17,7 @@ from django.urls import reverse
 
 
 
+
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 @login_required
@@ -46,39 +47,24 @@ def dashboard(request):
 
 @login_required
 def journal_log(request):
-    if request.user.is_authenticated != True:
-        return redirect(reverse('log_in'))
-    else:
-        return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
+    return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
 
 @login_required
 def favourites(request):
-    if request.user.is_authenticated != True:
-        return redirect(reverse('log_in'))
-    else:
-        return render(request, 'pages/favourites.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user, favourited=True)})
+    return render(request, 'pages/favourites.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user, favourited=True)})
 
 @login_required
 def templates(request):
-    if request.user.is_authenticated != True:
-        return redirect(reverse('log_in'))
-    else:
-        return render(request, 'pages/templates.html', {"templates": [DEFAULT_TEMPLATE]})
+    return render(request, 'pages/templates.html', {"templates": [DEFAULT_TEMPLATE]})
 
 @login_required
 def trash(request):
-    if request.user.is_authenticated != True:
-        return redirect(reverse('log_in'))
-    else:
-        return render(request, 'pages/trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user, deleted=True, permanently_deleted=False)})
+    return render(request, 'pages/trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user, deleted=True, permanently_deleted=False)})
 
 
 @login_prohibited
 def home(request):
-    if request.user.is_authenticated != True:
-        return redirect(reverse('log_in'))
-    else:
-        """Display the application's start/home screen."""
+    """Display the application's start/home screen."""
 
-        return render(request, 'pages/home.html')
+    return render(request, 'pages/home.html')
 

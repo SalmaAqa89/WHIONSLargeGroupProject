@@ -11,7 +11,6 @@ class JournalEntryUpdateViewTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
-        self.client.login(username=self.user.username, password='Password123')
         self.journal_entry = JournalEntry.objects.create(user=self.user, title='Test Title', text='Test Text')
         self.url = reverse('edit_entry', kwargs={'pk': self.journal_entry.pk})
         self.form_input = {
@@ -26,6 +25,7 @@ class JournalEntryUpdateViewTestCase(TestCase):
         self.assertEqual(self.url, expected_url)
 
     def test_get_edit_journal_entry(self):
+        self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(reverse('edit_entry', kwargs={'pk': self.journal_entry.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'components/edit_entry.html')
@@ -36,6 +36,7 @@ class JournalEntryUpdateViewTestCase(TestCase):
 
     
     def test_successful_edit_entry(self):
+        self.client.login(username=self.user.username, password='Password123')
         before_count = JournalEntry.objects.count()
         response = self.client.post(self.url, data=self.form_input, follow=True)
         after_count = JournalEntry.objects.count()
@@ -49,6 +50,7 @@ class JournalEntryUpdateViewTestCase(TestCase):
         self.assertEqual(self.journal_entry.mood, 3)
 
     def test_unsuccessful_edit_entry(self):
+        self.client.login(username=self.user.username, password='Password123')
         self.form_input['title'] = ''
         before_count = JournalEntry.objects.count()
         response = self.client.post(self.url, self.form_input)
