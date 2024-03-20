@@ -35,40 +35,48 @@ from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEn
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from datetime import datetime, timedelta
+
 from tasks.forms import JournalSearchForm
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Q
 from reportlab.pdfgen import canvas
 
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
+from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.pagesizes import letter
+from django.http import HttpResponse
+from reportlab.lib.enums import TA_CENTER
+from datetime import timedelta
+
+
 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 @login_required
+@login_required
 def dashboard(request):
-    year = request.GET.get('year', datetime.now().year)
-    month = request.GET.get('month', datetime.now().month)
-    year, month = int(year), int(month)  
+    now = timezone.now()
+    all_entries = JournalEntry.objects.filter(user=request.user)
+    dates_journaled = {entry.created_at.date() for entry in all_entries}
+    streak = 0
+    date = now.date()
+    while True:
+        if date in dates_journaled:
+            streak += 1
+        elif date != now.date():
+            break
+        date -= timedelta(days=1)
 
-   
-    cal = CustomHTMLCalendar(year, month).formatmonth()
-
-    
-    current_date = datetime(year, month, 1)
-    next_month = current_date + timedelta(days=31)
-    prev_month = current_date - timedelta(days=1)
 
     return render(request, 'dashboard.html', {
         'user': request.user,
-        'calendar': cal,
-        'year': year,
-        'month': month,
-        'next_month': next_month.month,
-        'next_month_year': next_month.year,
-        'prev_month': prev_month.month,
-        'prev_month_year': prev_month.year,
-        'month_name': current_date.strftime('%B'),
+        'days_since_account_creation': (now - request.user.created_at).days,
+        'days_journaled': len(dates_journaled),
+        'journal_streak': streak,
     })
 
 @login_required
@@ -627,3 +635,4 @@ def search_favouriteSuggestion(request):
     else:
         suggestions = []
     return JsonResponse({'suggestions': list(suggestions)})   
+

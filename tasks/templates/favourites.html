@@ -17,10 +17,7 @@
               <a href="{% url 'unfavourite_entry' entry_id=entry.id %}" class="favourite">
                 <img src="http://www.clker.com/cliparts/g/R/o/O/K/1/simple-star-md.png" height="20" width="20">
               </a>
-              <!--<h5 class="card-title">{{ entry.title }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
-              <p class="card-text">{{ entry.text|linebreaks }}</p>-->
-              
+            
               <h5 class="card-title">{{ entry.title }}</h5>
               <details id="details-{{ entry.id }}">
                 <summary id="summary-{{ entry.id }}">See More</summary>

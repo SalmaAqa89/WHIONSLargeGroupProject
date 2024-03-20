@@ -6,6 +6,8 @@ from .models import User, JournalEntry, Calendar, UserPreferences
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 
+
+
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
 
@@ -165,8 +167,11 @@ class JournalEntryForm(forms.ModelForm):
             new_journal_entry.save() 
         return new_journal_entry
 
+
 class JournalSearchForm(forms.Form):
     title = forms.CharField(required=False)
+
+
 
 class CalendarForm(forms.ModelForm):
     """Form allowing user to create a journal entry"""

@@ -51,6 +51,7 @@ urlpatterns = [
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+
     path('search/', views.search_journal, name='search_journal'),
     path('journal/<int:entry_id>/', views.journal_detail, name='journal_detail'),
     path('search-suggestions/', views.search_suggestions, name='search-suggestions'),
@@ -60,6 +61,11 @@ urlpatterns = [
     path('search/favouritesuggestion/', views.search_favouriteSuggestion, name='search_favouriteSuggestion'),
 
     ]
+
+
+
+
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

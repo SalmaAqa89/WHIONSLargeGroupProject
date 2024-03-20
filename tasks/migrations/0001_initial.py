@@ -2,11 +2,9 @@
 
 import ckeditor_uploader.fields
 from django.conf import settings
-from django.conf import settings
 import django.contrib.auth.models
 import django.core.validators
 from django.db import migrations, models
-import django.db.models.deletion
 import django.db.models.deletion
 import django.utils.timezone
 
@@ -83,43 +81,6 @@ class Migration(migrations.Migration):
                 ('stage', models.IntegerField(default=0)),
                 ('last_entry_date', models.DateField(blank=True, null=True)),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Calendar',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50)),
-                ('text', models.TextField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='UserPreferences',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('monday', models.BooleanField(default=True)),
-                ('tuesday', models.BooleanField(default=True)),
-                ('wednesday', models.BooleanField(default=True)),
-                ('thursday', models.BooleanField(default=True)),
-                ('friday', models.BooleanField(default=True)),
-                ('saturday', models.BooleanField(default=True)),
-                ('sunday', models.BooleanField(default=True)),
-                ('journal_time', models.TimeField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='JournalEntry',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50)),
-                ('text', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('deleted', models.BooleanField(default=False)),
-                ('mood', models.IntegerField(choices=[(1, 'Very Sad 😔'), (2, 'Sad 🙁'), (3, 'Neutral 😐'), (4, 'Happy 🙂'), (5, 'Very Happy😄')], default=3)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
