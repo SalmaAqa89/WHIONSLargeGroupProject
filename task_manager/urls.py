@@ -40,6 +40,7 @@ urlpatterns = [
     path('favourites/',views.favourites,name ='favourites'),
     path('mood_breakdown/',views.mood_breakdown,name ='mood_breakdown'),
     path('templates/',views.templates,name ='templates'),
+    path('template_choices/',views.template_choices,name = 'template_choices'),
     path('trash/',views.trash,name ='trash'),
     path('create_entry/', views.CreateJournalEntryView.as_view(), name="create_entry"),
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
@@ -51,6 +52,7 @@ urlpatterns = [
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+    path('create_template/',views.CreateTemplateView.as_view(),name = "create_template"),
 
 
     ]

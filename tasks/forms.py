@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, JournalEntry, Calendar, UserPreferences
+from .models import User, JournalEntry, Calendar, UserPreferences, Template
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 class LogInForm(forms.Form):
@@ -182,7 +182,30 @@ class UserPreferenceForm(forms.ModelForm):
             'sunday': forms.CheckboxInput(),
         }
 
+class TemplateForm(forms.ModelForm):
+    """Form allowing user to create a journal entry"""
+    
+    widgets = {
+            'text': CKEditorUploadingWidget(),  
+        }
+    
+    class Meta:
+        model = Template
+        fields = ['name', 'questions']
+        
+    def __init__(self, user,text, **kwargs):
+        """Construct new form instance with a user instance."""
+        
+        super().__init__(**kwargs)
+        self.user = user
+    
+    def save(self):
+        """Create a new journal entry"""
+        new_template = super().save(commit=False)
 
+        new_template.user = self.user
+        new_template.save()
+        return new_template
 
 
 
