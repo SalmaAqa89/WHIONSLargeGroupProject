@@ -50,7 +50,9 @@ urlpatterns = [
     path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
-    path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload') 
+    path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+
+
 
     ]
 

@@ -11,7 +11,7 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
-from tasks.models import JournalEntry, UserPreferences, User
+from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
 from tasks.helpers import login_prohibited
 from django.db.models import Count
 from django.utils import timezone
@@ -29,6 +29,15 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Image
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
+from tasks.models import JournalEntry
+from tasks.helpers import login_prohibited
+from datetime import datetime, timedelta
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
+from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+
 from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from datetime import timedelta
@@ -40,8 +49,6 @@ import base64
 from datetime import datetime
 from PyPDF2 import PdfMerger
 import tempfile
-
-
 
 
 
@@ -339,11 +346,13 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def form_valid(self, form):
         self.object = form.save()
         login(self.request, self.object)
+        FlowerGrowth.objects.create(user=self.object, stage=0)
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("set_preferences")
     
+
 class CreateJournalEntryView(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
@@ -357,11 +366,23 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
         kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
         return kwargs
 
-
     def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-    
+        journal_entry = form.save(commit=False)
+        journal_entry.user = self.request.user
+        journal_entry.save()
+
+        today = timezone.now().date()
+        try:
+            flower_growth = FlowerGrowth.objects.get(user=self.request.user)
+        except FlowerGrowth.DoesNotExist:
+            flower_growth = FlowerGrowth.objects.create(user=self.request.user)
+
+        if flower_growth.last_entry_date is None or flower_growth.last_entry_date != today:
+            if flower_growth.stage < 7:
+                flower_growth.increment_stage()
+            flower_growth.update_last_entry_date(today)
+
+        return super(CreateJournalEntryView, self).form_valid(form)
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
@@ -514,6 +535,7 @@ class SetPreferences(LoginRequiredMixin, FormView):
         user_preference.user = self.request.user
         user_preference.save()
         messages.success(self.request, "Preferences Saved!")
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -543,4 +565,4 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
             for error in errors:
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
-    
+
