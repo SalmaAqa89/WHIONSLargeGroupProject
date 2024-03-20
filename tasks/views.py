@@ -35,6 +35,13 @@ from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEn
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from datetime import datetime, timedelta
+
+from tasks.forms import JournalSearchForm
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.db.models import Q
+from reportlab.pdfgen import canvas
+
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
@@ -46,8 +53,10 @@ from datetime import timedelta
 
 
 
+
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
+@login_required
 @login_required
 def dashboard(request):
     now = timezone.now()
@@ -477,6 +486,7 @@ def mood_breakdown(request):
     return render(request, 'mood_breakdown.html', context)
 
 
+
 class SetPreferences(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
@@ -530,4 +540,99 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
             for error in errors:
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
+
+
+
+@login_required
+def search_journal(request):
+    form = JournalSearchForm(request.GET or None)
+    journals = JournalEntry.objects.filter(user=request.user, deleted=False)
+
+    if form.is_valid():
+        title = form.cleaned_data.get('title')
+        if title:
+            journals = journals.filter(title__icontains=title)
+
+    
+    return render(request, 'journal_log.html', {'form': form, 'journal_entries': journals})
+
+
+@login_required
+def journal_entries(request):
+    form = JournalSearchForm(request.GET or None)
+    entries = JournalEntry.objects.all()
+    return render(request, 'journal_log.html', {'form':form,'journal_entries': entries})
+
+
+@login_required
+def journal_detail(request, entry_id):
+    journals = JournalEntry.objects
+    entry = get_object_or_404(JournalEntry, id=entry_id)
+    return render(request, 'journal_log.html', {'entry': entry})
+
+
+
+@login_required
+def search_suggestions(request):
+    query = request.GET.get('q', '')
+    if query:
+        # Return suggestions based on the query
+        suggestions = JournalEntry.objects.filter(
+            title__icontains=query,
+            deleted=False
+        ).values_list('title', flat=True)[:5]
+    else:
+        # Return top 5 suggestions when there's no query
+        # Adjust the ordering and filtering according to your needs
+        suggestions = JournalEntry.objects.filter(
+            deleted=False
+        ).order_by('-created_at').values_list('title', flat=True)[:5]
+    return JsonResponse({'suggestions': list(suggestions)})
+
+@login_required
+def search_trash(request):
+    query = request.GET.get('title', '')
+    journal_entries = JournalEntry.objects.filter(
+        title__icontains=query, 
+        deleted=True, 
+        user=request.user
+    )
+    return render(request, 'trash.html', {'journal_entries': journal_entries})
+
+
+@login_required
+def search_suggestions1(request):
+    query = request.GET.get('q', '')
+    if query:
+        suggestions = JournalEntry.objects.filter(title__icontains=query,deleted=True).values_list('title', flat=False)[:5]
+    else:
+        suggestions = []
+    return JsonResponse({'suggestions': list(suggestions)})
+
+@login_required
+def search_favourite (request):
+    query = request.GET.get('title', '')
+    journal_entries = JournalEntry.objects.filter(
+        title__icontains=query, 
+        deleted=False, 
+        user=request.user,
+        favourited = True
+    )
+    return render(request, 'favourites.html', {'journal_entries': journal_entries})
+
+
+
+@login_required
+def search_favouriteSuggestion(request):
+    query = request.GET.get('q', '')
+    if query:
+        suggestions = JournalEntry.objects.filter(
+            title__icontains=query, 
+            favourited=True,
+           
+            user=request.user   
+        ).values_list('title', flat=True)[:5] 
+    else:
+        suggestions = []
+    return JsonResponse({'suggestions': list(suggestions)})   
 

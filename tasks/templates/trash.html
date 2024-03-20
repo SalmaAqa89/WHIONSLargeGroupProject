@@ -8,19 +8,33 @@
       <p>You can choose to either restore your memories and journalling guides or say goodbye to them forever by permanently deleting them.</p>
       <div class = "card">
         <div class="card-header">
-          <ul class="nav nav-tabs" id = "nav-tab" role = "tablist">
-              <li class="nav-item">
-                  <a class="nav-link active" id = "nav-entries-tab" data-bs-toggle = "tab" href="#nav-entries" aria-controls = "nav-entries" aria-selected="True">Journal Entries</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" id = "nav-templates-tab" data-bs-toggle = "tab" href="#nav-templates" aria-controls = "nav-templates" aria-selected="False">Templates</a>
-              </li>
+          <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="nav-entries-tab" data-bs-toggle="tab" href="#nav-entries" aria-controls="nav-entries" aria-selected="True">Journal Entries</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="nav-templates-tab" data-bs-toggle="tab" href="#nav-templates" aria-controls="nav-templates" aria-selected="False">Templates</a>
+            </li>
+            <li class="nav-item ms-auto">
+              <div class="card-body">
+                <form method="get" action="{% url 'search_trash' %}" autocomplete="off" id="search-form" class="d-flex justify-content-between">
+                  <input type="text" name="title" placeholder="Search Deleted Journals..." class="form-control me-2" id="search-box" oninput="showSuggestions(this.value)">
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <div id="suggestionsContainer" class="suggestions-container"></div>
+
+             
+
+
+              </div>
+            </li>
           </ul>
-    
-          <div class = "tab-content" id = myTabContent>
-            <div class = "tab-pane fade show active" id = "nav-entries" role = "tabpanel" aria-labelledby="nav-entries-tab" >
-              <div class="card-deck">
-                {% for entry in journal_entries %}
+        </div>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="nav-entries" role="tabpanel" aria-labelledby="nav-entries-tab">
+            <div class="card-deck">
+              {% for entry in journal_entries %}
+                {% if entry.deleted %}
                   <div class="card mb-3">
                     <div class="card-body">
                       <h5 class="card-title">{{ entry.title }}</h5>
@@ -30,17 +44,20 @@
                       <a href="{% url 'recover_entry' entry_id=entry.id %}" class="btn btn-success">Recover Entry</a>
                     </div>
                   </div>
-                {% endfor %}
-              </div>
-            </div>
-            <div class = "tab fade active" id = "nav-templates" role = "tabpanel" aria-labelledby="nav-templates-tab">
-              <p>deleted templates will go here</p>
+                {% endif %}
+              {% endfor %}
             </div>
           </div>
+          <div class="tab-pane fade" id="nav-templates" role="tabpanel" aria-labelledby="nav-templates-tab">
+            <p>Deleted templates will go here.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 {% endblock %}
+
 
 
