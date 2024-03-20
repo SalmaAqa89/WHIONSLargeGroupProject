@@ -5,18 +5,27 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
-from tasks.models import JournalEntry, UserPreferences, User
+from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
 from tasks.helpers import login_prohibited
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
 from collections import Counter
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from tasks.models import JournalEntry
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from tasks.helpers import login_prohibited
+from reportlab.lib.pagesizes import letter
+from django.http import HttpResponse
+from datetime import timedelta
+from reportlab.lib.enums import TA_CENTER
 import matplotlib
 matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
@@ -25,12 +34,13 @@ import base64
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
-from calendar import HTMLCalendar
 from datetime import datetime, timedelta
 from tasks.forms import JournalSearchForm
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Q
+from reportlab.pdfgen import canvas
+
 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
@@ -61,11 +71,13 @@ def dashboard(request):
         'month_name': current_date.strftime('%B'),
     })
 
-
-
 @login_required
 def journal_log(request):
     return render(request, 'journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
+
+@login_required
+def favourites(request):
+    return render(request, 'favourites.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user, favourited=True)})
 
 @login_required
 def templates(request):
@@ -73,7 +85,7 @@ def templates(request):
 
 @login_required
 def trash(request):
-    return render(request, 'trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user)})
+    return render(request, 'trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user, deleted=True, permanently_deleted=False)})
 
 @login_required
 def mood_breakdown(request):
@@ -86,26 +98,99 @@ def home(request):
 
     return render(request, 'home.html')
 
-class CustomHTMLCalendar(HTMLCalendar):
-    def __init__(self, year=None, month=None):
-        super(CustomHTMLCalendar, self).__init__()
-        self.year = year
-        self.month = month
-        self.now = datetime.now()
-        self.today = self.now.day if self.now.year == year and self.now.month == month else None
+def export_journal_entry_to_pdf(request, entry_id):
+    journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
 
-    def formatday(self, day, weekday):
-        if day == 0:
-            return '<td class="calendar-cell noday">&nbsp;</td>'  
-        elif day == self.today:
-            return f'<td class="calendar-cell current-day"><button class="calendar-day-btn">{day}</button></td>'
-        else:
-            return f'<td class="calendar-cell"><button class="calendar-day-btn">{day}</button></td>'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.pdf"'
 
+    p = canvas.Canvas(response)
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(72, 800, journal_entry.title) 
 
-    def formatmonth(self, withyear=True):
-        return super().formatmonth(self.year, self.month, withyear)
+    p.setFont("Helvetica", 12)
+    text_object = p.beginText(72, 780)  
+    text_object.setLeading(15)  
 
+    for line in journal_entry.text.split('\n'):  
+        text_object.textLine(line)
+   
+    p.drawText(text_object)
+
+    p.showPage()
+    p.save()
+    return response
+
+def export_journal_entry_to_rtf(request, entry_id):
+    journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
+    response = HttpResponse(content_type='application/rtf')
+    response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.rtf"'
+    rtf_content = "{\\rtf1\\ansi\\deff0 "
+    rtf_content += "{\\b " + journal_entry.title + "}"
+    rtf_content += "\\line "
+    rtf_content += journal_entry.text.replace('\n', '\\line ')
+    rtf_content += " }"
+
+    response.write(rtf_content)
+    return response
+
+def get_pdf_elements_for_entry(entry, styles):
+    elements = []
+    title_style = ParagraphStyle(name='title_style', parent=styles['Title'], alignment=TA_CENTER)
+    
+   
+    elements.append(Paragraph(entry.title, title_style))
+    elements.append(Spacer(1, 12))
+    
+
+    content_style = styles['BodyText']
+    elements.append(Paragraph(entry.text, content_style))
+    elements.append(PageBreak())  
+
+    return elements
+def get_rtf_content_for_entry(entry):
+    rtf_content = []
+    rtf_content.append(r"{\pard\qc\b " + entry.title + r"\b0\par}")  
+    rtf_content.append(r"{\pard " + entry.text.replace("\n", r"\par ") + r"\par}") 
+    rtf_content.append(r"\page") 
+    return "\n".join(rtf_content)
+
+def export_entries(request):
+    entry_ids = request.GET.get('entries', '').split(',')
+    entry_ids = [int(id) for id in entry_ids if id.isdigit()]
+    export_format = request.GET.get('format', 'pdf')
+
+    entries = get_list_or_404(JournalEntry, id__in=entry_ids)
+
+    if export_format == 'pdf':
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="journal_entries.pdf"'
+        
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        styles = getSampleStyleSheet()
+        elements = []
+        
+        for entry in entries:
+            elements += get_pdf_elements_for_entry(entry, styles)
+        
+        doc.build(elements)
+        return response
+
+    elif export_format == 'rtf':
+        response = HttpResponse(content_type='application/rtf')
+        response['Content-Disposition'] = 'attachment; filename="journal_entries.rtf"'
+        
+        rtf_content = []
+        rtf_content.append(r"{\rtf1\ansi")  
+        for entry in entries:
+            rtf_content.append(get_rtf_content_for_entry(entry))
+        rtf_content.append("}")  
+
+        response.write("\n".join(rtf_content))
+        return response
+
+    else:
+        return HttpResponse("Unsupported format", status=400)
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
@@ -227,20 +312,18 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def form_valid(self, form):
         self.object = form.save()
         login(self.request, self.object)
+        FlowerGrowth.objects.create(user=self.object, stage=0)
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("set_preferences")
     
    
-
-
 class CreateJournalEntryView(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
     form_class = JournalEntryForm
     template_name = "create_entry.html"
-    model = JournalEntryForm
 
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
@@ -249,11 +332,23 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
         kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
         return kwargs
 
-
     def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-    
+        journal_entry = form.save(commit=False)
+        journal_entry.user = self.request.user
+        journal_entry.save()
+
+        today = timezone.now().date()
+        try:
+            flower_growth = FlowerGrowth.objects.get(user=self.request.user)
+        except FlowerGrowth.DoesNotExist:
+            flower_growth = FlowerGrowth.objects.create(user=self.request.user)
+
+        if flower_growth.last_entry_date is None or flower_growth.last_entry_date != today:
+            if flower_growth.stage < 7:
+                flower_growth.increment_stage()
+            flower_growth.update_last_entry_date(today)
+
+        return super(CreateJournalEntryView, self).form_valid(form)
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
@@ -282,12 +377,35 @@ def recover_journal_entry(request,entry_id):
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
-        entry.delete()
+        entry.permanently_delete()
         messages.add_message(request, messages.SUCCESS, "Entry deleted!")
         return redirect("journal_log") 
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
+    
+def favourite_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    if entry.user == request.user:
+        entry.favourited = True
+        entry.save()
+        messages.add_message(request,messages.SUCCESS,"Entry has been added to favourites!")
+        return redirect('journal_log')
+    else:
+        messages.add_message(request, messages.ERROR, "Entry is not yours!")
+        return redirect('journal_log')
+    
+def unfavourite_journal_entry(request,entry_id):
+    entry = JournalEntry.objects.get(pk=entry_id)
+    next_page = request.GET.get('next', "journal_log")
+    if entry.user == request.user:
+        entry.favourited = False
+        entry.save()
+        messages.add_message(request,messages.SUCCESS,"Entry has been removed from favourites!")
+        return redirect(next_page)
+    else:
+        messages.add_message(request, messages.ERROR, "Entry is not yours!")
+        return redirect(next_page)
 
 
 def get_mood_representation(mood, use_emoji=False):
@@ -384,6 +502,7 @@ class SetPreferences(LoginRequiredMixin, FormView):
         user_preference.user = self.request.user
         user_preference.save()
         messages.success(self.request, "Preferences Saved!")
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -481,3 +600,29 @@ def search_suggestions1(request):
     else:
         suggestions = []
     return JsonResponse({'suggestions': list(suggestions)})
+
+@login_required
+def search_favourite (request):
+    query = request.GET.get('title', '')
+    journal_entries = JournalEntry.objects.filter(
+        title__icontains=query, 
+        deleted=False, 
+        user=request.user,
+        favourited = True
+    )
+    return render(request, 'favourites.html', {'journal_entries': journal_entries})
+
+
+@login_required
+def search_favouriteSuggestion(request):
+    query = request.GET.get('q', '')
+    if query:
+        suggestions = JournalEntry.objects.filter(
+            title__icontains=query, 
+            favourited=True,
+           
+            user=request.user   
+        ).values_list('title', flat=True)[:5] 
+    else:
+        suggestions = []
+    return JsonResponse({'suggestions': list(suggestions)})   

@@ -47,36 +47,10 @@ function selectJournalSuggestion(value) {
     document.getElementById('journal-suggestions-container').style.display = 'none';
      searchBox.form.submit();
 }
-//   function toggleText(entryId) {
-//     var preview = document.getElementById('preview-' + entryId);
-//     var fullText = document.getElementById('full-text-' + entryId);
-//     preview.classList.toggle('d-none');
-//     fullText.classList.toggle('d-none');
-//   }
 
-// function toggleText(entryId) {
-//     var preview = document.getElementById('preview-' + entryId);
-//     var fullText = document.getElementById('full-text-' + entryId);
-
-//     // Check if the full text is currently shown
-//     if (fullText.classList.contains('d-none')) {
-//       // Show the full text and hide the preview
-//       preview.classList.add('d-none');
-//       fullText.classList.remove('d-none');
-//     } else {
-//       // Hide the full text and show the preview
-//       fullText.classList.add('d-none');
-//       preview.classList.remove('d-none');
-//     }
-//   }
-
-
-  function openJournalEntryInNewWindow(entryId) {
-    var entryText = document.getElementById('full-text-' + entryId).innerHTML;
-    var newWindow = window.open("", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-    newWindow.document.write(entryText);
-    newWindow.document.write('<p><button onclick="window.close()">Hide</button></p>');
-    newWindow.document.close(); 
-  }
   
 
+
+
+ 
+  

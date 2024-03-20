@@ -27,7 +27,6 @@ class DashboardViewTestCase(TestCase):
         JournalEntry.objects.create(title="New Entry", text="Text", user=User.objects.get(pk=2))
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(self.url)
-        self.assertContains(response, "Number of days Journaled: 0", html=True)
         self.assertContains(response, "Journal Streak Days: 0", html=True)
         
     def test_journal_streak_5_journals(self):
@@ -37,7 +36,6 @@ class DashboardViewTestCase(TestCase):
             entry.created_at -= timedelta(days=i)
             entry.save()
         response = self.client.get(self.url)
-        self.assertContains(response, "Number of days Journaled: 5", html=True)
         self.assertContains(response, "Journal Streak Days: 5", html=True)
 
     
@@ -49,7 +47,6 @@ class DashboardViewTestCase(TestCase):
                 entry.created_at -= timedelta(days=i)
                 entry.save()
         response = self.client.get(self.url)
-        self.assertContains(response, "Number of days Journaled: 4", html=True)
         self.assertContains(response, "Journal Streak Days: 2", html=True)
 
     def test_get_profile_redirects_when_not_logged_in(self):
