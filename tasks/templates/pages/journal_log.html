@@ -3,8 +3,11 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <h1>Welcome to your Journal Log</h1>
-      <p>Here, you can browse through all your past memories, favorite the most cherished ones, delete those no longer needed, and seamlessly export your thoughts to PDF or RTF formats for safekeeping or sharing! </p>
+      <h2>Your Journal Log</h2>
+      <div class="copy-div">
+        <p>Here, you can browse through all your past memories, favorite the most cherished ones, delete those no longer needed, and seamlessly export your thoughts to PDF or RTF formats for safekeeping or sharing!</p>
+      </div>
+      
       <a href="{% url 'create_entry' %}" class="btn btn-primary">New Journal Entry</a>
       <button id="toggleSelect" class="btn btn-info">Select</button>
       <div class="dropdown" style="display:none;" id="exportOptions">
@@ -48,5 +51,5 @@
       </div>
     </div>
   </div>
-</div>
+</div>  
 {% endblock %}

@@ -2,43 +2,64 @@
 {% load static %}
 {% block content %}
 <div class="container">
-  <div class="row header-text">
     <div class="col-12">
-      <h1>Welcome to your Journal, {{ user.username }}</h1>
-      <p>Nurture your progress with daily entries. Each day, your flower grows, reflecting your dedication. Miss a day, and it resets, reminding you to stay consistent.</p>
-        <p>Witness your journey over seven stages of growth. Every Monday, it resets, offering a fresh start.</p>
-        <p>Journal today and let your flower flourish. Happy journaling! </p>
-        <div>Journal Streak Days: {{journal_streak}}</div> 
-      <div class="flower-container">
-        {% with request.user.flowergrowth.stage as stage %}
-            {% if stage == 0 %}
-                <img src="{% static 'images/flower_stage_0.png' %}" alt="Flower at stage 0">
-            {% elif stage == 1 %}
-                <img src="{% static 'images/flower_stage_1.png' %}" alt="Flower at stage 1">
-            {% elif stage == 2 %}
-                <img src="{% static 'images/flower_stage_2.png' %}" alt="Flower at stage 2">
-            {% elif stage == 3 %}
-                <img src="{% static 'images/flower_stage_3.png' %}" alt="Flower at stage 3">
-            {% elif stage == 4 %}
-                <img src="{% static 'images/flower_stage_4.png' %}" alt="Flower at stage 4">
-            {% elif stage == 5 %}
-                <img src="{% static 'images/flower_stage_5.png' %}" alt="Flower at stage 5">
-            {% elif stage == 6 %}
-                <img src="{% static 'images/flower_stage_6.png' %}" alt="Flower at stage 6">
-            {% elif stage == 7 %}
-                <img src="{% static 'images/flower_stage_7.png' %}" alt="Flower fully grown">
-            {% endif %}
-        {% endwith %}
+      <h1 class="dash-header">Welcome to your Journal, <em>{{ user.first_name }}</em></h1>
+      <div class="row">
+
+        <div class="col-md-8 mb-4 copy-div">
+            <h3 class="dash-h3">Say Hi To Your Flower!</h3>
+            <p class="mb-3 dash-p">Each day, your flower grows, reflecting your dedication. Miss a day, and it resets, reminding you to stay consistent. Keep track of your streak by looking to the left!
+                                    Witness your journey over seven stages of growth. Every Monday, it resets, offering a fresh start.
+                                    Journal today and let your flower flourish. <br>Happy journaling!</p>
+        </div>
+        <div class="col-md-4 d-flex justify-content-end">
+        <div class="flower-container">
+            {% with request.user.flowergrowth.stage as stage %}
+                {% if stage == 0 %}
+                    <img src="{% static 'images/flower_stage_0.png' %}" alt="Flower at stage 0" width="150px" height="150px">
+                {% elif stage == 1 %}
+                    <img src="{% static 'images/flower_stage_1.png' %}" alt="Flower at stage 1" width="150px" height="150px">
+                {% elif stage == 2 %}
+                    <img src="{% static 'images/flower_stage_2.png' %}" alt="Flower at stage 2" width="150px" height="150px">
+                {% elif stage == 3 %}
+                    <img src="{% static 'images/flower_stage_3.png' %}" alt="Flower at stage 3" width="150px" height="150px">
+                {% elif stage == 4 %}
+                    <img src="{% static 'images/flower_stage_4.png' %}" alt="Flower at stage 4" width="150px" height="150px">
+                {% elif stage == 5 %}
+                    <img src="{% static 'images/flower_stage_5.png' %}" alt="Flower at stage 5" width="150px" height="150px">
+                {% elif stage == 6 %}
+                    <img src="{% static 'images/flower_stage_6.png' %}" alt="Flower at stage 6" width="150px" height="150px">
+                {% elif stage == 7 %}
+                    <img src="{% static 'images/flower_stage_7.png' %}" alt="Flower fully grown" width="150px" height="150px">
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
     </div>
 
-      <h2>Calendar</h2>
-      <p>Click on any day to view your journal entries from that date.</p>
+      <h2 class="text-center dash-h2">Your Calendar</h2>
+      <p class="text-center">Click on any day to view your journal entries from that date.</p>
     </div>
     <div id="calendarApp">
-      <div class="calendar-controls">
-          <select id="monthSelect"></select>
-          <select id="yearSelect"></select>
-          <button id="goToDate">Go</button>
+        <div class="calendar-controls">
+        <!-- Month and year -->
+        <div>
+            <select id="monthSelect" class="form-control"></select>
+        </div>
+        <div>
+            <select id="yearSelect" class="form-control"></select>
+        </div>
+        <!-- Go button -->
+        <div>
+            <button id="goToDate" class="btn btn-secondary">Go</button>
+        </div>
+
+            <!-- Right corner -->
+            <div class="calendar-navigation">
+                <button id="prevMonth" class="btn btn-secondary">Prev</button>
+                <button id="nextMonth" class="btn btn-secondary">Next</button>
+            </div>
+      
       </div>
       <table id="calendar">
           <thead>
@@ -46,10 +67,7 @@
           </thead>
           <tbody></tbody>
       </table>
-      <div class="calendar-navigation">
-          <button id="prevMonth">Prev</button>
-          <button id="nextMonth">Next</button>
-      </div>
+
     </div>
     
     <div id="modal" class="modal">
