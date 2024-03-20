@@ -75,6 +75,7 @@ def log_out(request):
     """Log out the current user"""
 
     logout(request)
+    request._exclude_journal_streak = True
     return redirect('home')
 
 
