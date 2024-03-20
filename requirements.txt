@@ -18,3 +18,4 @@ numpy==1.26.4
 reportlab==4.1.0
 selenium==4.16.0
 django-ckeditor==6.7.1
+xhtml2pdf==0.2.15
