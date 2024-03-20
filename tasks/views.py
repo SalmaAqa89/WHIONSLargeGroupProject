@@ -613,6 +613,7 @@ def search_favourite (request):
     return render(request, 'favourites.html', {'journal_entries': journal_entries})
 
 
+
 @login_required
 def search_favouriteSuggestion(request):
     query = request.GET.get('q', '')
