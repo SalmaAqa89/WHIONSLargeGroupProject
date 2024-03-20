@@ -51,6 +51,7 @@ urlpatterns = [
     path('edit_preferences/',AuthViews.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+    path('edit/<int:pk>/', JournalEntryViews.JournalEntryUpdateView.as_view(), name='edit_entry'),
 
 
     ]

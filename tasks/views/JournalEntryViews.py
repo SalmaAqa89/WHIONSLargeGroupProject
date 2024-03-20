@@ -298,4 +298,27 @@ def export_entries(request):
     else:
         return HttpResponse("Unsupported format", status=400)
 
+class JournalEntryUpdateView(UpdateView, LoginRequiredMixin):
+    model = JournalEntry
+    form_class = JournalEntryForm
+    template_name = 'components/edit_entry.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # Pass the current user to the form
+
+        # Fetch the instance being edited
+        instance = self.get_object()
+        if instance:
+            kwargs['text'] = instance.text  # Pass the text of the instance to the form
+        else:
+            kwargs['text'] = ''  # Provide a default value if instance is not available
+
+        return kwargs
     
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
+    
+    def get_success_url(self):
+        return reverse('journal_log')

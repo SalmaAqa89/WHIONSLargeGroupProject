@@ -14,7 +14,7 @@ body{
   font-optical-sizing: auto;
   font-weight: 600;
   font-style: normal;
-  font-size: 5rem !important;
+  font-size: 4.5rem !important;
 }
 
 p{
@@ -79,6 +79,7 @@ h3{
 
 .sidenav p{
   color:#DAF7A6;
+  text-shadow: 0 0 10px white !important; 
 }
 
 .sidenav a:hover{
@@ -138,6 +139,9 @@ p.cover-text {
   opacity: 1
 }
 
+.entry-card{
+  border-radius: 20px !important;
+}
 
 
 /*
@@ -369,10 +373,15 @@ h3.profile-title {
   font-size: 18px;
 }
 
-.calendar-navigation button {
-  background-color: #2E7D32; /* Change button background color */
+.btn-secondary {
+  background-color: #2E7D32 !important; /* Change button background color */
   color: #ffffff; /* Change button text color */
   border: none;
+}
+
+.btn-outline-success :hover {
+  background-color: #2E7D32 !important; 
+  
 }
 
 
@@ -445,8 +454,15 @@ h3.profile-title {
 }
 
 .flower-container{
-  margin-right: 200px;
+  margin-right: 100px;
+  transition: transform 0.5s;
+
 }
+
+.flower-container:hover{
+  transform: scale(1.1);
+}
+
 
 .copy-div{
   padding: 10px;
@@ -456,4 +472,28 @@ h3.profile-title {
 
   justify-content: center; /* Horizontally center */
   align-items: center; /* Vertically center */ 
+}
+
+.log-btns{
+  display: flex-start;
+  justify-content: space-evenly;
+  
+}
+
+.favourite{
+  position: absolute;
+  right: 20px;
+}
+
+.card-buttons{
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-title{
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
