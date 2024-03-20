@@ -1,7 +1,9 @@
 from django.utils import timezone
 from datetime import timedelta
 from .models import JournalEntry
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def add_journal_streak(request):
     now = timezone.now()
     all_entries = JournalEntry.objects.filter(user=request.user)
