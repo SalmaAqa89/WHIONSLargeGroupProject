@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const monthSelect = document.getElementById("monthSelect");
     const yearSelect = document.getElementById("yearSelect");
     const calendarBody = document.getElementById("calendar").getElementsByTagName("tbody")[0];
-    
 
     months.forEach((month, index) => {
         let option = new Option(month, index);
@@ -43,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     let cell = document.createElement('td');
                     let cellText = document.createTextNode(date);
+                    cell.setAttribute('data-has-entries', 'false'); 
                     if (date === new Date().getDate() && year === new Date().getFullYear() && month === new Date().getMonth()) {
                         cell.classList.add('today');
                     }
@@ -56,30 +56,85 @@ document.addEventListener('DOMContentLoaded', function() {
                 break; 
             }
         }
+        function getMoodEmoji(mood) {
+            const moodEmojiMap = {
+                1: '😔', 
+                2: '🙁', 
+                3: '😐', 
+                4: '🙂', 
+                5: '😄' 
+            };
+        
+            return moodEmojiMap[mood] || ''; 
+        }
+        
+       
         document.querySelectorAll('#calendar td').forEach(dayCell => {
+            const day = dayCell.textContent;
+            fetch(`/get_journal_entries/?date=${year}-${month + 1}-${day}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.entries.length > 0) {
+                        dayCell.setAttribute('data-has-entries', 'true'); 
+                        dayCell.classList.add('has-entries');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching journal entries:', error);
+                });
+            
+
             dayCell.addEventListener('click', function() {
                 const selectedDay = this.textContent; 
                 
                 if (selectedDay) {
                     const dateString = `${selectedDay} ${months[month]} ${year}`;
                     document.getElementById('modalText').textContent = `You selected: ${dateString}`;
+
+                    
+                    fetch(`/get_journal_entries/?date=${year}-${month + 1}-${selectedDay}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let entriesHtml = '';
+                        if (data.entries.length > 0) {
+                            this.setAttribute('data-has-entries', 'true'); 
+                        }
+                        
+                        data.entries.forEach(entry => {
+                            if (!entry.deleted) {
+                                entriesHtml += `
+                                    <div class="journal-entry-box">
+                                        <div class="journal-entry">
+                                            <h3>${entry.title}</h3>
+                                            <p>${entry.text}</p>
+                                            <p>Mood: ${getMoodEmoji(entry.mood)}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        });
+                        document.getElementById('modalJournalEntries').innerHTML = entriesHtml;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching journal entries:', error);
+                    });
+
                     document.getElementById('modal').style.display = 'block'; 
                 }
             });
         });
-    
-    
+        
+       
         document.querySelector('.close').addEventListener('click', function() {
             document.getElementById('modal').style.display = 'none';
         });
     
-       
+        
         window.addEventListener('click', function(event) {
             if (event.target == document.getElementById('modal')) {
                 document.getElementById('modal').style.display = 'none';
             }
         });
-
     }
 
     document.getElementById("prevMonth").addEventListener("click", function() {
@@ -112,5 +167,5 @@ document.addEventListener('DOMContentLoaded', function() {
         generateCalendar(currentMonth, currentYear);
     });
 
-    generateCalendar(currentMonth, currentYear); 
+    generateCalendar(currentMonth, currentYear);
 });
