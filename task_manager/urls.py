@@ -22,7 +22,6 @@ from tasks import views
 from ckeditor_uploader import views as ckeditor_views
 from django.contrib.auth.decorators import login_required
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -45,12 +44,14 @@ urlpatterns = [
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
     path('favourite_entry/<int:entry_id>', views.favourite_journal_entry, name="favourite_entry"),
     path('unfavourite_entry/<int:entry_id>', views.unfavourite_journal_entry, name="unfavourite_entry"),
+    path('get_journal_entries/', views.get_journal_entries, name='get_journal_entries'),
     path('delete_entry_permanent/<int:entry_id>',views.delete_journal_entry_permanent,name = "delete_entry_permanent"),
     path('recover_entry/<int:entry_id>',views.recover_journal_entry,name = "recover_entry"),
     path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
     path('edit_preferences/',views.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+
 
 
     ]
