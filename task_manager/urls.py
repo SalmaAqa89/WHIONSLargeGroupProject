@@ -32,7 +32,7 @@ urlpatterns = [
     path('profile/', AuthViews.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', AuthViews.SignUpView.as_view(), name='sign_up'),
     path('accounts/', include('django.contrib.auth.urls')),
-      path('journal_log/',PageViews.journal_log,name ='journal_log'),
+    path('journal_log/',PageViews.journal_log,name ='journal_log'),
     path('journal/entry/<int:entry_id>/pdf/', JournalEntryViews.export_journal_entry_to_pdf, name='export_journal_entry_to_pdf'),
     path('journal/entry/<int:entry_id>/rtf/', JournalEntryViews.export_journal_entry_to_rtf, name='export_journal_entry_to_rtf'),
     path('export_entries/', JournalEntryViews.export_entries, name='export_entries'),
@@ -50,6 +50,8 @@ urlpatterns = [
     path('edit_preferences/',AuthViews.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+    path('edit/<int:pk>/', JournalEntryViews.JournalEntryUpdateView.as_view(), name='edit_entry'),
+    path('get_journal_entries/', JournalEntryViews.get_journal_entries, name='get_journal_entries'),
 
 
     ]
