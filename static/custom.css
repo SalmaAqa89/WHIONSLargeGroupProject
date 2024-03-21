@@ -346,6 +346,9 @@ h3.profile-title {
   background-color: #025912;
   color: white;
 }
+.favourite{
+  float: right;
+}
 /*Calendar 
 */
   html {
@@ -406,7 +409,7 @@ h3.profile-title {
 #calendar th {
   height: 100px;
   background-color: #C8E6C9; 
-  color: #2E7D32; 
+  color: #1e6321; 
   padding: 20px 15px; 
   font-size: 20px;
   border-radius: 0;
@@ -423,7 +426,7 @@ h3.profile-title {
 }
 
 #calendar td:hover {
-  background-color: #A5D6A7; 
+  background-color: rgb(237, 246, 178)
 }
 
 .today {

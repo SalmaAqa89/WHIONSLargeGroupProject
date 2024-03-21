@@ -11,33 +11,33 @@ class CreateJournalEntryFormTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
-        self.form_input = self.form_input = {
+        self.form_input = {
             "title": "New entry", 
             "text": "This is a new journal entry",
-            "mood": "Happy"
+            "mood": 3
         }
 
     def test_form_has_necessary_fields(self):
-        form = JournalEntryForm(user=self.user, text=self.form_input['text'], data=self.form_input)
+        form = JournalEntryForm(user=self.user, data=self.form_input, text="template")
         self.assertIn('title', form.fields)
         self.assertIn('text', form.fields)
 
     def test_valid_form(self):
-        form = JournalEntryForm(user=self.user, text=self.form_input['text'], data=self.form_input)
+        form = JournalEntryForm(user=self.user, data=self.form_input, text="template")
         self.assertTrue(form.is_valid())
 
     def test_title_cannot_be_blank(self):
         self.form_input['title'] = ''
-        form = JournalEntryForm(user=self.user,text=self.form_input['text'], data=self.form_input)
+        form = JournalEntryForm(user=self.user, data=self.form_input, text="template")
         self.assertFalse(form.is_valid())
 
     def test_text_cannot_be_blank(self):
         self.form_input['text'] = ''
-        form = JournalEntryForm(user=self.user,text=self.form_input['text'], data=self.form_input)
+        form = JournalEntryForm(user=self.user, data=self.form_input, text="template")
         self.assertFalse(form.is_valid())
 
     def test_form_must_save_correctly(self):
-        form = JournalEntryForm(user=self.user,text=self.form_input['text'], data=self.form_input)
+        form = JournalEntryForm(user=self.user, data=self.form_input, text="template")
         before_count = JournalEntry.objects.count()
         form.save()
         after_count = JournalEntry.objects.count()
