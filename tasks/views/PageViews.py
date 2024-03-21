@@ -38,7 +38,7 @@ def dashboard(request):
 def journal_log(request):
     start_date = timezone.now() - timedelta(days=30)
     end_date = timezone.now()
-
+    print(JournalEntry.objects.filter(user=request.user))
     journal_entries_last_thirty_days = JournalEntry.objects.filter(user=request.user, created_at__range=(start_date, end_date))
     return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user),
                                                       'journal_entries_last_thirty_days' : journal_entries_last_thirty_days,})
