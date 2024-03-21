@@ -20,8 +20,6 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
     class Meta:
@@ -77,6 +75,9 @@ class JournalEntry(models.Model):
     ]
     mood = models.IntegerField(choices=MOOD_CHOICES, default=3)  
 
+    def __str__(self):
+        return self.title
+    
     def delete_entry(self):
         self.deleted = True
         self.save()
