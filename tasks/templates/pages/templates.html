@@ -6,7 +6,20 @@
       <h1>Welcome To Your Templates</h1>
       <p>Explore an array of templates to guide you on your journaling journey, offering thoughtful prompts to inspire your reflections.</p>
       <p>Here, you can both discover curated templates and craft your own!</p>
-      <a href="{% url 'create_template' %}" class="btn btn-primary">New Template</a>
+      <div class=" mt-3 log-btns">
+        <a href="{% url 'create_template' %}" class="btn btn-secondary mr-2">New Template</a>
+        <button id="toggleSelect" class="btn btn-info">Select</button>
+        <div class="dropdown" style="display:none;" id="exportOptions">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Export
+          </button>
+          <div class="dropdown-menu" aria-labelledby="exportDropdown">
+            <a class="dropdown-item" href="#" onclick="exportSelected('pdf')">Export to PDF</a>
+            <a class="dropdown-item" href="#" onclick="exportSelected('rtf')">Export to RTF</a>
+          </div>
+          <button id="deleteButton" class="btn btn-danger fas fa-trash-alt"> </button>
+        </div>
+      </div>
       <div class = "card templates-div">
         <div class = "card-header">
           <ul class = "nav nav-pills" id = "nav-pills" role = "tablist">
