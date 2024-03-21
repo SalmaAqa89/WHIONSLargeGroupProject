@@ -17,11 +17,8 @@ from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
 from collections import Counter
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from tasks.models import JournalEntry
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from tasks.helpers import login_prohibited
 from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse
 from datetime import timedelta
@@ -31,32 +28,32 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Image
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.models import JournalEntry
 from tasks.helpers import login_prohibited
 from datetime import datetime, timedelta
-
-from tasks.forms import JournalSearchForm
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from django.db.models import Q
-from reportlab.pdfgen import canvas
-
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.pagesizes import letter
-from django.http import HttpResponse
-from reportlab.lib.enums import TA_CENTER
-from datetime import timedelta
 
+from reportlab.lib.pagesizes import letter
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from datetime import timedelta
+from xhtml2pdf import pisa
+import re
+import os
+from django.shortcuts import render
+import base64
+from datetime import datetime
+from PyPDF2 import PdfMerger
+import tempfile
 
 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
-@login_required
 @login_required
 def dashboard(request):
     now = timezone.now()
@@ -106,99 +103,128 @@ def home(request):
 
     return render(request, 'home.html')
 
-def export_journal_entry_to_pdf(request, entry_id):
-    journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.pdf"'
+def get_journal_entries(request):
+    date_str = request.GET.get('date')
+    try:
+        date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return HttpResponseBadRequest('Invalid date format')
+    entries = JournalEntry.objects.filter(created_at__date=date, user=request.user, deleted=False).values('title', 'text', 'mood')
+    return JsonResponse({'entries': list(entries)})
 
-    p = canvas.Canvas(response)
-    p.setFont("Helvetica-Bold", 14)
-    p.drawString(72, 800, journal_entry.title) 
 
-    p.setFont("Helvetica", 12)
-    text_object = p.beginText(72, 780)  
-    text_object.setLeading(15)  
-
-    for line in journal_entry.text.split('\n'):  
-        text_object.textLine(line)
-   
-    p.drawText(text_object)
-
-    p.showPage()
-    p.save()
-    return response
-
-def export_journal_entry_to_rtf(request, entry_id):
-    journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
-    response = HttpResponse(content_type='application/rtf')
-    response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.rtf"'
-    rtf_content = "{\\rtf1\\ansi\\deff0 "
-    rtf_content += "{\\b " + journal_entry.title + "}"
-    rtf_content += "\\line "
-    rtf_content += journal_entry.text.replace('\n', '\\line ')
-    rtf_content += " }"
-
-    response.write(rtf_content)
-    return response
-
-def get_pdf_elements_for_entry(entry, styles):
-    elements = []
-    title_style = ParagraphStyle(name='title_style', parent=styles['Title'], alignment=TA_CENTER)
-    
-   
-    elements.append(Paragraph(entry.title, title_style))
-    elements.append(Spacer(1, 12))
-    
-
-    content_style = styles['BodyText']
-    elements.append(Paragraph(entry.text, content_style))
-    elements.append(PageBreak())  
-
-    return elements
-def get_rtf_content_for_entry(entry):
-    rtf_content = []
-    rtf_content.append(r"{\pard\qc\b " + entry.title + r"\b0\par}")  
-    rtf_content.append(r"{\pard " + entry.text.replace("\n", r"\par ") + r"\par}") 
-    rtf_content.append(r"\page") 
-    return "\n".join(rtf_content)
 
 def export_entries(request):
     entry_ids = request.GET.get('entries', '').split(',')
     entry_ids = [int(id) for id in entry_ids if id.isdigit()]
     export_format = request.GET.get('format', 'pdf')
 
-    entries = get_list_or_404(JournalEntry, id__in=entry_ids)
-
     if export_format == 'pdf':
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="journal_entries.pdf"'
-        
-        doc = SimpleDocTemplate(response, pagesize=letter)
-        styles = getSampleStyleSheet()
-        elements = []
-        
-        for entry in entries:
-            elements += get_pdf_elements_for_entry(entry, styles)
-        
-        doc.build(elements)
-        return response
+        pdf_paths = []
+        for entry_id in entry_ids:
+            response = export_journal_entry_to_pdf(request, entry_id)
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
+                temp_pdf.write(response.content)
+                pdf_paths.append(temp_pdf.name)
 
+        combined_pdf = merge_pdfs(pdf_paths)
+        return combined_pdf
     elif export_format == 'rtf':
-        response = HttpResponse(content_type='application/rtf')
-        response['Content-Disposition'] = 'attachment; filename="journal_entries.rtf"'
-        
-        rtf_content = []
-        rtf_content.append(r"{\rtf1\ansi")  
-        for entry in entries:
-            rtf_content.append(get_rtf_content_for_entry(entry))
-        rtf_content.append("}")  
+        rtf_contents = []
+        for entry_id in entry_ids:
+            response = export_journal_entry_to_rtf(request, entry_id)
+            rtf_contents.append(response.content)
 
-        response.write("\n".join(rtf_content))
-        return response
-
+        combined_rtf = merge_rtf(rtf_contents)
+        return combined_rtf
     else:
-        return HttpResponse("Unsupported format", status=400)
+        return HttpResponse('Invalid export format')
+
+
+def merge_pdfs(pdf_paths):
+    combined_pdf = BytesIO()
+
+    pdf_merger = PdfMerger()
+
+    for pdf_path in pdf_paths:
+        pdf_merger.append(pdf_path)
+
+    pdf_merger.write(combined_pdf)
+    pdf_merger.close()
+    
+    combined_pdf.seek(0)
+    response = HttpResponse(combined_pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="journalentries.pdf"'
+    return response
+
+def merge_rtf(rtf_contents):
+    combined_rtf = BytesIO()
+
+    combined_rtf.write(b"{\\rtf1\\ansi\\deff0\n")
+    for i, rtf_content in enumerate(rtf_contents):
+        if i != 0:
+            combined_rtf.write(b"\\par\n")  
+        combined_rtf.write(rtf_content)
+    combined_rtf.write(b"}")
+
+    combined_rtf.seek(0)
+    response = HttpResponse(combined_rtf, content_type='application/rtf')
+    response['Content-Disposition'] = 'attachment; filename="journalentries.rtf"'
+    return response
+
+
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those resources
+    """
+    if uri.startswith(settings.MEDIA_URL):
+        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    elif uri.startswith(settings.STATIC_URL):
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
+    else:
+        return uri 
+
+    if not os.path.isfile(path):
+        raise Exception(f'Media URI must start with {settings.MEDIA_URL} or {settings.STATIC_URL}')
+
+    return path
+def export_journal_entry_to_pdf(request, entry_id):
+    journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.pdf"'
+
+    html_content = f"<h1>{journal_entry.title}</h1>{journal_entry.text}"
+    pisa_status = pisa.CreatePDF(
+        BytesIO(html_content.encode("UTF-8")), dest=response,
+        link_callback=link_callback  
+    )
+    if pisa_status.err:
+        return HttpResponse('Failed to generate PDF. Please try again later.')
+    return response
+
+
+
+def strip_tags(html):
+    clean_text = re.sub('<[^<]+?>', '', html)
+    return clean_text
+def export_journal_entry_to_rtf(request, entry_id):
+    journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
+    clean_text = strip_tags(journal_entry.text)
+
+    response = HttpResponse(content_type='application/rtf')
+    response['Content-Disposition'] = f'attachment; filename="{journal_entry.title}.rtf"'
+
+    rtf_content = "{\\rtf1\\ansi\\deff0 "
+    rtf_content += f"\\b {journal_entry.title} \\b0\\line " 
+    rtf_content += clean_text.replace('\n', '\\line ')
+    rtf_content += " }"
+
+    response.write(rtf_content)
+    return response
+
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
@@ -326,7 +352,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse("set_preferences")
     
-   
+
 class CreateJournalEntryView(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
@@ -486,7 +512,6 @@ def mood_breakdown(request):
     return render(request, 'mood_breakdown.html', context)
 
 
-
 class SetPreferences(LoginRequiredMixin, FormView):
     """Display the create entry screen and handle entry creation"""
 
@@ -540,99 +565,4 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
             for error in errors:
                 messages.error(self.request, f"{field}: {error}")
         return super().form_invalid(form)
-
-
-
-@login_required
-def search_journal(request):
-    form = JournalSearchForm(request.GET or None)
-    journals = JournalEntry.objects.filter(user=request.user, deleted=False)
-
-    if form.is_valid():
-        title = form.cleaned_data.get('title')
-        if title:
-            journals = journals.filter(title__icontains=title)
-
-    
-    return render(request, 'journal_log.html', {'form': form, 'journal_entries': journals})
-
-
-@login_required
-def journal_entries(request):
-    form = JournalSearchForm(request.GET or None)
-    entries = JournalEntry.objects.all()
-    return render(request, 'journal_log.html', {'form':form,'journal_entries': entries})
-
-
-@login_required
-def journal_detail(request, entry_id):
-    journals = JournalEntry.objects
-    entry = get_object_or_404(JournalEntry, id=entry_id)
-    return render(request, 'journal_log.html', {'entry': entry})
-
-
-
-@login_required
-def search_suggestions(request):
-    query = request.GET.get('q', '')
-    if query:
-        # Return suggestions based on the query
-        suggestions = JournalEntry.objects.filter(
-            title__icontains=query,
-            deleted=False
-        ).values_list('title', flat=True)[:5]
-    else:
-        # Return top 5 suggestions when there's no query
-        # Adjust the ordering and filtering according to your needs
-        suggestions = JournalEntry.objects.filter(
-            deleted=False
-        ).order_by('-created_at').values_list('title', flat=True)[:5]
-    return JsonResponse({'suggestions': list(suggestions)})
-
-@login_required
-def search_trash(request):
-    query = request.GET.get('title', '')
-    journal_entries = JournalEntry.objects.filter(
-        title__icontains=query, 
-        deleted=True, 
-        user=request.user
-    )
-    return render(request, 'trash.html', {'journal_entries': journal_entries})
-
-
-@login_required
-def search_suggestions1(request):
-    query = request.GET.get('q', '')
-    if query:
-        suggestions = JournalEntry.objects.filter(title__icontains=query,deleted=True).values_list('title', flat=False)[:5]
-    else:
-        suggestions = []
-    return JsonResponse({'suggestions': list(suggestions)})
-
-@login_required
-def search_favourite (request):
-    query = request.GET.get('title', '')
-    journal_entries = JournalEntry.objects.filter(
-        title__icontains=query, 
-        deleted=False, 
-        user=request.user,
-        favourited = True
-    )
-    return render(request, 'favourites.html', {'journal_entries': journal_entries})
-
-
-
-@login_required
-def search_favouriteSuggestion(request):
-    query = request.GET.get('q', '')
-    if query:
-        suggestions = JournalEntry.objects.filter(
-            title__icontains=query, 
-            favourited=True,
-           
-            user=request.user   
-        ).values_list('title', flat=True)[:5] 
-    else:
-        suggestions = []
-    return JsonResponse({'suggestions': list(suggestions)})   
 

@@ -22,7 +22,6 @@ from tasks import views
 from ckeditor_uploader import views as ckeditor_views
 from django.contrib.auth.decorators import login_required
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -45,6 +44,7 @@ urlpatterns = [
     path('delete_entry/<int:entry_id>', views.delete_journal_entry, name="delete_entry"),
     path('favourite_entry/<int:entry_id>', views.favourite_journal_entry, name="favourite_entry"),
     path('unfavourite_entry/<int:entry_id>', views.unfavourite_journal_entry, name="unfavourite_entry"),
+    path('get_journal_entries/', views.get_journal_entries, name='get_journal_entries'),
     path('delete_entry_permanent/<int:entry_id>',views.delete_journal_entry_permanent,name = "delete_entry_permanent"),
     path('recover_entry/<int:entry_id>',views.recover_journal_entry,name = "recover_entry"),
     path('set_preferences/',views.SetPreferences.as_view(),name = "set_preferences"),
@@ -52,20 +52,9 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')), 
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
 
-    path('search/', views.search_journal, name='search_journal'),
-    path('journal/<int:entry_id>/', views.journal_detail, name='journal_detail'),
-    path('search-suggestions/', views.search_suggestions, name='search-suggestions'),
-    path('search-trash/', views.search_trash, name='search_trash'),
-    path('search-suggestions1/', views.search_suggestions1, name='search-suggestions1'),
-    path('search/favourite/', views.search_favourite, name='search_favourite'),
-    path('search/favouritesuggestion/', views.search_favouriteSuggestion, name='search_favouriteSuggestion'),
+
 
     ]
-
-
-
-
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

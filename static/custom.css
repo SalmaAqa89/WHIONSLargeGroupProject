@@ -269,6 +269,9 @@ h3.profile-title {
   background-color: #025912;
   color: white;
 }
+.favourite{
+  float: right;
+}
 /*Calendar 
 */
 body, html {
@@ -309,7 +312,7 @@ body, html {
 #calendar th {
   height: 100px;
   background-color: #C8E6C9; 
-  color: #2E7D32; 
+  color: #1e6321; 
   padding: 20px 15px; 
   font-size: 20px;
   border-radius: 10px;
@@ -325,14 +328,14 @@ body, html {
 }
 
 #calendar td:hover {
-  background-color: #A5D6A7; 
+  background-color: rgb(237, 246, 178)
 }
 
 .today {
-  background-color: #1B5E20; 
-  color: rgb(155, 209, 169);
+  background-color: #090d0a; 
+  color: rgb(159, 255, 42);
   font-weight: bold;
-  border-radius: 50%; 
+  border-radius: 100%; 
 }
 
 .modal {
@@ -367,4 +370,29 @@ body, html {
   color: #333;
   text-decoration: none;
   cursor: pointer;
+}
+/* POP up */
+.journal-entry-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.journal-entry h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.journal-entry p {
+  margin-bottom: 5px;
+}
+
+.journal-entry p:last-child {
+  margin-bottom: 0;
+}
+
+#calendar td[data-has-entries="true"] {
+  background-color: rgb(249, 254, 214); 
 }
