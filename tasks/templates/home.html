@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block body %}
-<nav class="navbar navbar-custom  justify-content-between">
-    <p class="cover-text">Bloom</p>
-    <div>
+
+  <div class="collapse" id="navbarToggleExternalContent">
     <p>
         <a href='{% url 'sign_up' %}' class="btn btn-md btn-secondary btn-custom">
             Sign up
@@ -13,7 +13,13 @@
             Log in
         </a>
     </p>
-</div>
+  </div>
+  <nav class="navbar navbar-light dropdown">
+    <div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
   </nav>
 <div class="container">
     <div class="text-center-custom">
@@ -24,9 +30,9 @@
     </div>
 </div>
 <div class="landing_section">
-    <img src="https://colourlex.com/wp-content/uploads/2021/02/vine-black-painted-swatch-300x300.jpg.webp" width="15%">
-    <img src="https://colourlex.com/wp-content/uploads/2021/02/vine-black-painted-swatch-300x300.jpg.webp" width="15%">
-    <img src="https://colourlex.com/wp-content/uploads/2021/02/vine-black-painted-swatch-300x300.jpg.webp" width="15%">
+    <img src="{% static 'images/flower_stage_0.png' %}" width="15%">
+    <img src="{% static 'images/flower_stage_4.png' %}" width="15%">
+    <img src="{% static 'images/flower_stage_7.png' %}" width="15%">
 </div>
 <div class="landing_section">
     <div class="text-center-custom">
