@@ -5,8 +5,8 @@
     <i class="bi-arrow-left"></i>
   </a>
   <div class="row">
-    <div class="col-12">
-      <h1 class="signup-title">Sign up</h1>
+    <div class="col-12 mt-4">
+      <h2 class="dash-h1 mt-4">Sign up</h2>
       <form action="{% url 'sign_up' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">

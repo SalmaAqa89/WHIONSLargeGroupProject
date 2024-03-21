@@ -84,6 +84,12 @@ h3{
 
 .sidenav a:hover{
   color:#DAF7A6;
+  
+}
+
+.sidenav a:active{
+  text-shadow: 0 0 10px white !important; 
+  color:#DAF7A6;
 }
 .main{
   margin-left: 160px;
