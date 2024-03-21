@@ -67,8 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
             return moodEmojiMap[mood] || ''; 
         }
-        
-       
+
         document.querySelectorAll('#calendar td').forEach(dayCell => {
             const day = dayCell.textContent;
             fetch(`/get_journal_entries/?date=${year}-${month + 1}-${day}`)
@@ -91,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const dateString = `${selectedDay} ${months[month]} ${year}`;
                     document.getElementById('modalText').textContent = `You selected: ${dateString}`;
 
+
+
                     
                     fetch(`/get_journal_entries/?date=${year}-${month + 1}-${selectedDay}`)
                     .then(response => response.json())
@@ -104,10 +105,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (!entry.deleted) {
                                 entriesHtml += `
                                     <div class="journal-entry-box">
-                                        <div class="journal-entry">
+                                        <div class="journal-entry copy-div mt-4">
                                             <h3>${entry.title}</h3>
                                             <p>${entry.text}</p>
-                                            <p>Mood: ${getMoodEmoji(entry.mood)}</p>
+                                            <p>Feeling: ${getMoodEmoji(entry.mood)}</p>
                                         </div>
                                     </div>
                                 `;
@@ -169,3 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     generateCalendar(currentMonth, currentYear);
 });
+
+
+

@@ -1,0 +1,59 @@
+{% extends 'base/base_content2.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2>Your Journal Log</h2>
+      <div class="copy-div">
+        <p>Here, you can browse through all your past memories, favorite the most cherished ones, delete those no longer needed, and seamlessly export your thoughts to PDF or RTF formats for safekeeping or sharing!</p>
+      </div>
+      
+      <div class=" mt-3 log-btns">
+        <a href="{% url 'create_entry' %}" class="btn btn-secondary mr-2">New Journal Entry</a>
+        <button id="toggleSelect" class="btn btn-info">Select</button>
+        <div class="dropdown" style="display:none;" id="exportOptions">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Export
+          </button>
+          <div class="dropdown-menu" aria-labelledby="exportDropdown">
+            <a class="dropdown-item" href="#" onclick="exportSelected('pdf')">Export to PDF</a>
+            <a class="dropdown-item" href="#" onclick="exportSelected('rtf')">Export to RTF</a>
+          </div>
+          <button id="deleteButton" class="btn btn-danger fas fa-trash-alt"> </button>
+        </div>
+      </div>
+      <!-- separate journal entries-->
+
+      <div class = "card trash-div">
+        <div class="card-header">
+          <ul class="nav nav-pills" id = "nav-pills" role = "tablist">
+              <li class="nav-item">
+                  <a class="nav-link active " id = "nav-recent-tab" data-bs-toggle = "tab" href="#nav-recent" aria-controls = "nav-recent" aria-selected="True">Last 30 Days</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" id = "nav-all-tab" data-bs-toggle = "tab" href="#nav-all" aria-controls = "nav-all" aria-selected="False">All Time</a>
+              </li>
+          </ul>
+    
+          <div class = "tab-content" id = myTabContent>
+            <div class = "tab-pane fade show active" id = "nav-recent-entries" role = "tabpanel" aria-labelledby="nav-30-tab" >
+              <div class="card-deck mt-4">
+                {% for entry in journal_entries_last_thirty_days %}
+                 {%include 'partials/list_entries.html' with entry=entry%}
+                {% endfor %}
+              </div>
+            </div>
+            <div class = "tab fade active" id = "nav-all-entries" role = "tabpanel" aria-labelledby="nav-all-tab">
+              {% for entry in journal_entries %}
+                 {%include 'partials/list_entries.html' with entry=entry%}
+                {% endfor %}
+            </div>
+          </div>
+
+      <!-- end-->
+
+      
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -17,11 +17,17 @@
   <body>
     <div class = "sidenav">
         {% include 'partials/profile_pic.html' with user=user %}
+      <p>Streak: {{ journal_streak }}</p> 
         <a href = "/dashboard">Home</a>
+        <br>
         <a href = "/journal_log">Journal Log</a>
+        <br>
         <a href = "/favourites">Favourites</a>
+        <br>
         <a href = "/templates">Templates</a>
+        <br>
         <a href = "/mood_breakdown">Mood Breakdown</a>
+        <br>
         <a href = "/trash">Trash</a>
     </div>
     <div id = "content", name = "content", class = "main">
