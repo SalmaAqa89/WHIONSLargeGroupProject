@@ -38,7 +38,7 @@ class MoodBreakdownViewTest(TestCase):
         """Test access to the mood_breakdown view."""
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'mood_breakdown.html')
+        self.assertTemplateUsed(response, 'pages/mood_breakdown.html')
 
     def test_mood_breakdown_context_data(self):
         """Test the context data of the mood_breakdown view."""

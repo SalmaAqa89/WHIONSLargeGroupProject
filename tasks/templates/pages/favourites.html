@@ -1,0 +1,43 @@
+{% extends 'base/base_content2.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <form method="get" action="{% url 'search_favourite' %}" autocomplete="off" id="search-form" class="mb-3">
+        <input type="text" name="title" placeholder="Search Favourite Journals..." class="form-control" id="journal-search-box" oninput="showFavJournalSuggestions(this.value)">
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+        <div id="Fjournal-suggestions-container" class="suggestions-container"></div>
+      </form>
+      <h2>Welcome to your Favourites</h2>
+      <div class="row">
+        <div class="col-md-6">
+      <div class="copy-div">
+        <p>View your personal collection of cherished moments and reflections!</p>
+      </div>
+    </div>
+  </div>
+      <div class = "card-deck mt-4">
+        {% for entry in journal_entries %}
+        {% if not entry.deleted %}
+          <div class="card mb-3 entry-card">
+            <div class="card-body">
+              <div class="card-icons">
+                <a href="{% url 'edit_entry' pk=entry.id %}" id="pencil"><img src="../../../static/images/pencil.png" height="20" width="20" ></a>
+                <a href="{% url 'unfavourite_entry' entry_id=entry.id %}?next=favourites" class="favourite"><img src="http://www.clker.com/cliparts/g/R/o/O/K/1/simple-star-md.png" height="20" width="20" class="float-right"></a>
+                <h5 class="card-title">{{ entry.title }}</h5>
+                <details id="details-{{ entry.id }}" data-entry-id="{{ entry.id }}">
+                  <summary id="summary-{{ entry.id }}">See More</summary>
+                  <p>{{ entry.text|safe }}</p>
+                </details>
+             
+              <p>Mood: {{ entry.get_mood_display }}</p>
+              <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger">Delete Entry</a>
+            </div>
+          </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
