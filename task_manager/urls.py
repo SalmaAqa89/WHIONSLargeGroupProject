@@ -52,6 +52,8 @@ urlpatterns = [
     path('r^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
     path('edit/<int:pk>/', JournalEntryViews.JournalEntryUpdateView.as_view(), name='edit_entry'),
     path('get_journal_entries/', JournalEntryViews.get_journal_entries, name='get_journal_entries'),
+    path('create_template/',PageViews.CreateTemplateView.as_view(),name = "create_template"),
+    path('template_choices/',PageViews.template_choices,name = 'template_choices'),
 
 
     ]
