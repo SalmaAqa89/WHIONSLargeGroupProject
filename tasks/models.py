@@ -5,6 +5,8 @@ from libgravatar import Gravatar
 from django.contrib import messages
 from django.core.validators import MinValueValidator, MaxValueValidator
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -115,4 +117,5 @@ class FlowerGrowth(models.Model):
     def update_last_entry_date(self, date):
         self.last_entry_date = date
         self.save()
+
 

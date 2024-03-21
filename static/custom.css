@@ -91,6 +91,7 @@ h3{
   text-shadow: 0 0 10px white !important; 
   color:#DAF7A6;
 }
+
 .main{
   margin-left: 160px;
   padding: 0px 10px;
@@ -554,4 +555,36 @@ h3.profile-title {
 
 .info-copy{
   background-color: #e4ece4d6 !important;
+}
+
+.form-control{
+  border: none !important;
+  border-bottom: 1px solid black !important;
+  background-color: #eff8df !important;
+}
+
+.forgot-pass a{
+  position: relative;
+  text-decoration: none;
+  color: #2E7D32;
+}
+
+
+.forgot-pass a::before {
+  content: ""; /* Create a pseudo-element */
+  position: absolute;
+  bottom: 0; /* Position the pseudo-element at the bottom */
+  left: 0; /* Start the pseudo-element from the left */
+  width: 0; /* Initially, set its width to 0 */
+  height: 2px; /* Set the height of the underline */
+  background-color: #2E7D32; /* Color of the underline */
+  transition: width 0.5s; /* Apply transition to width for smooth animation */
+}
+
+.forgot-pass a:hover::before {
+  width: 100%; /* Expand the width of the underline to 100% on hover */
+}
+
+.forgot-pass h3{
+  font-size: 0.5rem;
 }

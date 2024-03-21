@@ -14,25 +14,7 @@
         </div>
         <div class="col-md-4 d-flex justify-content-end">
         <div class="flower-container">
-            {% with request.user.flowergrowth.stage as stage %}
-                {% if stage == 0 %}
-                    <img src="{% static 'images/flower_stage_0.png' %}" alt="Flower at stage 0" width="150px" height="150px">
-                {% elif stage == 1 %}
-                    <img src="{% static 'images/flower_stage_1.png' %}" alt="Flower at stage 1" width="150px" height="150px">
-                {% elif stage == 2 %}
-                    <img src="{% static 'images/flower_stage_2.png' %}" alt="Flower at stage 2" width="150px" height="150px">
-                {% elif stage == 3 %}
-                    <img src="{% static 'images/flower_stage_3.png' %}" alt="Flower at stage 3" width="150px" height="150px">
-                {% elif stage == 4 %}
-                    <img src="{% static 'images/flower_stage_4.png' %}" alt="Flower at stage 4" width="150px" height="150px">
-                {% elif stage == 5 %}
-                    <img src="{% static 'images/flower_stage_5.png' %}" alt="Flower at stage 5" width="150px" height="150px">
-                {% elif stage == 6 %}
-                    <img src="{% static 'images/flower_stage_6.png' %}" alt="Flower at stage 6" width="150px" height="150px">
-                {% elif stage == 7 %}
-                    <img src="{% static 'images/flower_stage_7.png' %}" alt="Flower fully grown" width="150px" height="150px">
-                {% endif %}
-            {% endwith %}
+                    <img src="{% static flower_image_url %}" alt="Flower" width="150px" height="150px">
         </div>
     </div>
     </div>

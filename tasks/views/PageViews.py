@@ -14,6 +14,8 @@ from datetime import datetime, timedelta
 from reportlab.lib.enums import TA_CENTER
 from datetime import timedelta
 from django.urls import reverse
+from django.db.models import F
+
 
 
 
@@ -22,32 +24,24 @@ DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default t
 
 @login_required
 def dashboard(request):
-    if request.user.is_authenticated != True:
-        return redirect(reverse('log_in'))
-    else:
-        now = timezone.now()
-        all_entries = JournalEntry.objects.filter(user=request.user)
-        dates_journaled = {entry.created_at.date() for entry in all_entries}
-        streak = 0
-        date = now.date()
-        while True:
-            if date in dates_journaled:
-                streak += 1
-            elif date != now.date():
-                break
-            date -= timedelta(days=1)
+        try:
+            stage = request.user.flowergrowth.stage
+        except FlowerGrowth.DoesNotExist:
+            stage = 0
+        flower_image_url = get_flower_stage_image(stage) 
 
+        return render(request, 'pages/dashboard.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user),
+                                                        'flower_image_url' : flower_image_url,})
 
-        return render(request, 'pages/dashboard.html', {
-            'user': request.user,
-            'days_since_account_creation': (now - request.user.created_at).days,
-            'days_journaled': len(dates_journaled),
-            'journal_streak': streak,
-        })
 
 @login_required
 def journal_log(request):
-    return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user)})
+    start_date = timezone.now() - timedelta(days=30)
+    end_date = timezone.now()
+
+    journal_entries_last_thirty_days = JournalEntry.objects.filter(user=request.user, created_at__range=(start_date, end_date))
+    return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user),
+                                                      'journal_entries_last_thirty_days' : journal_entries_last_thirty_days,})
 
 @login_required
 def favourites(request):
@@ -68,3 +62,16 @@ def home(request):
 
     return render(request, 'pages/home.html')
 
+
+def get_flower_stage_image(stage):
+    image_dict = {
+        0: 'images/flower_stage_0.png',
+        1: 'images/flower_stage_1.png',
+        2: 'images/flower_stage_2.png',
+        3: 'images/flower_stage_3.png',
+        4: 'images/flower_stage_4.png',
+        5: 'images/flower_stage_5.png',
+        6: 'images/flower_stage_6.png',
+        7: 'images/flower_stage_7.png',
+    }
+    return image_dict.get(stage, 'images/flower_stage_0.png')
