@@ -14,8 +14,8 @@ user_fixtures = [
 ]
 
 template_fixtures = [
-    {'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness, reading ... ? ,What are you planning to do today ?', 'deleted': False},
-    {'name': 'Evening Reflection', 'questions': 'How was your day ? ,How well do you think you accomplished your goals for the day ?,What were your highlights of the day ?', 'deleted': False},
+    {'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness, reading ... ? ,What are you planning to do today ?', 'user_entry': False, 'deleted': False},
+    {'name': 'Evening Reflection', 'questions': 'How was your day ? ,How well do you think you accomplished your goals for the day ?,What were your highlights of the day ?', 'user_entry': False, 'deleted': False},
     # Add more template fixtures as needed
 ]
 
@@ -23,7 +23,7 @@ template_fixtures = [
 class Command(BaseCommand):
     """Build automation command to seed the database."""
 
-    USER_COUNT = 300
+    USER_COUNT = 3
     TEMPLATE_COUNT = 2
     DEFAULT_PASSWORD = 'Password123'
     help = 'Seeds the database with sample data'
@@ -92,7 +92,9 @@ class Command(BaseCommand):
             Template.objects.create(
                 name=data['name'],
                 questions=data['questions'],
+                user_entry = data['user_entry'],
                 deleted=data['deleted'],
+               
             )
             print(f"Seeding user {template_count}/{self.TEMPLATE_COUNT}", end='\r')
         except Exception as e:
