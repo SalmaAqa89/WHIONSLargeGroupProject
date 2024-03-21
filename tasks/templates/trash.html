@@ -4,6 +4,8 @@
   <div class="row">
     <div class="col-12">
       <h1>Trash Page</h1>
+      <p>Explore the discarded. Here, you can view entries and templates you've deleted.</p>
+      <p>You can choose to either restore your memories and journalling guides or say goodbye to them forever by permanently deleting them.</p>
       <div class = "card">
         <div class="card-header">
           <ul class="nav nav-tabs" id = "nav-tab" role = "tablist">
@@ -23,7 +25,7 @@
                     <div class="card-body">
                       <h5 class="card-title">{{ entry.title }}</h5>
                       <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
-                      <p class="card-text">{{ entry.text }}</p>
+                      <p class="card-text">{{ entry.text | safe}}</p>
                       <a href="{% url 'delete_entry_permanent' entry_id=entry.id %}" class="btn btn-danger">Permanently Delete Entry</a>
                       <a href="{% url 'recover_entry' entry_id=entry.id %}" class="btn btn-success">Recover Entry</a>
                     </div>
