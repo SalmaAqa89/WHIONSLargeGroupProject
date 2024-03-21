@@ -182,7 +182,8 @@ class UserPreferenceForm(forms.ModelForm):
             'sunday': forms.CheckboxInput(),
         }
 
-
+class JournalSearchForm(forms.Form):
+    title = forms.CharField(required=False)
 
 
 

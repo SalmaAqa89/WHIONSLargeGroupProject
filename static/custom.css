@@ -396,3 +396,76 @@ body, html {
 #calendar td[data-has-entries="true"] {
   background-color: rgb(249, 254, 214); 
 }
+/**search*/
+#search-form .form-control {
+  width: auto;
+}
+#search-form .btn {
+  width: auto;
+}
+#journal-suggestions-container {
+  position: absolute;
+  width: auto;
+  background: lightgreen;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 0 0 5px 5px;
+  overflow: hidden;
+  z-index: 1000;
+}
+#journal-suggestions-container > div {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+#journal-suggestions-container > div:hover {
+  background-color: #f9f9f9;
+}
+
+#Fsearch-form .form-control {
+  width: auto;
+}
+#Fsearch-form .btn {
+  width: auto;
+}
+#Fjournal-suggestions-container {
+  position: absolute;
+  width: auto;
+  background: lightgreen;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 0 0 5px 5px;
+  overflow: hidden;
+  z-index: 1000;
+}
+#Fjournal-suggestions-container > div {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+#Fjournal-suggestions-container > div:hover {
+  background-color: #f9f9f9;
+}
+
+  #search-form .form-control {
+     width: auto; 
+  }
+  #search-form .btn {
+     width:auto;  
+  }
+  #suggestionsContainer {
+    position: absolute; 
+    width: auto; 
+    background: lightgreen;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+    border-radius: 0 0 5px 5px;
+    overflow: hidden;
+    z-index: 1000; 
+  }
+  #suggestionsContainer > div {
+    padding: 10px; 
+    border-bottom: 1px solid #eee; 
+    cursor: pointer; 
+  }
+  
+  #suggestionsContainer > div:hover {
+    background-color: #f9f9f9; 
+  }
