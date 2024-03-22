@@ -75,6 +75,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'tasks.context_processor.add_journal_streak',
+
             ],
         },
     },
@@ -169,7 +171,7 @@ EMAIL_USE_TLS = True
 # Email account credentials
 EMAIL_HOST_USER = 'WHIONS@outlook.com'
 EMAIL_HOST_PASSWORD = 'LGSEGproject2024!'
-DEFAULT_FROM_EMAIL = 'WHIONS@outlook.com'
+EMAIL_FROM = 'WHIONS@outlook.com'  
 
 
 # Celery settings
@@ -198,6 +200,10 @@ CELERY_BEAT_SCHEDULE = {
     },
 
 }
+
+# This is for development purposes where emails will be saved as files instead of being sent.
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
 
 CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = 'uploads/'

@@ -1,0 +1,18 @@
+{% extends 'base/base_content2.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="text-center mt-5">Edit profile</h2>
+      <form action="{% url 'profile' %}" method="post">
+        {% csrf_token %}
+        {% include 'partials/bootstrap_form.html' with form=form %}
+      
+        <div class="text-center"> <!-- Center the button -->
+          <input type="submit" value="Update" class="btn btn-secondary">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base/base_content2.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2>Trash Page</h2>
+      <div class="copy-div">
+        <p>Explore the discarded. Here, you can view entries and templates you've deleted.<br>You can choose to either restore your memories and journalling guides or say goodbye to them forever by permanently deleting them.</p>
+      </div>
+      <br>
+      <div class = "card trash-div">
+        <div class="card-header">
+          <ul class="nav nav-pills" id = "nav-pills" role = "tablist">
+              <li class="nav-item">
+                  <a class="nav-link active " id = "nav-entries-tab" data-bs-toggle = "tab" href="#nav-entries" aria-controls = "nav-entries" aria-selected="True">Journal Entries</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" id = "nav-templates-tab" data-bs-toggle = "tab" href="#nav-templates" aria-controls = "nav-templates" aria-selected="False">Templates</a>
+              </li>
+          </ul>
+    
+          <div class = "tab-content" id = myTabContent>
+            <div class = "tab-pane fade show active" id = "nav-entries" role = "tabpanel" aria-labelledby="nav-entries-tab" >
+              <div class="card-deck mt-4">
+                {% for entry in journal_entries %}
+                  <div class="card mb-3 entry-card">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ entry.title }}</h5>
+                      <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
+                      <p class="card-text">{{ entry.text | safe }}</p>
+                      <a href="{% url 'recover_entry' entry_id=entry.id %}" class="btn btn-success">Recover Entry</a>
+                      <a href="{% url 'delete_entry_permanent' entry_id=entry.id %}" class="btn btn-danger">Permanently Delete Entry</a>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class = "tab fade active" id = "nav-templates" role = "tabpanel" aria-labelledby="nav-templates-tab">
+              <p>deleted templates will go here</p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

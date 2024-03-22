@@ -26,4 +26,4 @@ class TestJournalLogTestCase(TestCase):
         self.client.login(username="@peterpickles", password="Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'journal_log.html')
+        self.assertTemplateUsed(response, 'pages/journal_log.html')

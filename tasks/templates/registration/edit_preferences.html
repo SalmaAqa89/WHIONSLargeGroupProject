@@ -1,0 +1,17 @@
+
+{% extends 'base/base_content2.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-6 offset-md-3">
+        <br>
+        <h2 class="text-center">Edit Preferences</h2>
+        <form action="{% url 'edit_preferences' %}" method="post">
+          {% csrf_token %}
+          {% include 'partials/bootstrap_form_pref2.html' with form=form %}
+          <input type="submit" value="Save Changes" class="btn btn-secondary">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

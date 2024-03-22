@@ -1,0 +1,17 @@
+{% extends 'base/base_content2.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>Welcome To Your Templates</h1>
+      <a href="{% url 'create_template' %}" class="btn btn-primary">New Template</a>
+      <p>Explore an array of templates to guide you on your journaling journey, offering thoughtful prompts to inspire your reflections.</p>
+      <p>Here, you can both discover curated templates and craft your own!</p>
+      {% for template in templates %}
+      <h2>{{template.name}}</h2>
+      <p>{{template.text}}</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -17,7 +17,9 @@ matplotlib==3.8.2
 numpy==1.26.4
 redis==5.0.2
 django-celery-beat==2.6.0
-reportlab==4.1.0
+reportlab>=4.0.4,<4.1
 selenium==4.16.0
 django-ckeditor==6.7.1
+xhtml2pdf==0.2.15
+
 
