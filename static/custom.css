@@ -1,3 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Reenie+Beanie&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+.container{
+  background: none;
+}
+body{
+  height: 100vh;
+  background-image: url(../static/images/wp4.jpeg);
+  background-size: contain; /* Cover the entire space */
+  /* background-repeat: no-repeat; Do not repeat the image */
+}
+.dash-header{
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 4.5rem !important;
+}
+
+p{
+  font-family: "Source Sans 3", sans-serif;
+}
+
+h2{
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 3rem !important;
+
+}
+h3{
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.5rem !important;
+}
+
+.dash-p{
+  font-size: 0.75rem;
+}
+
+.dash-h2{
+  padding-top: 40px;
+}
+
+.dash-h3{
+  padding-top: 30px;
+}
+
 /*
  * Alerts
  */
@@ -8,22 +59,39 @@
   z-index:1;
   top:0;
   left:0;
-  background-color:black;
+  background-color:#023020;
   overflow-x:hidden;
-  padding-top:20px;
+  padding-top:50px;
+  box-shadow: #023020 0px 0px 10px 0px;
+  
 }
 
-.sidenav a {
+.sidenav a, .sidenav p{
   padding:6px 8px 6px 16px;
   text-decoration: none;
-  color: #818181;
+  font-family: "Reenie Beanie", cursive;
+  font-weight: 400;
+  font-style: normal;
+  color: #f1f1f1;
   font-size: 25px;
   display:block;
 }
 
-.sidenav a:hover{
-  color:#f1f1f1;
+.sidenav p{
+  color:#DAF7A6;
+  text-shadow: 0 0 10px white !important; 
 }
+
+.sidenav a:hover{
+  color:#DAF7A6;
+  
+}
+
+.sidenav a:active{
+  text-shadow: 0 0 10px white !important; 
+  color:#DAF7A6;
+}
+
 .main{
   margin-left: 160px;
   padding: 0px 10px;
@@ -78,6 +146,15 @@ p.cover-text {
   opacity: 1
 }
 
+.entry-card{
+  border-radius: 20px !important;
+  border: none !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.075);
+}
+
+.entry-card:hover{
+  box-shadow: 0 10px 20px rgba(178, 213, 200, 0.502);
+}
 
 
 /*
@@ -291,35 +368,55 @@ h3.profile-title {
 }
 /*Calendar 
 */
-body, html {
-  height: 100%;
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #E8F5E9; 
-}
+  html {
+
+    font-family: "Source Sans 3", sans-serif;
+
+} 
 
 #calendarApp {
   text-align: center;
   width: 100%; 
   table-layout: fixed;
-  max-width: 1200px; 
+  max-width: 1000px;
   margin: 2% auto;
   background-color: #FEFEFE; 
   border-radius: 20px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
   padding: 40px; 
-  border: 1px solid #DDDDDD; 
+
 }
 
-.calendar-controls, .calendar-navigation {
-  position: relative; 
+.calendar-controls {
+  position: relative;
   margin-top: 20px;
   margin-bottom: 30px;
   display: flex;
-  justify-content: space-around;
-  gap: 20px; 
-  font-size: 18px; 
+  justify-content: center; /* Align to both ends */
+  align-items: center; /* Align items vertically */
+  gap: 20px; /* Adjust spacing */
+  font-size: 18px;
 }
+
+.calendar-navigation {
+  position: relative;
+  display: flex;
+  justify-content: center; /* Align navigation buttons to the right */
+  gap: 20px;
+  font-size: 18px;
+}
+
+.btn-secondary {
+  background-color: #2E7D32 !important; /* Change button background color */
+  color: #ffffff; /* Change button text color */
+  border: none;
+}
+
+.btn-outline-success :hover {
+  background-color: #2E7D32 !important; 
+  
+}
+
 
 #calendar {
   width: 100%;
@@ -332,7 +429,8 @@ body, html {
   color: #1e6321; 
   padding: 20px 15px; 
   font-size: 20px;
-  border-radius: 10px;
+  border-radius: 0;
+  border: none;
 }
 
 #calendar td {
@@ -349,10 +447,9 @@ body, html {
 }
 
 .today {
-  background-color: #090d0a; 
-  color: rgb(159, 255, 42);
+  background-color: #1B5E20 !important; 
+  color: rgb(155, 209, 169);
   font-weight: bold;
-  border-radius: 100%; 
 }
 
 .modal {
@@ -389,6 +486,7 @@ body, html {
   cursor: pointer;
 }
 
+<<<<<<< HEAD
 .navbar-custom {
   padding: 10px;
 }
@@ -411,7 +509,133 @@ body, html {
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
+=======
+.flower-container{
+  margin-right: 100px;
+  transition: transform 0.5s;
+
+>>>>>>> main
 }
+
+.flower-container:hover{
+  transform: scale(1.1);
+}
+
+
+.copy-div{
+  padding: 5px;
+  background-color: #FEFEFE; 
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+
+  justify-content: center; /* Horizontally center */
+  align-items: center; /* Vertically center */ 
+}
+
+.log-btns{
+  display: flex-start;
+  justify-content: space-evenly;
+  
+}
+
+.card-icons{
+  position: absolute;
+  right: 20px;
+}
+
+.card-buttons{
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-title{
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.trash-div{
+  border-radius: 10px !important;
+}
+
+.nav{
+  margin-top: 10px;
+  justify-content: center !important; 
+}
+
+.card-header{
+  background-color: #fefefe !important;
+  box-shadow:rgb(2, 48, 32, 0.05) 0px 0px 10px 0px;
+  border-radius: 10px !important;
+}
+
+.card{
+  border: none !important;
+  
+}
+
+.nav-link.active{
+  background-color: #2E7D32!important;
+  color: white !important;
+}
+
+.nav-link{
+  color: #2E7D32 !important;
+}
+
+.nav-dropdown{
+  background-color: #2E7D32 !important;
+}
+
+.dropdown-item:hover{
+  background-color: #2E7D32 !important;
+}
+
+.pref-checkbox{
+  background-color: #2E7D32 !important;
+  border-color: #2E7D32  !important;
+}
+
+.info-copy{
+  background-color: #e4ece4d6 !important;
+}
+
+.form-control{
+  border: none !important;
+  border-bottom: 1px solid black !important;
+  background-color: #eff8df !important;
+}
+
+.forgot-pass a{
+  position: relative;
+  text-decoration: none;
+  color: #2E7D32;
+}
+
+
+.forgot-pass a::before {
+  content: ""; /* Create a pseudo-element */
+  position: absolute;
+  bottom: 0; /* Position the pseudo-element at the bottom */
+  left: 0; /* Start the pseudo-element from the left */
+  width: 0; /* Initially, set its width to 0 */
+  height: 2px; /* Set the height of the underline */
+  background-color: #2E7D32; /* Color of the underline */
+  transition: width 0.5s; /* Apply transition to width for smooth animation */
+}
+
+.forgot-pass a:hover::before {
+  width: 100%; /* Expand the width of the underline to 100% on hover */
+}
+
+.forgot-pass h3{
+  font-size: 0.5rem;
+}
+
+/* POP up */
+
 
 .journal-entry h3 {
   font-size: 18px;

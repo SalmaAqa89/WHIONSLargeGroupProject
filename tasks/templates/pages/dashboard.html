@@ -1,0 +1,66 @@
+{% extends 'base/base_content2.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="col-12">
+      <h1 class="dash-header">Welcome to your Journal, <em>{{ user.first_name }}</em></h1>
+      <div class="row">
+
+        <div class="col-md-8 mb-4 copy-div">
+            <h3 class="dash-h3">Say Hi To Your Flower!</h3>
+            <p class="mb-3 dash-p">Each day, your flower grows, reflecting your dedication. Miss a day, and it resets, reminding you to stay consistent. Keep track of your streak by looking to the left!
+                                    Witness your journey over seven stages of growth. Every Monday, it resets, offering a fresh start.
+                                    Journal today and let your flower flourish. <br>Happy journaling!</p>
+        </div>
+        <div class="col-md-4 d-flex justify-content-end">
+        <div class="flower-container">
+                    <img src="{% static flower_image_url %}" alt="Flower" width="150px" height="150px">
+        </div>
+    </div>
+    </div>
+
+      <h2 class="text-center dash-h2">Your Calendar</h2>
+      <p class="text-center">Click on any day to view your journal entries from that date.</p>
+    </div>
+    <div id="calendarApp">
+        <div class="calendar-controls">
+        <div>
+            <select id="monthSelect" class="form-control"></select>
+        </div>
+        <div>
+            <select id="yearSelect" class="form-control"></select>
+        </div>
+        <div>
+            <button id="goToDate" class="btn btn-secondary">Go</button>
+        </div>
+
+            <div class="calendar-navigation">
+                <button id="prevMonth" class="btn btn-outline-success">Prev</button>
+                <button id="nextMonth" class="btn btn-outline-success">Next</button>
+            </div>
+      
+      </div>
+      <table id="calendar">
+          <thead>
+              <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+
+    </div>
+    
+    <div id="modal" class="modal ">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <h3 id="modalText">Day selected</h3>
+          <div id="modalJournalEntries" ></div>
+      </div>
+    </div>
+
+
+      
+
+
+
+</div>
+{% endblock %}

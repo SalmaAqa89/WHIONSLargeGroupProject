@@ -42,7 +42,7 @@ class CreateJounalEntryViewTestCase(TestCase):
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'create_entry.html')
+        self.assertTemplateUsed(response, 'components/create_entry.html')
 
     def test_succesful_create_entry(self):
         self.client.login(username=self.user.username, password='Password123')
@@ -52,7 +52,7 @@ class CreateJounalEntryViewTestCase(TestCase):
         self.assertEqual(before_count + 1, after_count)
         response_url = reverse('journal_log')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'journal_log.html')
+        self.assertTemplateUsed(response, 'pages/journal_log.html')
         entry = JournalEntry.objects.get(title='New entry')
         self.assertTrue(entry.text == 'This is a new journal entry')
 
@@ -64,7 +64,7 @@ class CreateJounalEntryViewTestCase(TestCase):
         after_count = JournalEntry.objects.count()
         self.assertEqual(before_count, after_count)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'create_entry.html')
+        self.assertTemplateUsed(response, 'components/create_entry.html')
 
     def test_unsuccesful_create_entry_with_blank_text(self):
         self.client.login(username=self.user.username, password='Password123')
@@ -74,4 +74,4 @@ class CreateJounalEntryViewTestCase(TestCase):
         after_count = JournalEntry.objects.count()
         self.assertEqual(before_count, after_count)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'create_entry.html')
+        self.assertTemplateUsed(response, 'components/create_entry.html')
