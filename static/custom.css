@@ -328,7 +328,7 @@ h3.profile-title {
   text-align: center;
 }
 
-.title-custom, .cover-text, .btn-lg {
+.title-custom, .cover-text, .btn-lg, .btn-md {
   font-family: 'Big Shoulders Display', cursive;
   white-space: nowrap;
 }
@@ -341,11 +341,28 @@ h3.profile-title {
   font-size: 20px;
 }
 
+.subtitle-custom {
+  font-family: 'Big Shoulders Display', cursive;
+  font-size: 30px;
+}
+
+.sub-text {
+  font-family: 'Big Shoulders Display', cursive;
+  font-size: 15px;
+}
+
 .btn-lg {
   font-size: 30px;
   background-color: #025912;
   color: white;
 }
+
+.btn-md {
+  font-size: 20px;
+  background-color: #025912;
+  color: white;
+}
+
 .favourite{
   float: right;
 }
@@ -469,10 +486,35 @@ h3.profile-title {
   cursor: pointer;
 }
 
+<<<<<<< HEAD
+.navbar-custom {
+  padding: 10px;
+}
+
+.landing_section {
+  text-align: center;
+}
+.landing_section * {
+  padding: 10px
+}
+
+.landing_section div{
+  width: 40%;
+  display: inline-block;
+}
+
+/* POP up */
+.journal-entry-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+=======
 .flower-container{
   margin-right: 100px;
   transition: transform 0.5s;
 
+>>>>>>> main
 }
 
 .flower-container:hover{
@@ -611,4 +653,19 @@ h3.profile-title {
 
 #calendar td[data-has-entries="true"] {
   background-color: rgb(249, 254, 214); 
+}
+
+.collapse{
+  text-align: right;
+  -webkit-transition: none;
+  transition: none;
+}
+
+.dropdown{
+  justify-content: right;
+}
+
+.collapsing {
+  -webkit-transition: none;
+  transition: none;
 }
