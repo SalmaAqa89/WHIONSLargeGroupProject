@@ -20,8 +20,10 @@ class UserPreferenceModel(TestCase):
             friday=False,
             saturday=False,
             sunday=False,
+            opt_out=False,
             journal_time='17:30:00'
         )
+
 
 
     def test_valid_user_preference(self):
@@ -32,6 +34,7 @@ class UserPreferenceModel(TestCase):
         self.assertFalse(self.preference.friday)
         self.assertFalse(self.preference.saturday)
         self.assertFalse(self.preference.sunday)
+        self.assertFalse(self.preference.opt_out)
         self.assertEqual(self.preference.journal_time, '17:30:00')
     
     def test_user_preference_must_have_user(self):
@@ -42,6 +45,19 @@ class UserPreferenceModel(TestCase):
                 wednesday=True,
                 thursday=False,
                 friday=False,
+                saturday=False,
+                sunday=False,
+                journal_time='17:30:00'
+            )
+    def test_user_preference_must_have_only_one_user(self):
+        with self.assertRaises(IntegrityError):
+            UserPreferences.objects.create(
+                user=self.user,
+                monday=True,
+                tuesday=True,
+                wednesday=True,
+                thursday=False,
+                friday=True,
                 saturday=False,
                 sunday=False,
                 journal_time='17:30:00'
