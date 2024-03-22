@@ -1,5 +1,4 @@
 import logging
-
 from celery import shared_task
 from django.utils import timezone
 from .models import FlowerGrowth, JournalEntry
@@ -31,14 +30,11 @@ def check_and_reset_growth_daily():
     ).values_list('user', flat=True).distinct()
 
     FlowerGrowth.objects.exclude(user__in=users_with_entries_yesterday).update(stage=0)
-    
+
 """ Contains tasks that will be scheduled by Celery 
 Will send out reminder emails based on user preferences 
-To run:
-    redis-server
-    celery -A task_manager worker -l info
-    celery -A task_manager beat -l info
 """
+
 @shared_task(bind=True, max_retries=3)
 def send_reminder_emails(self, user_email):
     try:
@@ -47,26 +43,22 @@ def send_reminder_emails(self, user_email):
         msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_FROM, [user_email])
         msg.send()
     except Exception as exc:
-        # Log the error
         self.retry(exc=exc)
 
 @shared_task
 def check_and_trigger_reminder_emails():
-    # Get today's day of the week
     today = datetime.now().strftime('%A').lower()
-
-    # Get user preferences for the current day
     user_preferences = UserPreferences.objects.filter(**{f"{today}": True})
     
-    # Trigger reminders for users who have selected the current day
     for index, preference in enumerate(user_preferences):
         if preference.opt_out:
             continue
-        scheduled_time = datetime.combine(datetime.today(), preference.journal_time) + timedelta(seconds=index * 10)  # Adjust the delay as needed
+        scheduled_time = datetime.combine(datetime.today(), preference.journal_time) + timedelta(seconds=index * 10) 
         logging.info(f"Scheduling reminder for {preference.user.email} at {scheduled_time}")
         
-        # Retry failed tasks with exponential backoff
         try:
             send_reminder_emails.apply_async(args=[preference.user.email], eta=scheduled_time)
         except Exception as e:
             logging.error(f"Failed to schedule reminder for {preference.user.email}: {e}")
+
+
