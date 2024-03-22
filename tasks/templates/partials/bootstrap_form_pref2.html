@@ -9,13 +9,20 @@
     <br>
     <p>What's your minimum weekly journaling goal?</p>
     <div class="form-group">
-        {% for day_field in form.visible_fields %}
-        {% if day_field.name == 'monday' or day_field.name == 'tuesday' or day_field.name == 'wednesday' or day_field.name == 'thursday' or day_field.name == 'friday' or day_field.name == 'saturday' or day_field.name == 'sunday' %}
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input pref-checkbox" id="{{ day_field.id_for_label }}" name="{{ day_field.html_name }}" {% if day_field.value %}checked{% endif %}>
-                    <label class="form-check-label" for="{{ day_field.id_for_label }}">{{ day_field.label }}</label>
-                </div>
+        {% for field in form.visible_fields %}
+        {% if field.name == 'monday' or field.name == 'tuesday' or field.name == 'wednesday' or field.name == 'thursday' or field.name == 'friday' or field.name == 'saturday' or field.name == 'sunday' %}
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input pref-checkbox" id="{{ field.id_for_label }}" name="{{ field.html_name }}" {% if field.value %}checked{% endif %}>
+                <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            </div>
             {% endif %}
+            
+        {% if field.name == "opt_out" %}
+            <div class="form-check mt-4">
+                <input type="checkbox" class="form-check-input pref-checkbox" id="{{ field.id_for_label }}" name="{{ field.html_name }}" {% if field.value %}checked{% endif %}>
+                <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            </div>
+        {% endif %}
         {% endfor %}
     </div>
     <br>

@@ -188,7 +188,7 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
-        'schedule': crontab(minute=32, hour=15),  # Run daily at midnight
+        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
     },
     'reset_flower_growth_if_no_entry': {
         'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
@@ -201,9 +201,7 @@ CELERY_BEAT_SCHEDULE = {
 
 }
 
-# This is for development purposes where emails will be saved as files instead of being sent.
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
+
 
 CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = 'uploads/'

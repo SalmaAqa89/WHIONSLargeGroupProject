@@ -331,6 +331,8 @@ def export_journal_entry_to_rtf(request, entry_id):
 
     response.write(rtf_content)
     return response
+
+
 class JournalEntryUpdateView(UpdateView, LoginRequiredMixin):
     model = JournalEntry
     form_class = JournalEntryForm

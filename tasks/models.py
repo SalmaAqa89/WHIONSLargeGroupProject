@@ -50,7 +50,7 @@ class User(AbstractUser):
     
 class UserPreferences(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     monday = models.BooleanField(default=True)
     tuesday = models.BooleanField(default=True)
     wednesday = models.BooleanField(default=True)
@@ -58,6 +58,7 @@ class UserPreferences(models.Model):
     friday = models.BooleanField(default=True)
     saturday = models.BooleanField(default=True)
     sunday = models.BooleanField(default=True)
+    opt_out = models.BooleanField(default=False)
     journal_time = models.TimeField()
     
 
