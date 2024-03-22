@@ -60,5 +60,7 @@ def check_and_trigger_reminder_emails():
             send_reminder_emails.apply_async(args=[preference.user.email], eta=scheduled_time)
         except Exception as e:
             logging.error(f"Failed to schedule reminder for {preference.user.email}: {e}")
+    
+
 
 
