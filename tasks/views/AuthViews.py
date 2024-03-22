@@ -6,12 +6,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from django.views import View
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
 from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
+from django.http import HttpResponseRedirect
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
@@ -194,3 +195,5 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
     
     def get_success_url(self):
         return reverse('dashboard')
+    
+
