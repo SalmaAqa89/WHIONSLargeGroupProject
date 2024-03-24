@@ -138,7 +138,6 @@ def unfavourite_journal_entry(request,entry_id):
         messages.add_message(request, messages.ERROR, "Entry is not yours!")
         return redirect(next_page)
 
-
 def get_mood_representation(mood, use_emoji=False):
     mood_dict = {
         1: ('Very Sad', '😔'),
