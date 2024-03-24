@@ -486,6 +486,7 @@ h3.profile-title {
   cursor: pointer;
 }
 
+
 .navbar-custom {
   padding: 10px;
 }
@@ -510,9 +511,11 @@ h3.profile-title {
   margin-bottom: 10px;
 }
 
+
 .flower-container{
   margin-right: 100px;
   transition: transform 0.5s;
+
 
 }
 
