@@ -10,7 +10,7 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
-from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
+from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User,Template
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
@@ -46,6 +46,7 @@ import re
 from PyPDF2 import PdfMerger
 from xhtml2pdf import pisa
 import tempfile
+import json 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
@@ -56,11 +57,17 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     form_class = JournalEntryForm
     template_name = "components/create_entry.html"
 
+    def get_template_name(self):
+        # Get the dynamic template_name from the session
+        return self.request.session.get('template_name', 'default_template')
+
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
-
+        template_name = self.get_template_name()
+        template_instance, created = Template.objects.get_or_create(name=template_name)
+        text = template_instance.get_questions()
         kwargs = super().get_form_kwargs(**kwargs)
-        kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
+        kwargs.update({'user': self.request.user, 'text': text})
         return kwargs
 
     def form_valid(self, form):
@@ -90,30 +97,54 @@ def delete_journal_entry(request,entry_id):
     if entry.user == request.user:
         entry.delete_entry()
         messages.add_message(request, messages.SUCCESS, "Entry moved to trash!")
-        return redirect('trash')
+        return redirect('journal_log')
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
+
+def delete_selected_entries(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        entry_ids = data.get('entryIds', [])
+        try:
+            for entry_id in entry_ids:
+                entry = get_object_or_404(JournalEntry, pk=entry_id)
+                
+                if entry.user == request.user:
+                    entry.delete_entry() 
+                else:
+                    return JsonResponse({'success': False, 'message': 'You cannot delete an entry that is not yours.'}, status=403)
+            messages.success(request, "Selected entries moved to trash!")
+
+            return JsonResponse({'success': True, 'message': 'Selected entries moved to trash!'})
+
+        except JournalEntry.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'One or more selected entries do not exist.'}, status=404)
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': 'Failed to delete selected entries. Please try again later.'}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
     
 def recover_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
         entry.recover_entry()
         messages.add_message(request,messages.SUCCESS,"Entry has been recovered!")
-        return redirect('journal_log')
+        return redirect('trash')
     else:
         messages.add_message(request, messages.ERROR, "entry cannot be recovered")
-        return redirect('journal_log')
+        return redirect('trash')
 
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
         entry.permanently_delete()
         messages.add_message(request, messages.SUCCESS, "Entry deleted!")
-        return redirect("journal_log") 
+        return redirect("trash") 
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
-        return redirect('journal_log')
+        return redirect('trash')
     
 def favourite_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
