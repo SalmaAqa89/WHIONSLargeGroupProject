@@ -10,7 +10,7 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from matplotlib.ticker import MaxNLocator
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
-from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
+from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User,Template
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
