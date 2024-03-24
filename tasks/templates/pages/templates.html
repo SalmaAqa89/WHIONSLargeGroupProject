@@ -3,13 +3,23 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <h1>Welcome To Your Templates</h1>
-      <a href="{% url 'create_template' %}" class="btn btn-primary">New Template</a>
-      <p>Explore an array of templates to guide you on your journaling journey, offering thoughtful prompts to inspire your reflections.</p>
-      <p>Here, you can both discover curated templates and craft your own!</p>
+      <h2>Welcome To Your Templates</h2>
+      <div class="copy-div">
+        <p>Explore an array of templates to guide you on your journaling journey, offering thoughtful prompts to inspire your reflections. <br>Here, you can both discover curated templates and craft your own!</p>
+      </div>
+      <div class="mt-3">
+        <a href="{% url 'create_template' %}" class="btn btn-secondary">Make Your Own</a>
+      </div>
+      
       {% for template in templates %}
-      <h2>{{template.name}}</h2>
-      <p>{{template.text}}</p>
+      <div class="col-12 col-md-6 col-lg-4 mt-4">
+        <div class="card ">
+          <div class="card-body copy-div">
+            <h5 class="card-title">{{template.name}}</h5>
+            <p class="card-text">{{template.text}}</p>
+          </div>
+        </div>
+      </div>
       {% endfor %}
     </div>
   </div>

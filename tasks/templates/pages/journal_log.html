@@ -10,8 +10,8 @@
       
       <div class=" mt-3 log-btns">
         <a href="{% url 'template_choices' %}" class="btn btn-secondary mr-2">New Journal Entry</a>
-        <button id="toggleSelect" class="btn btn-info">Select</button>
-        <div class="dropdown" style="display:none;" id="exportOptions">
+        <button id="toggleSelect" class="btn btn-secondary">Select</button>
+        <div class="dropdown mt-4" style="display:none;" id="exportOptions">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Export
           </button>
@@ -22,7 +22,7 @@
           <button id="deleteButton" class="btn btn-danger fas fa-trash-alt"> </button>
         </div>
       </div>
-      <!-- separate journal entries-->
+
 
       <div class = "card trash-div mt-4">
         <div class="card-header">
@@ -34,14 +34,18 @@
                   <a class="nav-link" id = "nav-all-tab" data-bs-toggle = "tab" href="#nav-all" aria-controls = "nav-all" aria-selected="False">All Time</a>
               </li>
           </ul>
-          <form method="post">
-            {% csrf_token %}
-            <div class="input-group">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" required>
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </div>
-             
-          </form>
+
+          <div class="row justify-content-center mt-4">
+            <form class="col-sm-4" method="post">
+              {% csrf_token %}
+              <div class="input-group">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search By Name" name="search" required>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </div>
+            </form>
+          </div>
+          
+
           <div class = "tab-content" id = myTabContent>
             <div class = "tab-pane fade show active" id = "nav-recent-entries" role = "tabpanel" aria-labelledby="nav-30-tab" >
               <div class="card-deck mt-4">
@@ -57,7 +61,7 @@
             </div>
           </div>
 
-      <!-- end-->
+
 
       
     </div>

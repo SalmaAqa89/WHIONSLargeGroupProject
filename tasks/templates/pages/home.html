@@ -10,17 +10,14 @@
     </div>
   </nav>
   <div class="collapse" id="navbarToggleExternalContent">
-    <p>
-        <a href='{% url 'sign_up' %}' class="btn btn-secondary ">
-            Sign up
-        </a>
-    </p>
-    <p>
-        <a href='{% url 'log_in' %}' class="btn btn-secondary ">
-            Log in
-        </a>
-    </p>
-  </div>
+    <div class="mb-3">
+        <a href="{% url 'sign_up' %}" class="btn btn-secondary">Sign up</a>
+    </div>
+    <div class="mb-3">
+        <a href="{% url 'log_in' %}" class="btn btn-secondary">Log in</a>
+    </div>
+</div>
+
 <div class="container">
     <div class="text-center-custom">
 
@@ -34,43 +31,5 @@
     <img src="{% static 'images/flower_stage_4.png' %}" width="15%">
     <img src="{% static 'images/flower_stage_7.png' %}" width="15%">
 </div>
-<div class="landing_section">
-    <div class="text-center-custom">
-
-        <h1 class="subtitle-custom">Calendar View</h1>
-        <p class="sub-text">The calendar view in Bloom offers a structured overview of your journal entries, making it easy to
-             navigate through your personal history. This feature aids in reflecting on past thoughts and experiences, allowing 
-             you to identify patterns in your life. It's a visual journey through time, encouraging regular journaling as a path 
-             to mindfulness and a more organised mental space. <i></i></p>
-        
-    </div>
-    <div class="text-center-custom">
-
-        <h1 class="subtitle-custom">Voice to Text Technology</h1>
-        <p class="sub-text">Bloom's voice to text technology makes journaling as effortless as speaking your thoughts out loud.
-             This feature breaks down barriers to journaling, such as time constraints or physical impediments, making it more
-              inclusive and accessible. <i></i></p>
-        
-    </div>
-    <div class="text-center-custom">
-
-        <h1 class="subtitle-custom">Mood Tracking</h1>
-        <p class="sub-text">Mood tracking on every journal entry allows you to record and analyse your emotional state over time.
-            This feature provides valuable insights into your mood patterns, helping you understand the impact of daily events on 
-            your well-being. By recognising these patterns, Bloom empowers you to address emotional challenges more effectively,
-             promoting a healthier, calmer mind. <i></i></p>
-        
-    </div>
-    <div class="text-center-custom">
-
-        <h1 class="subtitle-custom">Weekly Flower Growth</h1>
-        <p class="sub-text">The weekly flower growth feature stands at the heart of Bloom's philosophy. It visually represents your 
-            journaling journey, with each day of consistent journaling nurturing the flower from a bud to full bloom. This feature 
-            not only motivates regular reflection but also serves as a beautiful metaphor for personal growth and the flourishing
-             of a calmer, more mindful self. <i></i></p>
-        
-    </div>
-   
-</div>
-
+        {% include 'partials/landing_text.html' %}
 {% endblock %}

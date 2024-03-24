@@ -4,16 +4,13 @@
 {% block content %}
 <div class="container">
     <div class="row">
-      <div class="col-sm-12 col-md-6 offset-md-3">
-        <h1>Create Journal Entry</h1>
-        <form action="{% url 'create_template' %}" method="post" enctype="multipart/form-data">
+      <div class="col-sm-12 col-md-6 offset-md-3 mt-4">
+        <h2 class="mt-4">What Inspires You?</h1>
+        <form class="mt-5" action="{% url 'create_template' %}" method="post" enctype="multipart/form-data">
           {% csrf_token %}
           {% include 'partials/bootstrap_form.html' with form=form %}
           {{ form.media }}
-          <button type="button" id="toggle-record-btn" class="btn">
-            <i class="fas fa-microphone"></i> 
-          </button>
-          <input type="submit" value="Create Template" class="btn btn-primary">
+          <input type="submit" value="Create Template" class="btn btn-secondary">
         </form>
       </div>
     </div>
