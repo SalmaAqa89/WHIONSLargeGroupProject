@@ -53,6 +53,8 @@ def check_and_trigger_reminder_emails():
     for index, preference in enumerate(user_preferences):
         if preference.opt_out:
             continue
+        # we have to introduce a delay to avoid sending all emails at the same time, due to the capacity of the email server we are using in the scope of our project
+        # in an ideal world, we would change the service so that it can handle a large number of emails at once
         scheduled_time = datetime.combine(datetime.today(), preference.journal_time) + timedelta(seconds=index * 10) 
         logging.info(f"Scheduling reminder for {preference.user.email} at {scheduled_time}")
         
