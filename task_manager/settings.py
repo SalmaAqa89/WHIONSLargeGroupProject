@@ -169,6 +169,7 @@ EMAIL_USE_TLS = True
 # Email account credentials
 EMAIL_HOST_USER = 'WHIONS@outlook.com'
 EMAIL_HOST_PASSWORD = 'LGSEGproject2024!'
+EMAIL_FROM = 'WHIONS@outlook.com'
 DEFAULT_FROM_EMAIL = 'WHIONS@outlook.com'
 
 
