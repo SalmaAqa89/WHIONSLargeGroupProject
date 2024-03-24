@@ -11,6 +11,14 @@
       </div>
     </div>
   </div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="input-group">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" required>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </div>
+     
+  </form>
       <div class = "card-deck mt-4">
         {% for entry in journal_entries %}
         {% if not entry.deleted %}
