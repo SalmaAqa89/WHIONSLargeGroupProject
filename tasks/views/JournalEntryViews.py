@@ -46,6 +46,7 @@ import re
 from PyPDF2 import PdfMerger
 from xhtml2pdf import pisa
 import tempfile
+import json 
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
@@ -90,30 +91,54 @@ def delete_journal_entry(request,entry_id):
     if entry.user == request.user:
         entry.delete_entry()
         messages.add_message(request, messages.SUCCESS, "Entry moved to trash!")
-        return redirect('trash')
+        return redirect('journal_log')
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
+
+def delete_selected_entries(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        entry_ids = data.get('entryIds', [])
+        try:
+            for entry_id in entry_ids:
+                entry = get_object_or_404(JournalEntry, pk=entry_id)
+                
+                if entry.user == request.user:
+                    entry.delete_entry() 
+                else:
+                    return JsonResponse({'success': False, 'message': 'You cannot delete an entry that is not yours.'}, status=403)
+            messages.success(request, "Selected entries moved to trash!")
+
+            return JsonResponse({'success': True, 'message': 'Selected entries moved to trash!'})
+
+        except JournalEntry.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'One or more selected entries do not exist.'}, status=404)
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': 'Failed to delete selected entries. Please try again later.'}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
     
 def recover_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
         entry.recover_entry()
         messages.add_message(request,messages.SUCCESS,"Entry has been recovered!")
-        return redirect('journal_log')
+        return redirect('trash')
     else:
         messages.add_message(request, messages.ERROR, "entry cannot be recovered")
-        return redirect('journal_log')
+        return redirect('trash')
 
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
         entry.permanently_delete()
         messages.add_message(request, messages.SUCCESS, "Entry deleted!")
-        return redirect("journal_log") 
+        return redirect("trash") 
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
-        return redirect('journal_log')
+        return redirect('trash')
     
 def favourite_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
