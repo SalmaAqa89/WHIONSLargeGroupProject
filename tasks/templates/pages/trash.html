@@ -18,14 +18,17 @@
                   <a class="nav-link" id = "nav-templates-tab" data-bs-toggle = "tab" href="#nav-templates" aria-controls = "nav-templates" aria-selected="False">Templates</a>
               </li>
           </ul>
-          <form method="post">
-            {% csrf_token %}
-            <div class="input-group">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" required>
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </div>
-             
-          </form>
+
+          <div class="row justify-content-center mt-4">
+            <form class="col-sm-4" method="post">
+              {% csrf_token %}
+              <div class="input-group">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search By Name" name="search" required>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </div>
+            </form>
+          </div>
+
           <div class = "tab-content" id = myTabContent>
             <div class = "tab-pane fade show active" id = "nav-entries" role = "tabpanel" aria-labelledby="nav-entries-tab" >
               <div class="card-deck mt-4">

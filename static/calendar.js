@@ -106,9 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 entriesHtml += `
                                     <div class="journal-entry-box">
                                         <div class="journal-entry copy-div mt-4">
-                                            <h3>${entry.title}</h3>
-                                            <p>${entry.text}</p>
-                                            <p>Feeling: ${getMoodEmoji(entry.mood)}</p>
+                                            <h3 class="mt-4">${entry.title}</h3>
+                                            <p class="mt-4">${entry.text}</p>
+                                            <p class="mt-4">Feeling: ${getMoodEmoji(entry.mood)}</p>
                                         </div>
                                     </div>
                                 `;
