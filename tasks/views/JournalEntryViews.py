@@ -59,9 +59,12 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
 
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
+        template_name = self.get_template_name()
+        template_instance, created = Template.objects.get_or_create(name=template_name)
+        text = template_instance.get_questions()
 
         kwargs = super().get_form_kwargs(**kwargs)
-        kwargs.update({'user': self.request.user, 'text': DEFAULT_TEMPLATE["text"]})
+        kwargs.update({'user': self.request.user, 'text': text})
         return kwargs
 
     def form_valid(self, form):
@@ -356,6 +359,8 @@ def export_journal_entry_to_rtf(request, entry_id):
 
     response.write(rtf_content)
     return response
+
+
 class JournalEntryUpdateView(UpdateView, LoginRequiredMixin):
     model = JournalEntry
     form_class = JournalEntryForm

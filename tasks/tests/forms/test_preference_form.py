@@ -22,12 +22,13 @@ class UserPreferenceFormTestCase(TestCase):
             'friday': 'False',
             'saturday': 'False',
             'sunday': 'False',
+            'opt_out': 'False'
         }
         self.user = User.objects.get(username='@johndoe')
         self.days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
         
     
-    def test_valid_preference_up_form(self):
+    def test_valid_preference_form(self):
         form = UserPreferenceForm(data=self.form_input)
         self.assertTrue(form.is_valid())
 
@@ -39,7 +40,8 @@ class UserPreferenceFormTestCase(TestCase):
             day_field = form.fields[day]
             self.assertTrue(isinstance(day_field, forms.BooleanField))
             day_widget = day_field.widget
-            self.assertTrue(isinstance(day_widget, forms.CheckboxInput))    
+            self.assertTrue(isinstance(day_widget, forms.CheckboxInput))  
+        self.assertIn('opt_out', form.fields)  
 
 
     def test_journal_time_must_be_time(self):
@@ -60,6 +62,7 @@ class UserPreferenceFormTestCase(TestCase):
             self.assertTrue(getattr(pref, day))
         for day in ['wednesday', 'friday', 'saturday', 'sunday']:
             self.assertFalse(getattr(pref, day))
+        self.assertFalse(getattr(pref, 'opt_out'))
     
     def test_form_must_update_correctly(self):
         form = UserPreferenceForm(data=self.form_input)

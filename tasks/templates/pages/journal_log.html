@@ -24,7 +24,7 @@
       </div>
       <!-- separate journal entries-->
 
-      <div class = "card trash-div">
+      <div class = "card trash-div mt-4">
         <div class="card-header">
           <ul class="nav nav-pills" id = "nav-pills" role = "tablist">
               <li class="nav-item">
@@ -34,7 +34,14 @@
                   <a class="nav-link" id = "nav-all-tab" data-bs-toggle = "tab" href="#nav-all" aria-controls = "nav-all" aria-selected="False">All Time</a>
               </li>
           </ul>
-    
+          <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" required>
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </div>
+             
+          </form>
           <div class = "tab-content" id = myTabContent>
             <div class = "tab-pane fade show active" id = "nav-recent-entries" role = "tabpanel" aria-labelledby="nav-30-tab" >
               <div class="card-deck mt-4">

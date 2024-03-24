@@ -27,3 +27,23 @@ class TestJournalLogTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pages/journal_log.html')
+
+    def test_search_matching(self):
+        self.client.login(username=self.user.username, password='Password123')
+        response = self.client.post(self.url, {
+            'search':'entry 2'
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/journal_log.html')
+        self.assertContains(response, "New Entry 2")
+        self.assertNotContains(response, self.user.username)
+
+    def test_search_not_matching(self):
+        self.client.login(username=self.user.username, password='Password123')
+        response = self.client.post(self.url, {
+            'search':'entry 3'
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/journal_log.html')
+        self.assertNotContains(response, "New Entry 2")
+        self.assertNotContains(response, self.user.username)

@@ -18,6 +18,7 @@ from django.db.models import F
 from tasks.forms import TemplateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView, UpdateView
+from django.db.models import Q
 
 
 
@@ -41,13 +42,21 @@ def dashboard(request):
 def journal_log(request):
     start_date = timezone.now() - timedelta(days=30)
     end_date = timezone.now()
-    journal_entries_last_thirty_days = JournalEntry.objects.filter(user=request.user, created_at__range=(start_date, end_date))
-    return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user),
-                                                      'journal_entries_last_thirty_days' : journal_entries_last_thirty_days,})
+    query = Q(user=request.user)
+    search_key = request.POST.get('search')
+    if search_key:
+         query &= Q(title__icontains=search_key) | Q(text__icontains=search_key) 
+    last_30_days_query = query & Q(created_at__range=(start_date, end_date))
+    return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(query).order_by('-created_at'),
+                                                      'journal_entries_last_thirty_days' :  JournalEntry.objects.filter(last_30_days_query).order_by('-created_at')})
 
 @login_required
 def favourites(request):
-    return render(request, 'pages/favourites.html', {'journal_entries' : JournalEntry.objects.filter(user=request.user, favourited=True)})
+    query = Q(user=request.user) & Q(favourited=True)
+    search_key = request.POST.get('search')
+    if search_key:
+         query &= Q(title__icontains=search_key) | Q(text__icontains=search_key)
+    return render(request, 'pages/favourites.html', {'journal_entries' : JournalEntry.objects.filter(query)})
 
 @login_required
 def templates(request):
@@ -55,7 +64,11 @@ def templates(request):
 
 @login_required
 def trash(request):
-    return render(request, 'pages/trash.html',{'journal_entries' : JournalEntry.objects.filter(user=request.user, deleted=True, permanently_deleted=False)})
+    query = Q(user=request.user) & Q(deleted=True) & Q( permanently_deleted=False)
+    search_key = request.POST.get('search')
+    if search_key:
+         query &= Q(title__icontains=search_key) | Q(text__icontains=search_key)
+    return render(request, 'pages/trash.html',{'journal_entries' : JournalEntry.objects.filter(query)})
 
 
 @login_prohibited
