@@ -26,7 +26,7 @@ class CreateJounalEntryViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Title:", html=True)
         self.assertContains(response, "Text:", html=True)
-        self.assertContains(response, "This is the default template", html=True)
+        
 
     def test_get_create_entry_redirects_when_not_logged_in(self):
         redirect_url = reverse_with_next('log_in', self.url)

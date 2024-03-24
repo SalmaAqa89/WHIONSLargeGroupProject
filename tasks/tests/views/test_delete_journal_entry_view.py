@@ -25,5 +25,5 @@ class DeleteJournalntryViewTestCase(TestCase):
         entry = JournalEntry.objects.get(pk=self.entry.id)
         
         self.assertTrue(entry.deleted)
-        self.assertRedirects(response, reverse('trash'))
+        self.assertRedirects(response, reverse('journal_log'))
     

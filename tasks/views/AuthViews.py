@@ -6,12 +6,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from django.views import View
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
 from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
+from django.http import HttpResponseRedirect
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
@@ -171,30 +172,28 @@ class SetPreferences(LoginRequiredMixin, FormView):
     def get_success_url(self):
         return reverse('dashboard')
     
+
+    
 class EditPreferences(LoginRequiredMixin, UpdateView):
-    """Display user profile editing screen, and handle profile modifications."""
 
     model = UserPreferences
-    template_name = "registration/edit_preferences.html"
     form_class = UserPreferenceForm
-
-     
-    def get_success_url(self):
-        return reverse('dashboard')
+    template_name = "registration/edit_preferences.html"
 
     def get_object(self, queryset=None):
-        """Return the object (user preferences) to be updated."""
-        return get_object_or_404(UserPreferences, user=self.request.user)
+        try:
+            userpreference = self.request.user.userpreferences
+            return userpreference
+        except UserPreferences.DoesNotExist:
+            return None
 
     def form_valid(self, form):
-        messages.success(self.request, "Preferences updated!")
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
         return super().form_valid(form)
     
-    def form_invalid(self, form):
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f"{field}: {error}")
-        return super().form_invalid(form)
-
-
+    def get_success_url(self):
+        return reverse('dashboard')
     
+

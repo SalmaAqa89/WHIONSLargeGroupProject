@@ -8,6 +8,7 @@ body{
   background-image: url(../static/images/wp4.jpeg);
   background-size: contain; /* Cover the entire space */
   /* background-repeat: no-repeat; Do not repeat the image */
+  font-family: "Source Sans 3", sans-serif;
 }
 .dash-header{
   font-family: "Playfair Display", serif;
@@ -41,9 +42,7 @@ h3{
   font-size: 0.75rem;
 }
 
-.dash-h2{
-  padding-top: 40px;
-}
+
 
 .dash-h3{
   padding-top: 30px;
@@ -249,11 +248,6 @@ h3.profile-title {
   height: 50px;
 }
 
-.title-custom {
-  font-family: 'Big Shoulders Display', cursive;
-  font-size: 50px;
-  white-space: nowrap;
-}
 
 .form-custom {
   width: 100%;
@@ -410,6 +404,7 @@ h3.profile-title {
   background-color: #2E7D32 !important; /* Change button background color */
   color: #ffffff; /* Change button text color */
   border: none;
+  font-family: "Source Sans 3", sans-serif;
 }
 
 .btn-outline-success :hover {
@@ -671,3 +666,4 @@ h3.profile-title {
   -webkit-transition: none;
   transition: none;
 }
+
