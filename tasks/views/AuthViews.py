@@ -13,6 +13,7 @@ from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
@@ -197,3 +198,13 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
         return reverse('dashboard')
     
 
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        # Delete the user account
+        user = request.user
+        user.delete()
+        messages.success(request, "Your account has been deleted successfully.")
+        return redirect('log_in')  
+    else:
+        return render(request, 'components/delete_confirmation.html')

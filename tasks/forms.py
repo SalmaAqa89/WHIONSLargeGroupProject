@@ -209,7 +209,8 @@ class TemplateForm(forms.ModelForm):
         new_template.save()
         return new_template
 
-
+class JournalSearchForm(forms.Form):
+        title = forms.CharField(required=False)
 
 
 
