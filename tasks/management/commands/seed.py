@@ -89,9 +89,16 @@ class Command(BaseCommand):
     def create_template(self, data):
         template_count = Template.objects.count()
         try:
+
+            existing_template = Template.objects.filter(name=data['name']).first()
+            if existing_template:
+                print(f"Template ('{data['name']}' ) already exists.")
+                return
+            
             Template.objects.create(
                 name=data['name'],
                 questions=data['questions'],
+                user_entry = data['user_entry'],
                 deleted=data['deleted'],
             )
             print(f"Seeding user {template_count}/{self.TEMPLATE_COUNT}", end='\r')
