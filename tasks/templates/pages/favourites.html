@@ -11,28 +11,31 @@
       </div>
     </div>
   </div>
+  <div class=" mt-3 log-btns">
+  <button id="toggleSelect" class="btn btn-secondary">Select</button>
+  <div class="dropdown mt-4" style="display:none;" id="exportOptions">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Export
+    </button>
+    <div class="dropdown-menu" aria-labelledby="exportDropdown">
+      <a class="dropdown-item" href="#" onclick="exportSelected('pdf')">Export to PDF</a>
+      <a class="dropdown-item" href="#" onclick="exportSelected('rtf')">Export to RTF</a>
+    </div>
+    <button id="deleteButton" class="btn btn-danger fas fa-trash-alt"> </button>
+  </div>
+</div>
 
-  <button id="toggleSelect" class="btn btn-info">Select</button>
-        <div class="dropdown" style="display:none;" id="exportOptions">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Export
-          </button>
-          <div class="dropdown-menu" aria-labelledby="exportDropdown">
-            <a class="dropdown-item" href="#" onclick="exportSelected('pdf')">Export to PDF</a>
-            <a class="dropdown-item" href="#" onclick="exportSelected('rtf')">Export to RTF</a>
-          </div>
-          <button id="deleteButton" class="btn btn-danger fas fa-trash-alt"> </button>
-        </div>
-
-  <form method="post">
+<div class="row justify-content-center mt-4">
+  <form class="col-sm-4" method="post">
     {% csrf_token %}
     <div class="input-group">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" required>
+      <input class="form-control mr-sm-2" type="search" placeholder="Search By Name" name="search" required>
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </div>
+  </form>
+</div>
      
   </form>
-
       <div class = "card-deck mt-4">
         {% for entry in journal_entries %}
         {% if not entry.deleted %}
@@ -47,16 +50,7 @@
               <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
               <p class="card-text">{{ entry.text | safe}}</p>
               <p>Mood: {{ entry.get_mood_display }}</p>
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="individualExportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Export
-                </button>
-                <div class="dropdown-menu" aria-labelledby="individualExportDropdown">
-                  <a class="dropdown-item" href="{% url 'export_journal_entry_to_pdf' entry_id=entry.id %}">Export to PDF</a>
-                  <a class="dropdown-item" href="{% url 'export_journal_entry_to_rtf' entry_id=entry.id %}">Export to RTF</a>
-                </div>
-              </div>
-              <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger fas fa-trash-alt"></a>
+          
             </div>
           </div>
         {% endif %}
