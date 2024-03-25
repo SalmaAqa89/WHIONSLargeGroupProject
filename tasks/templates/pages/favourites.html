@@ -48,12 +48,24 @@
               </div>
               <h5 class="card-title">{{ entry.title }}</h5> 
          <details id="details-{{ entry.id }}" data-entry-id="{{ entry.id }}">
-          <summary id="summary-{{ entry.id }}">See More</summary>
+          <summary id="summary-{{ entry.id }}">Show Text</summary>
           <p>{{ entry.text|safe }}</p>
          </details>
               <p>Mood: {{ entry.get_mood_display }}</p>
-          
+              <div class="card-buttons">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="individualExportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Export
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="individualExportDropdown">
+                    <a class="dropdown-item" href="{% url 'export_journal_entry_to_pdf' entry_id=entry.id %}">Export to PDF</a>
+                    <a class="dropdown-item" href="{% url 'export_journal_entry_to_rtf' entry_id=entry.id %}">Export to RTF</a>
+                  </div>
+                </div>
+                <a href="{% url 'delete_entry' entry_id=entry.id %}" class="btn btn-danger fas fa-trash-alt"></a>
+                </div>
             </div>
+            
           </div>
         {% endif %}
         {% endfor %}

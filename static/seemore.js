@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryElement = element.querySelector('summary');
     element.addEventListener('toggle', () => {
       if (element.open) {
-        summaryElement.textContent = 'See Less';
+        summaryElement.textContent = 'Hide Text';
       } else {
-        summaryElement.textContent = 'See More';
+        summaryElement.textContent = 'Show Text';
       }
     });
   });
