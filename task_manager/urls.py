@@ -38,8 +38,14 @@ urlpatterns = [
     path('export_entries/', JournalEntryViews.export_entries, name='export_entries'),
     path('favourites/',PageViews.favourites,name ='favourites'),
     path('mood_breakdown/',JournalEntryViews.mood_breakdown,name ='mood_breakdown'),
+    
     path('templates/',PageViews.templates,name ='templates'),
     path('trash/',PageViews.trash,name ='trash'),
+   
+
+    path('search-favourite/', JournalEntryViews.search_favourite, name='search_favourite'),
+    path('search-favouritesuggestion/', JournalEntryViews.search_favouriteSuggestion, name='search_favouriteSuggestion'),
+
     path('create_entry/', JournalEntryViews.CreateJournalEntryView.as_view(), name="create_entry"),
     path('delete_entry/<int:entry_id>', JournalEntryViews.delete_journal_entry, name="delete_entry"),
     path('favourite_entry/<int:entry_id>', JournalEntryViews.favourite_journal_entry, name="favourite_entry"),

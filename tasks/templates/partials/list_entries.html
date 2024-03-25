@@ -10,10 +10,14 @@
             {% else %}
             <a href="{% url 'favourite_entry' entry_id=entry.id %}" class="favourite"><img src="http://www.clker.com/cliparts/2/4/T/f/0/4/star-grey-md.png" height="20" width="20" class="float-right"></a>
             {% endif %}
+          
           </div>
           <h5 class="card-title">{{ entry.title }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{ entry.created_at }}</h6>
-          <p class="card-text">{{ entry.text|safe }}</p>
+         <details id="details-{{ entry.id }}" data-entry-id="{{ entry.id }}">
+          <summary id="summary-{{ entry.id }}">See More</summary>
+          <p>{{ entry.text|safe }}</p>
+         </details>
+        
           <p>Feeling: {{ entry.get_mood_display }}</p>
           <div class="card-buttons">
             <div class="dropdown">

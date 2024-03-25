@@ -210,7 +210,8 @@ class TemplateForm(forms.ModelForm):
 
 
 
-
+class JournalSearchForm(forms.Form):
+        title = forms.CharField(required=False)
 
     
 

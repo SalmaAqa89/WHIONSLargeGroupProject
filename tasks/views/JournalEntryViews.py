@@ -46,7 +46,7 @@ import re
 from PyPDF2 import PdfMerger
 from xhtml2pdf import pisa
 import tempfile
-
+from tasks.forms import JournalSearchForm
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
 
@@ -355,3 +355,31 @@ class JournalEntryUpdateView(UpdateView, LoginRequiredMixin):
     
     def get_success_url(self):
         return reverse('journal_log')
+
+
+@login_required
+def search_favourite (request):
+    query = request.GET.get('title', '')
+    journal_entries = JournalEntry.objects.filter(
+        title__icontains=query, 
+        deleted=False, 
+        user=request.user,
+        favourited = True
+    )
+    return render(request, 'pages/favourites.html', {'journal_entries': journal_entries})
+
+
+
+@login_required
+def search_favouriteSuggestion(request):
+    query = request.GET.get('q', '')
+    if query:
+        suggestions = JournalEntry.objects.filter(
+            title__icontains=query, 
+            favourited=True,
+           
+            user=request.user   
+        ).values_list('title', flat=True)[:5] 
+    else:
+        suggestions = []
+    return JsonResponse({'suggestions': list(suggestions)})
