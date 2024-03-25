@@ -4,11 +4,15 @@
   <div class="row">
     <div class="col-sm-12 col-md-6 offset-md-3">
       <h2 class="text-center mt-5">Delete Account</h2>
+      <div class="copy-div mt-5 text-center">
       <p>Are you sure you want to delete your account?</p>
         <form action="{% url 'delete_account' %}" method="post">
             {% csrf_token %}
-            <input type="submit" value="Yes, Delete My Account" class="btn btn-danger">
+            <div class="text-center">
+              <input type="submit" value="Yes, Delete My Account" class="btn btn-danger">
+            </div>
         </form>
+        </div>
     </div>
   </div>
 </div>

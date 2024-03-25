@@ -207,4 +207,4 @@ def delete_account(request):
         messages.success(request, "Your account has been deleted successfully.")
         return redirect('log_in')  
     else:
-        return render(request, 'delete_comfirmation.html')
+        return render(request, 'components/delete_confirmation.html')
