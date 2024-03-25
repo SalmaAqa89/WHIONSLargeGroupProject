@@ -21,5 +21,5 @@ reportlab>=4.0.4,<4.1
 selenium==4.16.0
 django-ckeditor==6.7.1
 xhtml2pdf==0.2.15
-
+gunicorn==21.2.0
 
