@@ -5,7 +5,7 @@
 }
 body{
   height: 100vh;
-  background-image: url(../static/wp4.jpeg);
+  background-image: url(../static/images/wp4.jpeg);
   background-size: contain; /* Cover the entire space */
   /* background-repeat: no-repeat; Do not repeat the image */
   font-family: "Source Sans 3", sans-serif;
