@@ -178,7 +178,7 @@ DEFAULT_FROM_EMAIL = 'WHIONS@outlook.com'
 from celery.schedules import crontab
 CELERY_TIMEZONE = "Europe/London"
 
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = "rediss://:p8fb7dd3c41d8d6f075a6bb390e16674ffaf36c2e7050c7c6ae766f7ca878064d@ec2-54-78-109-225.eu-west-1.compute.amazonaws.com:23140"
 
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
