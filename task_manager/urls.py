@@ -57,6 +57,8 @@ urlpatterns = [
 
     path('delete_selected_entries/', JournalEntryViews.delete_selected_entries, name='delete_selected_entries'),
     path('delete_account',AuthViews.delete_account,name = 'delete_account'),
+    path('search-favourite/', JournalEntryViews.search_favourite, name='search_favourite'),
+    path('search-favouritesuggestion/', JournalEntryViews.search_favouriteSuggestion, name='search_favouriteSuggestion'),
 
 
     ]
