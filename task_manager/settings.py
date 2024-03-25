@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-&$dln5wpgorppuw&(gintxm573v2ks+zq4o$(4*lapguixf^+2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['whions-57285081149e.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -193,12 +193,12 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
     },
     'reset_flower_growth_if_no_entry': {
-        'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
+        'task': 'tasks.tasks.check_and_reset_growth_daily',
         'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
     },
     'reset_flower_growth_weekly': {
         'task': 'tasks.tasks.reset_flower_growth_weekly',
-        'schedule': crontab(minute=0, hour=0, day_of_week='sun'),  # Run at the start of each week
+        'schedule': crontab(minute=00, hour=00, day_of_week='sun'),  # Run at the start of each week
     },
 
 }
