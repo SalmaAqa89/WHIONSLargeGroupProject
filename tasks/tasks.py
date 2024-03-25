@@ -15,6 +15,7 @@ from django.core.mail import EmailMultiAlternatives
 Will reset flower growth when a day of journalling is missed and at the start of the week 
 To run:
     redis-server
+    celery -A task_manager inspect registered
     celery -A task_manager worker -l info
     celery -A task_manager beat -l info
 """
