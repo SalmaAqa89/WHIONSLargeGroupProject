@@ -1,0 +1,15 @@
+{% extends 'base/base_content2.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-6 offset-md-3">
+      <h2 class="text-center mt-5">Delete Account</h2>
+      <p>Are you sure you want to delete your account?</p>
+        <form action="{% url 'delete_account' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Yes, Delete My Account" class="btn btn-danger">
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
