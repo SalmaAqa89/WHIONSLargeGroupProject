@@ -56,6 +56,7 @@ urlpatterns = [
     path('template_choices/',PageViews.template_choices,name = 'template_choices'),
 
     path('delete_selected_entries/', JournalEntryViews.delete_selected_entries, name='delete_selected_entries'),
+    path('delete_account',AuthViews.delete_account,name = 'delete_account'),
 
 
     ]
