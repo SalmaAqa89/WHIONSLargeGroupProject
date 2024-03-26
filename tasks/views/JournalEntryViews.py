@@ -392,7 +392,8 @@ class JournalEntryUpdateView(UpdateView, LoginRequiredMixin):
         return queryset.filter(user=self.request.user)
     
     def get_success_url(self):
-        return reverse('journal_log')
+            return reverse('journal_log')
+
 
 @login_required
 def search_favourite (request):
