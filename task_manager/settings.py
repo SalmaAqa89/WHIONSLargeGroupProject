@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import os
-
+import dj_database_url
 import celery
 from celery import Celery
 from datetime import datetime, time, timedelta
@@ -87,12 +87,12 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+db_from_env = dj_database_url.config(conn_max_age=600)
+
 DATABASES = {
-    'default': {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': db_from_env
 }
+
 
 
 # Password validation
