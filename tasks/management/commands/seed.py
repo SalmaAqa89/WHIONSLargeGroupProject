@@ -14,7 +14,7 @@ user_fixtures = [
 ]
 
 template_fixtures = [
-    {'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness, reading ... ? ,What are you planning to do today ?', 'deleted': False},
+    {'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness or reading ... ? ,What are you planning to do today ?', 'deleted': False},
     {'name': 'Evening Reflection', 'questions': 'How was your day ? ,How well do you think you accomplished your goals for the day ?,What were your highlights of the day ?', 'deleted': False},
     # Add more template fixtures as needed
 ]

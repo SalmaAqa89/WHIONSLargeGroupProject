@@ -48,6 +48,7 @@ from xhtml2pdf import pisa
 import tempfile
 import json 
 from tasks.forms import JournalSearchForm
+from django.utils.html import mark_safe
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template"}
 
@@ -67,8 +68,11 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
         template_name = self.get_template_name()
         template_instance, created = Template.objects.get_or_create(name=template_name)
         text = template_instance.get_questions()
+        text_with_br = text.replace(',', '<br><br>')
+        formatted_text = f'<h1><strong><em>{text_with_br}</em></strong></h1>'
+        formatted_text_safe = mark_safe(formatted_text)
         kwargs = super().get_form_kwargs(**kwargs)
-        kwargs.update({'user': self.request.user, 'text': text})
+        kwargs.update({'user': self.request.user, 'text': formatted_text_safe})
         return kwargs
 
     def form_valid(self, form):
