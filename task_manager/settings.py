@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import os
-import secrets
-import dj_database_url
+
 import celery
 from celery import Celery
 from datetime import datetime, time, timedelta
@@ -30,28 +29,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-&$dln5wpgorppuw&(gintxm573v2ks+zq4o$(4*lapguixf^+2'
 
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
-    default=secrets.token_urlsafe(nbytes=64),
-)
-
-IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
-
 # SECURITY WARNING: don't run with debug turned on in production!
-if not IS_HEROKU_APP:
-    DEBUG = True
+DEBUG = True
 
-if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ["*"]
-else:
-    ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['whions-57285081149e.herokuapp.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "whitenoise.runserver_nostatic",
     'tasks',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,19 +53,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    # Django doesn't support serving static assets in a production-ready way, so we use the
-    # excellent WhiteNoise package to do so instead. The WhiteNoise middleware must be listed
-    # after Django's `SecurityMiddleware` so that security redirects are still performed.
-    # See: https://whitenoise.readthedocs.io
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 ROOT_URLCONF = 'task_manager.urls'
 
 TEMPLATES = [
@@ -89,14 +71,14 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'tasks.context_processor.add_journal_streak',
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+            'tasks.context_processor.add_journal_streak',
             ],
-        },
-    },
+            },
+            },
 ]
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
@@ -105,29 +87,12 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if IS_HEROKU_APP:
-    # In production on Heroku the database configuration is derived from the `DATABASE_URL`
-    # environment variable by the dj-database-url package. `DATABASE_URL` will be set
-    # automatically by Heroku when a database addon is attached to your Heroku app. See:
-    # https://devcenter.heroku.com/articles/provisioning-heroku-postgres
-    # https://github.com/jazzband/dj-database-url
-    DATABASES = {
-        "default": dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True,
-        ),
+DATABASES = {
+    'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    # When running locally in development or in CI, a sqlite database file will be used instead
-    # to simplify initial setup. Longer term it's recommended to use Postgres locally too.
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-
+}
 
 
 # Password validation
@@ -135,7 +100,7 @@ else:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
@@ -174,15 +139,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
-STORAGES = {
-    # Enable WhiteNoise's GZip and Brotli compression of static assets:
-    # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
-WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -208,7 +164,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # SMTP server settings
 EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_PORT = 587  
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True 
 
 # Email account credentials
@@ -222,7 +178,7 @@ DEFAULT_FROM_EMAIL = 'WHIONS@outlook.com'
 from celery.schedules import crontab
 CELERY_TIMEZONE = "Europe/London"
 
-REDIS_URL = "rediss://:p8fb7dd3c41d8d6f075a6bb390e16674ffaf36c2e7050c7c6ae766f7ca878064d@ec2-54-78-109-225.eu-west-1.compute.amazonaws.com:23140"
+REDIS_URL = os.environ.get('REDIS_URL')
 
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
@@ -234,15 +190,15 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
-        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
+        'schedule': crontab(minute=0, hour=0),# Run daily at midnight
     },
     'reset_flower_growth_if_no_entry': {
-        'task': 'tasks.tasks.check_and_reset_growth_daily',
-        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
+        'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
+        'schedule': crontab(minute=0, hour=0),# Run daily at midnight
     },
     'reset_flower_growth_weekly': {
         'task': 'tasks.tasks.reset_flower_growth_weekly',
-        'schedule': crontab(minute=00, hour=00, day_of_week='sun'),  # Run at the start of each week
+        'schedule': crontab(minute=0, hour=0, day_of_week='sun'),# Run at the start of each week
     },
 
 }
@@ -267,4 +223,4 @@ CKEDITOR_CONFIGS = {
     { 'name': 'tools', 'items': ['Maximize'] }
 ]
     }
-} 
+    }
