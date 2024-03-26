@@ -98,7 +98,6 @@ class Command(BaseCommand):
             Template.objects.create(
                 name=data['name'],
                 questions=data['questions'],
-                user_entry = data['user_entry'],
                 deleted=data['deleted'],
             )
             print(f"Seeding user {template_count}/{self.TEMPLATE_COUNT}", end='\r')
