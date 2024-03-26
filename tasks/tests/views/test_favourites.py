@@ -26,3 +26,21 @@ class TestFavouritesTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pages/favourites.html')
+
+    def test_search_matching(self):
+        self.client.login(username=self.user.username, password='Password123')
+        response = self.client.post(self.url, {
+            'search':'entry 2'
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/favourites.html')
+        self.assertContains(response, "New Entry 2")
+
+    def test_search_not_matching(self):
+        self.client.login(username=self.user.username, password='Password123')
+        response = self.client.post(self.url, {
+            'search':'entry 3'
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/favourites.html')
+        self.assertNotContains(response, "New Entry 2")

@@ -51,5 +51,14 @@ class DashboardViewTestCase(TestCase):
 
     def test_get_profile_redirects_when_not_logged_in(self):
         redirect_url = reverse('log_in')
+<<<<<<< Updated upstream
+=======
+        response = self.client.get(self.url)
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+    def test_get_profile_redirects_when_not_verified(self):
+        self.client.login(username="@petrapickles", password='Password123')
+        redirect_url = reverse('verify-email')
+>>>>>>> Stashed changes
         response = self.client.get(self.url)
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
