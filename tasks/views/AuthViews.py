@@ -165,6 +165,14 @@ class SetPreferences(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         user_preference = form.save(commit=False)
         user_preference.user = self.request.user
+        if user_preference.opt_out:  # Automatically deselect all days if opted out
+            user_preference.monday = False
+            user_preference.tuesday = False
+            user_preference.wednesday = False
+            user_preference.thursday = False
+            user_preference.friday = False
+            user_preference.saturday = False
+            user_preference.sunday = False
         user_preference.save()
         messages.success(self.request, "Preferences Saved!")
 
@@ -190,6 +198,14 @@ class EditPreferences(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        if self.object.opt_out:  # Automatically deselect all days if opted out
+            self.object.monday = False
+            self.object.tuesday = False
+            self.object.wednesday = False
+            self.object.thursday = False
+            self.object.friday = False
+            self.object.saturday = False
+            self.object.sunday = False
         self.object.user = self.request.user
         self.object.save()
         return super().form_valid(form)
