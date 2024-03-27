@@ -29,3 +29,9 @@ class ExportTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/rtf')
         self.assertIn('Test Entry', response.content.decode())
+
+    def test_export_entries_invalid_format(self):
+        self.client.login(username=self.user.username, password='Password123')
+        response = self.client.get(reverse('export_entries'), {'entries': self.entry.id, 'format': 'invalid'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode(), 'Invalid export format')
