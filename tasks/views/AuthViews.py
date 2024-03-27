@@ -1,3 +1,6 @@
+""" Views for anything related to the user and their account.
+"""
+
 from venv import logger
 from django.conf import settings
 from django.contrib import messages
