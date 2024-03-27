@@ -31,7 +31,6 @@ urlpatterns = [
     path('password/', AuthViews.PasswordView.as_view(), name='password'),
     path('profile/', AuthViews.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', AuthViews.SignUpView.as_view(), name='sign_up'),
-    path('accounts/', include('django.contrib.auth.urls')),
     path('journal_log/',PageViews.journal_log,name ='journal_log'),
     path('journal/entry/<int:entry_id>/pdf/', ExportViews.export_journal_entry_to_pdf, name='export_journal_entry_to_pdf'),
     path('journal/entry/<int:entry_id>/rtf/', ExportViews.export_journal_entry_to_rtf, name='export_journal_entry_to_rtf'),
