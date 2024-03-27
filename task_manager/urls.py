@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from tasks.views import ExportViews, PageViews, AuthViews, JournalEntryViews
+from tasks.views import PageViews, AuthViews, JournalEntryViews,TemplateViews,ExportViews
 from ckeditor_uploader import views as ckeditor_views
 from django.contrib.auth.decorators import login_required
 
@@ -42,10 +42,13 @@ urlpatterns = [
     path('trash/',PageViews.trash,name ='trash'),
     path('create_entry/', JournalEntryViews.CreateJournalEntryView.as_view(), name="create_entry"),
     path('delete_entry/<int:entry_id>', JournalEntryViews.delete_journal_entry, name="delete_entry"),
+    path('delete_template/<int:template_id>',TemplateViews.delete_template,name = "delete_template"),
     path('favourite_entry/<int:entry_id>', JournalEntryViews.favourite_journal_entry, name="favourite_entry"),
     path('unfavourite_entry/<int:entry_id>', JournalEntryViews.unfavourite_journal_entry, name="unfavourite_entry"),
     path('delete_entry_permanent/<int:entry_id>',JournalEntryViews.delete_journal_entry_permanent,name = "delete_entry_permanent"),
+    path('delete_template_permanent/<int:template_id>',TemplateViews.delete_template_entry_permanent,name = "delete_template_permanent"),
     path('recover_entry/<int:entry_id>',JournalEntryViews.recover_journal_entry,name = "recover_entry"),
+    path('recover_template/<int:template_id>',TemplateViews.recover_template_entry,name = "recover_template"),
     path('set_preferences/',AuthViews.SetPreferences.as_view(),name = "set_preferences"),
     path('edit_preferences/',AuthViews.EditPreferences.as_view(),name = "edit_preferences"),
     path('ckeditor/', include('ckeditor_uploader.urls')), 
