@@ -85,12 +85,7 @@ class JournalEntry(models.Model):
         self.save()
 
     def permanently_delete(self):
-        self.deleted = True
-        self.permanently_deleted = True
-        self.title = ""
-        self.text = ""
-        self.mood = 3
-        self.save()
+        self.delete()
 
     def recover_entry(self):
         self.deleted = False
