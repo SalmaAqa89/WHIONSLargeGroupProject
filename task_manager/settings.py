@@ -205,7 +205,7 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
-        'schedule': crontab(minute=0, hour=13),# Run daily at midnight
+        'schedule': crontab(minute=48, hour=13),# Run daily at midnight
     },
     'reset_flower_growth_if_no_entry': {
         'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
