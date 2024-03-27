@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from tasks.models import JournalEntry
+from tasks.models import JournalEntry,Template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
