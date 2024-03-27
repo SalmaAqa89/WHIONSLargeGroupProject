@@ -13,6 +13,7 @@ class TrashViewTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
         self.journal_entry = JournalEntry.objects.create(user=self.user, title='Test Title', text='Test Text', deleted=True)
+        self.template = Template.objects.create( name='Test Template', questions='Test Q', deleted=True)
         self.url = reverse('trash')
     
     def test_trash_url(self):
@@ -25,6 +26,9 @@ class TrashViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pages/trash.html')
         self.assertContains(response, f'<h5 class="card-title">{self.journal_entry.title}</h5>', html=True)
+        self.assertContains(response, f'<h5 class="card-title">{self.template.name}</h5>', html=True)
+
+    
 
 
     
@@ -51,6 +55,31 @@ class TrashViewTestCase(TestCase):
         self.assertEqual(response_after_recovery.status_code, 200)
         self.assertNotContains(response_after_recovery, f'<h5 class="card-title">{journal_entry2.title}</h5>', html=True)
         entry_exists = JournalEntry.objects.filter(pk=journal_entry2.pk)
+        self.assertFalse(entry_exists, "Entry does exist in the database")
+        
+    def test_successful_recover_template(self):
+        self.client.login(username=self.user.username, password='Password123')
+        response = self.client.get(reverse('trash'))
+        self.assertContains(response, f'<h5 class="card-title">{self.template.name}</h5>', html=True)
+        recover_response = self.client.get(reverse('recover_template', args=[self.template.pk]))
+        self.assertEqual(recover_response.status_code, 302)  
+        response_after_recovery = self.client.get(reverse('trash'))
+        self.assertEqual(response_after_recovery.status_code, 200)
+        self.assertNotContains(response_after_recovery, f'<h5 class="card-title">{self.template.name}</h5>', html=True)
+        entry_exists = Template.objects.filter(pk=self.template.pk).exists()
+        self.assertTrue(entry_exists, "Template does not exist in the database")
+
+    def test_successful_delete_template_permanent(self):
+        self.client.login(username=self.user.username, password='Password123')
+        template2 = Template.objects.create(name='Test Name 2', questions='Test Questions', deleted=True)
+        response = self.client.get(reverse('trash'))
+        self.assertContains(response, f'<h5 class="card-title">{template2.name}</h5>', html=True)
+        recover_response = self.client.get(reverse('delete_template_permanent', args=[template2.pk]))
+        self.assertEqual(recover_response.status_code, 302)  
+        response_after_recovery = self.client.get(reverse('trash'))
+        self.assertEqual(response_after_recovery.status_code, 200)
+        self.assertNotContains(response_after_recovery, f'<h5 class="card-title">{template2.name}</h5>', html=True)
+        entry_exists = Template.objects.filter(pk=template2.pk)
         self.assertFalse(entry_exists, "Entry does exist in the database")
 
 
