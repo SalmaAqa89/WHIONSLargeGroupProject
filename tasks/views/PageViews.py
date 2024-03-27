@@ -64,7 +64,7 @@ def favourites(request):
 def templates(request):
     if request.user.is_authenticated:
         user_creation_date = request.user.date_joined
-        templates = Template.objects.all()
+        templates = Template.objects.filter(user=request.user) 
 
         for template in templates:
             unlock_date = user_creation_date + timedelta(days=template.unlock_after_days)
@@ -120,6 +120,7 @@ def template_choices(request):
         account_created = request.user.date_joined
         current_date = datetime.now(tz=account_created.tzinfo)
         templates = Template.objects.filter(
+            user=request.user, 
             unlock_after_days__lte=(current_date - account_created).days
         )
     else:
@@ -146,6 +147,7 @@ class CreateTemplateView(LoginRequiredMixin, FormView):
 
 
     def form_valid(self, form):
+        form.instance.user = self.request.user
         form.save()
         return super().form_valid(form)
     

@@ -12,7 +12,7 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, UserPreferenceForm
-from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User
+from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User, Template
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from django.http import HttpResponseRedirect
@@ -140,6 +140,14 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def form_valid(self, form):
         self.object = form.save()
         login(self.request, self.object)
+        template_fixtures = [
+            {'user_entry': False,'name': 'Blank Template', 'questions': '', 'deleted': False, 'unlock_after_days':0},
+            {'user_entry': False,'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness or reading ... ? ,What are you planning to do today ?', 'deleted': False,'unlock_after_days':0},
+            {'user_entry': False,'name': 'Evening Reflection', 'questions': 'How was your day ? ,How well do you think you accomplished your goals for the day ?,What were your highlights of the day ?', 'deleted': False,'unlock_after_days':3},
+            {'user_entry': False,'name': 'Future Planning', 'questions': 'What are your 5 long term goals ? ,How are you planning on achieving them ?,What goals are you prioritising?', 'deleted': False,'unlock_after_days':7},
+        ]
+        for template_data in template_fixtures:
+            Template.objects.get_or_create(user=self.object, **template_data)
         FlowerGrowth.objects.create(user=self.object, stage=0)
         return super().form_valid(form)
 

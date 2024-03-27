@@ -67,7 +67,13 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
     def get_form_kwargs(self, **kwargs):
         """Pass the current user to the create entry form."""
         template_name = self.get_template_name()
-        template_instance, created = Template.objects.get_or_create(name=template_name)
+        template_instance, created = Template.objects.get_or_create(name=template_name, user=self.request.user)
+
+
+        # Handle multiple objects returned by get_or_create
+        if isinstance(template_instance, list):
+            template_instance = template_instance[0]
+
         text = template_instance.get_questions()
         text_with_br = text.replace(',', '<br><br>')
         formatted_text = f'<h1><strong><em>{text_with_br}</em></strong></h1>'

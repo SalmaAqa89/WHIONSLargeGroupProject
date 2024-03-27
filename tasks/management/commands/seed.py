@@ -84,29 +84,34 @@ class Command(BaseCommand):
             last_name=data['last_name'],
         )
     
-    def try_create_template(self, data):
+    def create_templates(self):
+        users = User.objects.all()  # Retrieve all users from the database
+        for user in users:
+            for data in template_fixtures:
+                self.try_create_template(user, data)
+
+    def try_create_template(self, user, data):
         try:
-            self.create_template(data)
+            self.create_template(user, data)
         except Exception as e:
             print(f"Error creating template: {e}")
-    
-    def create_template(self, data):
-        template_count = Template.objects.count()
-        try:
 
-            existing_template = Template.objects.filter(name=data['name']).first()
+    def create_template(self, user, data):
+        template_count = Template.objects.filter(user=user).count()  # Count templates specific to the user
+        try:
+            existing_template = Template.objects.filter(user=user, name=data['name']).first()  # Filter by user and template name
             if existing_template:
-                print(f"Template ('{data['name']}' ) already exists.")
+                print(f"Template '{data['name']}' already exists for user {user}.")
                 return
-            
             Template.objects.create(
+                user=user,
                 user_entry=data['user_entry'],
                 name=data['name'],
                 questions=data['questions'],
                 deleted=data['deleted'],
                 unlock_after_days=data['unlock_after_days']
             )
-            print(f"Seeding user {template_count}/{self.TEMPLATE_COUNT}", end='\r')
+            print(f"Seeding user {user} - {template_count}/{self.TEMPLATE_COUNT}", end='\r')
         except Exception as e:
             print(f"Error creating template: {e}")
 
