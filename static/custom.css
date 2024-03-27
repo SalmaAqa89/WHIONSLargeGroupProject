@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Reenie+Beanie&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
+:root{
+  --pale-green: #d6e6d7;
+  --dark-green: #1e6321; 
+}
 .container{
   background: none;
 }
 body{
   height: 100vh;
-  background-image: url(../static/images/wp4.jpeg);
   background-size: contain; /* Cover the entire space */
-  /* background-repeat: no-repeat; Do not repeat the image */
   font-family: "Source Sans 3", sans-serif;
 }
 .dash-header{
@@ -320,6 +322,9 @@ h3.profile-title {
 
 .text-center-custom {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .title-custom, .cover-text, .btn-lg, .btn-md {
@@ -438,7 +443,7 @@ h3.profile-title {
 }
 
 #calendar td:hover {
-  background-color: rgb(237, 246, 178)
+  background-color: var(--pale-green)
 }
 
 .today {
@@ -528,6 +533,55 @@ h3.profile-title {
   justify-content: center; /* Horizontally center */
   align-items: center; /* Vertically center */ 
 }
+
+.landing-div{
+  background-color: var(--pale-green);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+}
+
+.landing-sub{
+  color: var(--dark-green);
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 5rem !important;
+}
+
+.typing-animation {
+  font-family: "Playfair Display", serif;
+  overflow: hidden;
+  border-right: .15em solid black; /* Cursor effect */
+  white-space: nowrap; /* Prevents line breaks */
+  margin: 0;
+  display: inline-block;
+  width: 70%; 
+  animation: typing 3s steps(40) 1, blink-caret 0.75s step-end infinite  ;
+
+}
+
+@keyframes typing {
+from {
+  width: 0; /* Start with 0 width */
+}
+50% {
+  width: 0%; /* Pause at half width */
+}
+100% {
+  width: 70%; /* Full width at the end */
+}
+}
+
+
+@keyframes blink-caret {
+from,to {
+  border-color: transparent; /* Hide cursor */
+}
+50% {
+  border-color: black; /* Blinking cursor effect */
+}
+}
+
+
+
 
 .log-btns{
   display: flex-start;
@@ -667,4 +721,41 @@ h3.profile-title {
   transition: none;
 }
 
+.navbar-light .navbar-toggler{
+  border: none !important;
+
+}
+
+.home-nav{
+  justify-content: left !important;
+  padding-top: 1rem !important;
+  left: 1rem !important;
+}
+
+.back-button {
+  margin-top: 10px;
+  top: 30px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #025912;
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.logo-div {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  margin-right: 5px; /* Adjust margin as needed */
+}
+
+.home-header {
+  font-size: 10rem !important; 
+}
 

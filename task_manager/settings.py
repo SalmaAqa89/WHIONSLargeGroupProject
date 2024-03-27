@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import os
-
+import dj_database_url
 import celery
 from celery import Celery
 from datetime import datetime, time, timedelta
@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-&$dln5wpgorppuw&(gintxm573v2ks+zq4o$(4*lapguixf^+2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['whions-57285081149e.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'task_manager.urls'
@@ -71,14 +72,14 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'tasks.context_processor.add_journal_streak',
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+            'tasks.context_processor.add_journal_streak',
             ],
-        },
-    },
+            },
+            },
 ]
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
@@ -87,12 +88,27 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+'default': {
+'ENGINE': 'django.db.backends.sqlite3',
+'NAME': BASE_DIR / 'db.sqlite3',
 }
+}
+
+
+if IS_HEROKU_APP:
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES = {
+        'default': db_from_env
+    }
+
+
+
+
 
 
 # Password validation
@@ -100,7 +116,7 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
@@ -138,7 +154,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -190,22 +205,22 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
-        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
+        'schedule': crontab(minute=0, hour=0),# Run daily at midnight
     },
     'reset_flower_growth_if_no_entry': {
-        'task': 'tasks.tasks.check_and_reset_growth_daily',
-        'schedule': crontab(minute=0, hour=0),  # Run daily at midnight
+        'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
+        'schedule': crontab(minute=0, hour=0),# Run daily at midnight
     },
     'reset_flower_growth_weekly': {
         'task': 'tasks.tasks.reset_flower_growth_weekly',
-        'schedule': crontab(minute=00, hour=00, day_of_week='sun'),  # Run at the start of each week
+        'schedule': crontab(minute=0, hour=0, day_of_week='sun'),# Run at the start of each week
     },
 
 }
 
 # # This is for development purposes where emails will be saved as files instead of being sent.
-# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-# EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "sent_emails" # Emails will be saved in this directory in your project
 
 CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = 'uploads/'
@@ -223,4 +238,4 @@ CKEDITOR_CONFIGS = {
     { 'name': 'tools', 'items': ['Maximize'] }
 ]
     }
-} 
+    }

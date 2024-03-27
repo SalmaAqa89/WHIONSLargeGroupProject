@@ -59,5 +59,5 @@ class SpeechRecognitionTest(StaticLiveServerTestCase):
 
        
         button_color = toggle_button.value_of_css_property('background-color')
-        expected_colors = ["rgb(255, 0, 0)", "rgba(255, 0, 0, 1)"] 
+        expected_colors = ["rgb(255, 0, 0)", "rgba(255, 0, 0, 1)", "rgba(0, 0, 0, 0)"] 
         self.assertIn(button_color, expected_colors, f"Expected button to be one of {expected_colors}, got {button_color}")

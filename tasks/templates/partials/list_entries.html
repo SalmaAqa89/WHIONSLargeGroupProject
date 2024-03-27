@@ -12,10 +12,10 @@
             {% endif %}
           </div>
           <h5 class="card-title">{{ entry.title }}</h5> 
-         <details id="details-{{ entry.id }}" data-entry-id="{{ entry.id }}">
-          <summary id="summary-{{ entry.id }}">See More</summary>
-          <p>{{ entry.text|safe }}</p>
-         </details>
+        <details id="details-{{ entry.id }}" data-entry-id="{{ entry.id }}">    
+        <summary id="summary-{{ entry.id }}">Show Text</summary>
+        <p>{{ entry.text|safe }}</p>
+        </details>
           <p>Feeling: {{ entry.get_mood_display }}</p>
           <div class="card-buttons">
             <div class="dropdown">

@@ -2,34 +2,31 @@
 {% load static %}
 {% block body %}
 
-  <nav class="navbar navbar-light dropdown">
-    <div>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-        <img src="https://www.gravatar.com/avatar/?d=mp&s=40" alt="Default Mini Gravatar" width="60" height="60" class="rounded-circle">
-      </button>
-    </div>
-  </nav>
-  <div class="collapse" id="navbarToggleExternalContent">
-    <div class="mb-3">
-        <a href="{% url 'sign_up' %}" class="btn btn-secondary">Sign up</a>
-    </div>
-    <div class="mb-3">
-        <a href="{% url 'log_in' %}" class="btn btn-secondary">Log in</a>
-    </div>
-</div>
+
+<nav class="navbar navbar-light dropdown home-nav">
+  <div class="dropdown">
+      <a class="d-block" href="#" role="button" id="user-account-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="https://www.gravatar.com/avatar/?d=mp&s=40" alt="Default Mini Gravatar" width="40" height="40" class="rounded-circle">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-sm nav-dropdown" aria-labelledby="user-account-dropdown">
+          <li><a href="{% url 'sign_up' %}" class="btn btn-secondary">Sign up</a></li>
+          <li> <a href="{% url 'log_in' %}" class="btn btn-secondary">Log in</a></li>
+      </ul>
+  </div>
+</nav>
+
 
 <div class="container">
     <div class="text-center-custom">
-
-        <h1 class=" dash-header">Bloom</h1>
-        <h2 class="dash-h2"> Journal. Reflect. Flourish. <i> </i></p>
+        <div class="logo-div">
+            <img src="{% static 'images/logo.png' %}" alt="Bloom Logo" class="logo" width="110" height="150">
+            <h1 class=" dash-header home-header">Bloom</h1>
+        </div>
+        <div class="typing-animation">
+        <h2 class="dash-h2 landing-sub"> Journal. Reflect. Flourish. <i> </i></p></h2>
+        </div>
         
     </div>
-</div>
-<div class="landing_section">
-    <img src="{% static 'images/flower_stage_0.png' %}" width="15%">
-    <img src="{% static 'images/flower_stage_4.png' %}" width="15%">
-    <img src="{% static 'images/flower_stage_7.png' %}" width="15%">
 </div>
         {% include 'partials/landing_text.html' %}
 {% endblock %}
