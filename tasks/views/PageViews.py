@@ -64,7 +64,7 @@ def favourites(request):
 def templates(request):
     if request.user.is_authenticated:
         user_creation_date = request.user.date_joined
-        templates = Template.objects.all()
+        templates = Template.objects.filter(user = request.user)
 
         for template in templates:
             unlock_date = user_creation_date + timedelta(days=template.unlock_after_days)
@@ -72,7 +72,11 @@ def templates(request):
     
     else:
         templates = Template.objects.none()
-    return render(request, 'pages/templates.html', {'templates':templates})
+    
+    context = {
+        'templates': templates
+    }
+    return render(request, 'pages/templates.html',context)
 
 @login_required
 def trash(request):
@@ -121,7 +125,7 @@ def template_choices(request):
         current_date = datetime.now(tz=account_created.tzinfo)
         templates = Template.objects.filter(
             unlock_after_days__lte=(current_date - account_created).days
-        )
+        ,user = request.user)
     else:
         templates = Template.objects.none() 
 

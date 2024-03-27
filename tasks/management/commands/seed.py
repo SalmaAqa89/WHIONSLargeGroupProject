@@ -14,20 +14,13 @@ user_fixtures = [
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
 
-template_fixtures = [
-    {'user_entry': False,'name': 'Blank Template', 'questions': '', 'deleted': False, 'unlock_after_days':0},
-    {'user_entry': False,'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness or reading ... ? ,What are you planning to do today ?', 'deleted': False,'unlock_after_days':0},
-    {'user_entry': False,'name': 'Evening Reflection', 'questions': 'How was your day ? ,How well do you think you accomplished your goals for the day ?,What were your highlights of the day ?', 'deleted': False,'unlock_after_days':3},
-    {'user_entry': False,'name': 'Future Planning', 'questions': 'What are your 5 long term goals ? ,How are you planning on achieving them ?,What goals are you prioritising?', 'deleted': False,'unlock_after_days':7},
-    
-]
+
 
 
 class Command(BaseCommand):
     """Build automation command to seed the database."""
 
     USER_COUNT = 3
-    TEMPLATE_COUNT = 2
     DEFAULT_PASSWORD = 'Password123'
     help = 'Seeds the database with sample data'
 
@@ -37,7 +30,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.create_users()
-        self.create_templates()
         self.create_doe_journal_entries()
         self.users = User.objects.all()
 
@@ -46,9 +38,7 @@ class Command(BaseCommand):
         self.generate_user_fixtures()
         self.generate_random_users()
     
-    def create_templates(self):
-        for data in template_fixtures:
-            self.try_create_template(data)
+  
 
     def generate_user_fixtures(self):
         for data in user_fixtures:
@@ -84,31 +74,6 @@ class Command(BaseCommand):
             last_name=data['last_name'],
         )
     
-    def try_create_template(self, data):
-        try:
-            self.create_template(data)
-        except Exception as e:
-            print(f"Error creating template: {e}")
-    
-    def create_template(self, data):
-        template_count = Template.objects.count()
-        try:
-
-            existing_template = Template.objects.filter(name=data['name']).first()
-            if existing_template:
-                print(f"Template ('{data['name']}' ) already exists.")
-                return
-            
-            Template.objects.create(
-                user_entry=data['user_entry'],
-                name=data['name'],
-                questions=data['questions'],
-                deleted=data['deleted'],
-                unlock_after_days=data['unlock_after_days']
-            )
-            print(f"Seeding user {template_count}/{self.TEMPLATE_COUNT}", end='\r')
-        except Exception as e:
-            print(f"Error creating template: {e}")
 
     def create_doe_journal_entries(self):
             john_doe = User.objects.get(username='@johndoe')

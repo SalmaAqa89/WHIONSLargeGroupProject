@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from datetime import timedelta
+from django.conf import settings
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -62,7 +63,19 @@ class UserPreferences(models.Model):
     sunday = models.BooleanField(default=True)
     opt_out = models.BooleanField(default=False)
     journal_time = models.TimeField()
-    
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_templates(sender, instance, created, **kwargs):
+    if created:
+        template_fixtures = [
+        {'user_entry': False,'name': 'Blank Template', 'questions': '', 'deleted': False, 'unlock_after_days':0},
+        {'user_entry': False,'name': 'Morning Reflection', 'questions': 'What are some things you feel grateful for ?,What are your main focuses for today e.g. fitness or reading ... ? ,What are you planning to do today ?', 'deleted': False,'unlock_after_days':0},
+        {'user_entry': False,'name': 'Evening Reflection', 'questions': 'How was your day ? ,How well do you think you accomplished your goals for the day ?,What were your highlights of the day ?', 'deleted': False,'unlock_after_days':3},
+        {'user_entry': False,'name': 'Future Planning', 'questions': 'What are your 5 long term goals ? ,How are you planning on achieving them ?,What goals are you prioritising?', 'deleted': False,'unlock_after_days':7},
+        ]
+
+        for fixture in template_fixtures:
+            Template.objects.create(user=instance, **fixture)
 
 class JournalEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -117,12 +130,16 @@ class FlowerGrowth(models.Model):
         self.save()
     
 class Template(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length = 50, blank = False)
     questions = models.CharField(max_length =255,blank = True)
     user_entry = models.BooleanField(default = True)
     deleted = models.BooleanField(default = False)
     permanently_deleted = models.BooleanField(default = False)
     unlock_after_days = models.IntegerField(default=0) 
+
+    class Meta:
+        unique_together = ('user', 'name',)
 
 
     def get_questions(self):

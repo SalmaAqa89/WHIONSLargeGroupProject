@@ -1,6 +1,7 @@
 """Forms for the tasks app."""
 from django import forms
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from .models import User, JournalEntry, Calendar, UserPreferences,Template
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -200,6 +201,13 @@ class TemplateForm(forms.ModelForm):
         
         super().__init__(**kwargs)
         self.user = user
+
+    def clean_name(self):
+        """Validate that the name is unique for the given user."""
+        name = self.cleaned_data.get('name')
+        if Template.objects.filter(user=self.user, name=name).exists():
+            raise ValidationError("A template with this name already exists.")
+        return name
     
     def save(self):
         """Create a new journal entry"""

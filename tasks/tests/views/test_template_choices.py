@@ -12,9 +12,9 @@ class TemplateChoicesViewTest(TestCase):
         self.client.login(username='@test', password='pass')
 
     def test_template_choices_get(self):
-        Template.objects.create(name="Template 1", unlock_after_days=0)  
-        Template.objects.create(name="Template 2", unlock_after_days=5)  
-        Template.objects.create(name="Template 3", unlock_after_days=15) 
+        Template.objects.create(name="Template 1", unlock_after_days=0,user = self.user)  
+        Template.objects.create(name="Template 2", unlock_after_days=5,user = self.user)  
+        Template.objects.create(name="Template 3", unlock_after_days=15,user = self.user) 
 
         # Make a GET request to the view
         response = self.client.get(reverse('template_choices'))
@@ -23,10 +23,10 @@ class TemplateChoicesViewTest(TestCase):
         self.assertTrue('templates' in response.context)
 
         
-        self.assertEqual(len(response.context['templates']), 2)
+        self.assertEqual(len(response.context['templates']), 6)
 
     def test_template_choices_post(self):
-        template = Template.objects.create(name="Test Template", unlock_after_days=0)
+        template = Template.objects.create(name="Test Template", unlock_after_days=0,user = self.user)
 
         
         data = {'selected_template_name': template.name}

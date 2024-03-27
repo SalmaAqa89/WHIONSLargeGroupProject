@@ -13,7 +13,7 @@ class TrashViewTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
         self.journal_entry = JournalEntry.objects.create(user=self.user, title='Test Title', text='Test Text', deleted=True)
-        self.template = Template.objects.create( name='Test Template', questions='Test Q', deleted=True)
+        self.template = Template.objects.create( name='Test Template', questions='Test Q', deleted=True,user = self.user)
         self.url = reverse('trash')
     
     def test_trash_url(self):
@@ -71,7 +71,7 @@ class TrashViewTestCase(TestCase):
 
     def test_successful_delete_template_permanent(self):
         self.client.login(username=self.user.username, password='Password123')
-        template2 = Template.objects.create(name='Test Name 2', questions='Test Questions', deleted=True)
+        template2 = Template.objects.create(name='Test Name 2', questions='Test Questions', deleted=True,user = self.user)
         response = self.client.get(reverse('trash'))
         self.assertContains(response, f'<h5 class="card-title">{template2.name}</h5>', html=True)
         recover_response = self.client.get(reverse('delete_template_permanent', args=[template2.pk]))
