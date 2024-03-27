@@ -184,7 +184,7 @@ EMAIL_USE_TLS = True
 
 # Email account credentials
 EMAIL_HOST_USER = 'WHIONS@outlook.com'
-EMAIL_HOST_PASSWORD = 'laycoaoqjydzkzqo'
+EMAIL_HOST_PASSWORD = 'ixrqgmlbcmxtmidy'
 EMAIL_FROM = 'WHIONS@outlook.com'
 DEFAULT_FROM_EMAIL = 'WHIONS@outlook.com'
 
@@ -205,7 +205,7 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
-        'schedule': crontab(minute=17, hour=13),# Run daily at midnight
+        'schedule': crontab(minute=22, hour=13),# Run daily at midnight
     },
     'reset_flower_growth_if_no_entry': {
         'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
