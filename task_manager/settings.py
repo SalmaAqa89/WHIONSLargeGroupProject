@@ -178,7 +178,7 @@ MESSAGE_TAGS = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # SMTP server settings
-EMAIL_HOST = 'smtp.office365.com'
+EMAIL_HOST = 'smtp-mail.outlook.com'
 EMAIL_PORT = 587  
 EMAIL_USE_TLS = True 
 
@@ -205,7 +205,7 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_BEAT_SCHEDULE = {
     'trigger_reminder_emails_daily': {
         'task': 'tasks.tasks.check_and_trigger_reminder_emails',
-        'schedule': crontab(minute=10, hour=13),# Run daily at midnight
+        'schedule': crontab(minute=17, hour=13),# Run daily at midnight
     },
     'reset_flower_growth_if_no_entry': {
         'task': 'tasks.tasks.reset_flower_growth_if_no_entry',
