@@ -1,10 +1,15 @@
 from django.test import TestCase
-from tasks.models import Template
+from tasks.models import Template,User
 
 
 class TemplateModelTest(TestCase):
+    fixtures = [
+        'tasks/tests/fixtures/default_user.json',
+    ]
     def setUp(self):
+        self.user = User.objects.get(username = '@johndoe')
         self.template = Template.objects.create(
+            user=self.user,
             name='Test Template',
             questions='Question1,Question2,Question3'
         )

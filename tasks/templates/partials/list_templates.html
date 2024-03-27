@@ -13,9 +13,11 @@
                 <summary id="summary-{{ template.id }}">Show Questions</summary>
                 <p>{{ template.questions|safe }}</p>
             </details>
-            <div class="card-buttons">
-                <a href="{% url 'delete_template' template_id=template.id %}" class="btn btn-danger fas fa-trash-alt"></a>
-            </div>
+            {% if template.user_entry %}
+                <div class="card-buttons">
+                    <a href="{% url 'delete_template' template_id=template.id %}" class="btn btn-danger fas fa-trash-alt"></a>
+                </div>
+            {% endif %}
         {% endif %}
         </div>
     </div>

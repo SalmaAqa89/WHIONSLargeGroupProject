@@ -10,7 +10,6 @@
       <div class="mt-3">
         <a href="{% url 'create_template' %}" class="btn btn-secondary">Make Your Own</a>
       </div>
-      
       {% for template in templates %}
         {%include 'partials/list_templates.html' with template=template%}
       {% endfor %}

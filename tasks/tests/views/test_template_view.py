@@ -9,8 +9,8 @@ class TemplateViewTests(TestCase):
     def setUp(self):
       
         self.user = User.objects.create_user(username='@testuser', password='12345')
-        Template.objects.create(name='Template 1', unlock_after_days=0)  # Should be unlocked immediately
-        Template.objects.create(name='Template 2', unlock_after_days=5)  # Should be locked for 5 days
+        Template.objects.create(name='Template 1', unlock_after_days=0,user = self.user)  # Should be unlocked immediately
+        Template.objects.create(name='Template 2', unlock_after_days=5,user = self.user)  # Should be locked for 5 days
         self.client.login(username='@testuser', password='12345')
     
     def test_templates_view_with_authenticated_user(self):
