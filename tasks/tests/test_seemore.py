@@ -17,5 +17,5 @@ class MySeleniumTests(StaticLiveServerTestCase):
 
     def test_show_hide_text(self):
         self.selenium.get(f'{self.live_server_url}/path/to/your/page')
-        # Here you'd add your Selenium commands to interact with the page
-        # and assert conditions, similar to the examples provided earlier.
+        
+      
