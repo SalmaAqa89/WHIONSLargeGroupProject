@@ -61,3 +61,36 @@ class EditPreferencesViewTestCase(TestCase, LogInTester):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registration/edit_preferences.html')
         self.assertTrue(response.context['form'].errors)
+    
+    def test_edit_preferences_opt_out(self):
+
+        self.client.login(username=self.user.username, password='Password123')
+
+        UserPreferences.objects.create(user=self.user, journal_time='17:30:00')
+
+        form_data = {
+            'journal_time': '18:00:00',
+            'opt_out': True,  
+            'monday': True,  
+            'tuesday': True,
+            'wednesday': True,
+            'thursday': True,
+            'friday': True,
+            'saturday': True,
+            'sunday': True,
+        }
+
+        response = self.client.post(self.url, form_data)
+
+        redirect_url = reverse('dashboard')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+        updated_preferences = UserPreferences.objects.get(user=self.user)
+
+        self.assertFalse(updated_preferences.monday)
+        self.assertFalse(updated_preferences.tuesday)
+        self.assertFalse(updated_preferences.wednesday)
+        self.assertFalse(updated_preferences.thursday)
+        self.assertFalse(updated_preferences.friday)
+        self.assertFalse(updated_preferences.saturday)
+        self.assertFalse(updated_preferences.sunday)
