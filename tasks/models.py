@@ -10,7 +10,6 @@ from django.dispatch import receiver
 from django.utils import timezone
 from datetime import timedelta
 
-
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
 
@@ -119,7 +118,6 @@ class FlowerGrowth(models.Model):
     
 class Template(models.Model):
     name = models.CharField(max_length = 50, blank = False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     questions = models.CharField(max_length =255,blank = True)
     user_entry = models.BooleanField(default = True)
     deleted = models.BooleanField(default = False)
