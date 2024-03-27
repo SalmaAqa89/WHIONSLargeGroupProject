@@ -12,14 +12,7 @@
       </div>
       
       {% for template in templates %}
-      <div class="col-12 col-md-6 col-lg-4 mt-4">
-        <div class="card ">
-          <div class="card-body copy-div">
-            <h5 class="card-title">{{template.name}}</h5>
-            <p class="card-text">{{template.text}}</p>
-          </div>
-        </div>
-      </div>
+        {%include 'partials/list_templates.html' with template=template%}
       {% endfor %}
     </div>
   </div>

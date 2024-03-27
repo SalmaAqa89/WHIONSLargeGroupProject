@@ -158,6 +158,16 @@ p.cover-text {
 }
 
 
+.template-card{
+  border-radius: 20px !important;
+  border: none !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.075);
+}
+
+.template-card:hover{
+  box-shadow: 0 10px 20px rgba(178, 213, 200, 0.502);
+}
+
 /*
  * forms
  */
@@ -759,3 +769,15 @@ from,to {
   font-size: 10rem !important; 
 }
 
+.locked {
+  background-color: #f0f0f0;
+  color: #ccc;
+  pointer-events: none; /* Disables interactions */
+  opacity: 0.5; /* Makes the card appear faded */
+}
+
+.locked .locked-message {
+  pointer-events: auto; /* Re-enables interactions for the message, if necessary */
+  color: #ff0000; /* Change the color to make the message stand out */
+  font-weight: bold;
+}

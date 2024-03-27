@@ -49,7 +49,20 @@
               </div>
             </div>
             <div class = "tab fade active" id = "nav-templates" role = "tabpanel" aria-labelledby="nav-templates-tab">
-              <p>deleted templates will go here</p>
+              <div class="card-deck mt-4">
+                {% for template in templates %}
+                  <div class="card mb-3 tempalte-card">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ template.name }}</h5> 
+                        <details id="details-{{ template.id }}" data-entry-id="{{ template.id }}">    
+                        <summary id="summary-{{ template.id }}">Show Text</summary>
+                        <p>{{ template.questions|safe }}</p>
+                        </details>
+                        <a href="{% url 'recover_template' template_id=template.id %}" class="btn btn-success">Recover Template</a>
+                        <a href="{% url 'delete_template_permanent' template_id=template.id %}" class="btn btn-danger">Permanently Delete Template</a>
+                  </div>
+                {% endfor %}
+              </div>
             </div>
           </div>
       </div>

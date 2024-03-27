@@ -59,15 +59,31 @@ def favourites(request):
 
 @login_required
 def templates(request):
-    return render(request, 'pages/templates.html', {'templates':Template.objects.all()})
+    if request.user.is_authenticated:
+        user_creation_date = request.user.date_joined
+        templates = Template.objects.all()
+
+        for template in templates:
+            unlock_date = user_creation_date + timedelta(days=template.unlock_after_days)
+            template.is_locked = timezone.now() < unlock_date
+    
+    else:
+        templates = Template.objects.none()
+    return render(request, 'pages/templates.html', {'templates':templates})
 
 @login_required
 def trash(request):
     query = Q(user=request.user) & Q(deleted=True) & Q( permanently_deleted=False)
+    query_templates = Q(deleted=True) & Q( permanently_deleted=False)
     search_key = request.POST.get('search')
     if search_key:
          query &= Q(title__icontains=search_key) | Q(text__icontains=search_key)
-    return render(request, 'pages/trash.html',{'journal_entries' : JournalEntry.objects.filter(query)})
+    
+    context = {
+        'journal_entries': JournalEntry.objects.filter(query),
+        'templates': Template.objects.filter(query_templates)
+    }
+    return render(request, 'pages/trash.html',context)
 
 
 @login_prohibited
@@ -91,14 +107,25 @@ def get_flower_stage_image(stage):
     return image_dict.get(stage, 'images/flower_stage_0.png')
 
 def template_choices(request):
+    
     if request.method == 'POST':
         selected_template_name = request.POST.get('selected_template_name')
         request.session['template_name'] = selected_template_name
         return redirect('create_entry')
-
-    templates = Template.objects.all()  
-    context = {'templates': templates}
     
+    if request.user.is_authenticated:
+        account_created = request.user.date_joined
+        current_date = datetime.now(tz=account_created.tzinfo)
+        templates = Template.objects.filter(
+            unlock_after_days__lte=(current_date - account_created).days
+        )
+    else:
+        templates = Template.objects.none() 
+
+    context = {
+        'templates': templates,
+    }
+
     return render(request, 'pages/template_choices.html', context)
 
 class CreateTemplateView(LoginRequiredMixin, FormView):

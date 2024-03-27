@@ -1,0 +1,22 @@
+{% if not template.deleted %}
+    <div class="card mb-3 template-card {% if template.is_locked %}locked{% endif %}" id="template{{ template.id }}">
+        <div class="card-body ">
+        {% if template.is_locked %}
+            <div class="locked-message">
+                <h5>{{template.name}}</h5>
+                This template is locked for a certain number of days, you will have to come back frequently to access it.
+            </div>
+        {% else %}
+            <input type="checkbox" class="selectCheckbox" style="display:none;" data-entry-id="{{ entry.id }}">
+            <h5 class="card-title">{{ template.name }}</h5> 
+            <details id="details-{{ template.id }}" data-entry-id="{{ template.id }}">    
+                <summary id="summary-{{ template.id }}">Show Questions</summary>
+                <p>{{ template.questions|safe }}</p>
+            </details>
+            <div class="card-buttons">
+                <a href="{% url 'delete_template' template_id=template.id %}" class="btn btn-danger fas fa-trash-alt"></a>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+{% endif %}

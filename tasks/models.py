@@ -7,6 +7,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
+from datetime import timedelta
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -124,7 +126,9 @@ class Template(models.Model):
     questions = models.CharField(max_length =255,blank = True)
     user_entry = models.BooleanField(default = True)
     deleted = models.BooleanField(default = False)
-     
+    permanently_deleted = models.BooleanField(default = False)
+    unlock_after_days = models.IntegerField(default=0) 
+
 
     def get_questions(self):
         return self.questions
@@ -134,5 +138,25 @@ class Template(models.Model):
 
     def set_questions_array(self, values):
         self.questions = ','.join(values)
+    
+    def delete_template(self):
+        self.deleted = True
+        self.save()
+
+    def recover_entry(self):
+        self.deleted = False
+        self.save()
+    
+    def permanently_delete(self):
+        self.deleted = True
+        self.permanently_deleted = True
+        self.title = ""
+        self.text = ""
+        self.mood = 3
+        self.save()
+    
+    def is_locked_for_user(self, account_creation_date):
+        unlock_date = account_creation_date + timedelta(days=self.unlock_after_days)
+        return timezone.now() < unlock_date
 
 
