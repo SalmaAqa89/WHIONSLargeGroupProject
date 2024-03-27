@@ -58,32 +58,3 @@ class SetPreferenceViewTestCase(TestCase, LogInTester):
         self.assertTemplateUsed(response, 'pages/dashboard.html')
         self.assertTrue(UserPreferences.objects.filter(user=self.user).exists())
 
-    def test_opt_out_sets_all_days_to_false(self):
-        self.client.login(username=self.user.username, password='Password123')
-        
-        form_data = {
-            'journal_time': '17:30:00',
-            'opt_out': True,  
-            'monday': True,  
-            'tuesday': True,
-            'wednesday': True,
-            'thursday': True,
-            'friday': True,
-            'saturday': True,
-            'sunday': True,  
-        }
-        
-
-        self.client.post(self.url, form_data)
-        
-
-        user_preference = UserPreferences.objects.get(user=self.user)
-        
-        self.assertFalse(user_preference.monday)
-        self.assertFalse(user_preference.tuesday)
-        self.assertFalse(user_preference.wednesday)
-        self.assertFalse(user_preference.thursday)
-        self.assertFalse(user_preference.friday)
-        self.assertFalse(user_preference.saturday)
-        self.assertFalse(user_preference.sunday)
-

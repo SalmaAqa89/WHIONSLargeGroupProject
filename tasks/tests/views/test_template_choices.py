@@ -6,7 +6,7 @@ from tasks.models import Template
 class TemplateChoicesViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username='test', password='pass', email_is_verified=True)
+        self.user = User.objects.create_user(username='test', password='pass')
         self.client.login(username='test', password='pass')
 
     def test_template_choices_get(self):

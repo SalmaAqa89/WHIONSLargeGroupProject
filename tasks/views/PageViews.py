@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User,Template
 from tasks.helpers import login_prohibited
@@ -5,8 +6,9 @@ from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
 from tasks.models import JournalEntry
-from tasks.helpers import login_prohibited, verification_required
+from tasks.helpers import login_prohibited
 from tasks.models import JournalEntry
+from tasks.helpers import login_prohibited
 from datetime import datetime, timedelta
 from reportlab.lib.enums import TA_CENTER
 from datetime import timedelta
@@ -23,7 +25,7 @@ from django.db.models import Q
 
 DEFAULT_TEMPLATE = {"name" : "Default template", "text" : "This is the default template","placeholder":"replace this text with your own questions"}
 
-@verification_required
+@login_required
 def dashboard(request):
         try:
             stage = request.user.flowergrowth.stage
@@ -35,7 +37,7 @@ def dashboard(request):
                                                         'flower_image_url' : flower_image_url,})
 
 
-@verification_required
+@login_required
 def journal_log(request):
     start_date = timezone.now() - timedelta(days=30)
     end_date = timezone.now()
@@ -47,7 +49,7 @@ def journal_log(request):
     return render(request, 'pages/journal_log.html', {'journal_entries' : JournalEntry.objects.filter(query).order_by('-created_at'),
                                                       'journal_entries_last_thirty_days' :  JournalEntry.objects.filter(last_30_days_query).order_by('-created_at')})
 
-@verification_required
+@login_required
 def favourites(request):
     query = Q(user=request.user) & Q(favourited=True)
     search_key = request.POST.get('search')
@@ -55,11 +57,11 @@ def favourites(request):
          query &= Q(title__icontains=search_key) | Q(text__icontains=search_key)
     return render(request, 'pages/favourites.html', {'journal_entries' : JournalEntry.objects.filter(query)})
 
-@verification_required
+@login_required
 def templates(request):
     return render(request, 'pages/templates.html', {'templates':Template.objects.all()})
 
-@verification_required
+@login_required
 def trash(request):
     query = Q(user=request.user) & Q(deleted=True) & Q( permanently_deleted=False)
     search_key = request.POST.get('search')
@@ -88,7 +90,6 @@ def get_flower_stage_image(stage):
     }
     return image_dict.get(stage, 'images/flower_stage_0.png')
 
-@verification_required
 def template_choices(request):
     if request.method == 'POST':
         selected_template_name = request.POST.get('selected_template_name')
@@ -121,4 +122,3 @@ class CreateTemplateView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         return reverse('templates')
-

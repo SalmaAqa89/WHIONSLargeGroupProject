@@ -27,6 +27,7 @@ class TestFavouritesTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pages/favourites.html')
 
+
     def test_search_matching(self):
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.post(self.url, {

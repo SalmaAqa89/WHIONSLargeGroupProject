@@ -9,7 +9,6 @@
       "email": "janedoe@example.org",
       "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc=",
       "is_active": true,
-      "email_is_verified": true,
       "created_at": "2024-02-01T00:00:00+00:00",
       "updated_at": "2024-02-01T00:00:00+00:00"
     }
@@ -24,7 +23,6 @@
       "email": "petrapickles@example.org",
       "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc=",
       "is_active": true,
-      "email_is_verified": false,
       "created_at": "2024-02-01T00:00:00+00:00",
       "updated_at": "2024-02-01T00:00:00+00:00"
     }
@@ -39,7 +37,6 @@
       "email": "peterpickles@example.org",
       "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc=",
       "is_active": true,
-      "email_is_verified": true,
       "created_at": "2024-02-01T00:00:00+00:00",
       "updated_at": "2024-02-01T00:00:00+00:00"
     }
