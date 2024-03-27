@@ -8,12 +8,16 @@ from io import BytesIO
 
 User = get_user_model()
 class ExportTest(TestCase):
+
+    fixtures = ['tasks/tests/fixtures/default_user.json']
+
     def setUp(self):
-        self.user = User.objects.create_user(username='@johndoe', password='Password123')
+        self.user = User.objects.get(username='@johndoe')
         self.entry = JournalEntry.objects.create(title="Test Entry", text="This is a test.", user=self.user)
 
 
     def test_export_journal_entry_to_pdf(self):
+        self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(reverse('export_journal_entry_to_pdf', args=[self.entry.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/pdf')
@@ -25,6 +29,7 @@ class ExportTest(TestCase):
        
 
     def test_export_journal_entry_to_rtf(self):
+        self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(reverse('export_journal_entry_to_rtf', args=[self.entry.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/rtf')

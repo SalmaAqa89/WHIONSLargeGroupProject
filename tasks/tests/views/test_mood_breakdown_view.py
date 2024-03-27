@@ -53,7 +53,7 @@ class MoodBreakdownViewTest(TestCase):
         self.client.logout()
         redirect_url = reverse('log_in') 
         response = self.client.get(self.url)
-        self.assertRedirects(response, f'{redirect_url}?next={self.url}', status_code=302, target_status_code=200)
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
 
 
 

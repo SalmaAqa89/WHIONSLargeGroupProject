@@ -31,7 +31,7 @@ from io import BytesIO
 import base64
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, JournalEntryForm, CalendarForm
 from tasks.models import JournalEntry
-from tasks.helpers import login_prohibited
+from tasks.helpers import login_prohibited, verification_required
 from datetime import datetime, timedelta
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from reportlab.pdfgen import canvas
@@ -97,6 +97,7 @@ class CreateJournalEntryView(LoginRequiredMixin, FormView):
         messages.add_message(self.request, messages.SUCCESS, "Created new entry!")
         return reverse('journal_log')
 
+@verification_required
 def delete_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
@@ -107,6 +108,7 @@ def delete_journal_entry(request,entry_id):
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('journal_log')
 
+@verification_required
 def delete_selected_entries(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -130,7 +132,8 @@ def delete_selected_entries(request):
             return JsonResponse({'success': False, 'message': 'Failed to delete selected entries. Please try again later.'}, status=500)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
-    
+
+@verification_required
 def recover_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
@@ -141,6 +144,7 @@ def recover_journal_entry(request,entry_id):
         messages.add_message(request, messages.ERROR, "entry cannot be recovered")
         return redirect('trash')
 
+@verification_required
 def delete_journal_entry_permanent(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
@@ -150,7 +154,8 @@ def delete_journal_entry_permanent(request,entry_id):
     else:
         messages.add_message(request, messages.ERROR, "You cannot delete an entry that is not yours!")
         return redirect('trash')
-    
+
+@verification_required
 def favourite_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     if entry.user == request.user:
@@ -161,7 +166,8 @@ def favourite_journal_entry(request,entry_id):
     else:
         messages.add_message(request, messages.ERROR, "Entry is not yours!")
         return redirect('journal_log')
-    
+
+@verification_required
 def unfavourite_journal_entry(request,entry_id):
     entry = JournalEntry.objects.get(pk=entry_id)
     next_page = request.GET.get('next', "journal_log")
@@ -217,7 +223,7 @@ def generate_mood_chart(user):
 
     return b64
 
-@login_required
+@verification_required
 def mood_breakdown(request):
     today = timezone.now()
     start_of_week = today - timedelta(days=today.weekday())
@@ -247,6 +253,7 @@ def mood_breakdown(request):
 
     return render(request, 'pages/mood_breakdown.html', context)
 
+@verification_required
 def get_journal_entries(request):
     date_str = request.GET.get('date')
     try:
@@ -257,7 +264,7 @@ def get_journal_entries(request):
     return JsonResponse({'entries': list(entries)})
 
 
-
+@verification_required
 def export_entries(request):
     entry_ids = request.GET.get('entries', '').split(',')
     entry_ids = [int(id) for id in entry_ids if id.isdigit()]
@@ -333,6 +340,8 @@ def link_callback(uri, rel):
         raise Exception(f'Media URI must start with {settings.MEDIA_URL} or {settings.STATIC_URL}')
 
     return path
+
+@verification_required
 def export_journal_entry_to_pdf(request, entry_id):
     journal_entry = get_object_or_404(JournalEntry, pk=entry_id)
 
@@ -368,7 +377,6 @@ def export_journal_entry_to_rtf(request, entry_id):
     response.write(rtf_content)
     return response
 
-
 class JournalEntryUpdateView(UpdateView, LoginRequiredMixin):
     model = JournalEntry
     form_class = JournalEntryForm
@@ -395,7 +403,7 @@ class JournalEntryUpdateView(UpdateView, LoginRequiredMixin):
             return reverse('journal_log')
 
 
-@login_required
+@verification_required
 def search_favourite (request):
     query = request.GET.get('title', '')
     journal_entries = JournalEntry.objects.filter(
@@ -408,7 +416,7 @@ def search_favourite (request):
 
 
 
-@login_required
+@verification_required
 def search_favouriteSuggestion(request):
     query = request.GET.get('q', '')
     if query:
