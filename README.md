@@ -10,10 +10,16 @@ The members of the team are:
 - *Wanzhen Wang*
 
 ## Project structure
-The project is called `Academic Digital Journaling App`.  It currently consists of a single app `tasks`.
+The project is called `Bloom`.  It currently consists of a single app `tasks`.
 
 ## Deployed version of the application
-The deployed version of the application can be found at [*enter url here*](*enter_url_here*).
+The deployed version of the application can be found at [*https://whions-final-a9df8eb9c312.herokuapp.com*](*https://whions-final-a9df8eb9c312.herokuapp.com*).
+First user:
+    username: @johndoe
+    password: Password123
+Second user:
+    username: @janedoe
+    password: Password123
 
 ## Installation instructions
 To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:

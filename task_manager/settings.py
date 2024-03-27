@@ -223,6 +223,9 @@ CKEDITOR_BASE_PATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = "pillow"
 
+WHITENOISE_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
 # This is to configure what the user can use with the ckeditor
 CKEDITOR_CONFIGS = {
     'default': {
