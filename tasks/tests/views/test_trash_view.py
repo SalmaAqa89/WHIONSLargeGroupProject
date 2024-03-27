@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib import messages
-from tasks.models import JournalEntry, User
+from tasks.models import JournalEntry, User,Template
 from tasks.forms import JournalEntryForm
 from tasks.tests.helpers import reverse_with_next
 
