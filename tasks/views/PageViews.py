@@ -1,3 +1,6 @@
+""" Views for anything related to navigating the site.
+"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from tasks.models import FlowerGrowth, JournalEntry, UserPreferences, User,Template
