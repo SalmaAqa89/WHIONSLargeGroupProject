@@ -37,7 +37,6 @@ class Command(BaseCommand):
 
 
     def create_users(self):
-        User.object.create_user(username='@test', password='pass', date_joined=timezone.now() - timedelta(days=10))
         self.generate_user_fixtures()
         self.generate_random_users()
     
