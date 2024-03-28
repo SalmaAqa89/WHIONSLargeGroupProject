@@ -81,7 +81,7 @@ def templates(request):
 @login_required
 def trash(request):
     query = Q(user=request.user) & Q(deleted=True) & Q( permanently_deleted=False)
-    query_templates = Q(deleted=True) & Q( permanently_deleted=False)
+    query_templates = Q(deleted=True) & Q( permanently_deleted=False) & Q(user = request.user)
     search_key = request.POST.get('search')
     if search_key:
          query &= Q(title__icontains=search_key) | Q(text__icontains=search_key)
