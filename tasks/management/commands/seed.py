@@ -6,6 +6,8 @@ from random import randint, random
 import pytz
 from faker import Faker
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 
 user_fixtures = [
@@ -35,6 +37,7 @@ class Command(BaseCommand):
 
 
     def create_users(self):
+        User.object.create_user(username='@test', password='pass', date_joined=timezone.now() - timedelta(days=10))
         self.generate_user_fixtures()
         self.generate_random_users()
     
